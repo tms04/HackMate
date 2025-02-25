@@ -1,6 +1,8 @@
 import { FiEdit, FiMail, FiUsers, FiLogOut } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 const DrawerSideBar = () => {
+  const navigate = useNavigate();
   return (
     <div className="drawer-side">
       <label htmlFor="my-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
@@ -10,7 +12,7 @@ const DrawerSideBar = () => {
         {/* User Profile Section - Full Width */}
         <div className="w-full px-5 py-4 bg-neutral text-white flex items-center justify-between">
           <span className="text-lg font-semibold tracking-wide">Saurabhkumar!</span>
-          <button className="flex items-center gap-2 text-white hover:text-gray-300 transition-all">
+          <button className="flex items-center gap-2 text-white hover:text-gray-300 transition-all" onClick={()=>{navigate("/userdetails")  }}>
             <FiEdit size={18} />
             <span className="text-sm">Edit</span>
           </button>

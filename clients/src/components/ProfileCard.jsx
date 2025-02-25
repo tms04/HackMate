@@ -18,7 +18,7 @@ const ProfileCard = () => {
           />
         </div>
         <h2 className="text-lg font-bold mt-2 text-base-content">Saurabhkumar Sharma</h2>
-        <p className="text-sm text-base-content/70">IT | TY</p>
+        <p className="text-sm text-base-content/70">IT | TY | Male</p>
       </div>
 
       {/* Roles with '>>' Symbol */}
@@ -80,9 +80,9 @@ const ProfileCard = () => {
               I
             </span>
             HackNiche
-            <span className="absolute bottom-7 opacity-0 group-hover:opacity-100 transition-opacity bg-white text-black text-xs px-2 py-1 rounded shadow">
+            {/* <span className="absolute bottom-7 opacity-0 group-hover:opacity-100 transition-opacity bg-white text-black text-xs px-2 py-1 rounded shadow">
               1st Place
-            </span>
+            </span> */}
           </div>
 
           <div className="relative group flex justify-center items-center gap-2">
@@ -90,9 +90,9 @@ const ProfileCard = () => {
               II
             </span>
             CodeShastra
-            <span className="absolute bottom-7 opacity-0 group-hover:opacity-100 transition-opacity bg-white text-black text-xs px-2 py-1 rounded shadow">
+            {/* <span className="absolute bottom-7 opacity-0 group-hover:opacity-100 transition-opacity bg-white text-black text-xs px-2 py-1 rounded shadow">
               2nd Place
-            </span>
+            </span> */}
           </div>
 
           <div className="relative group flex justify-center items-center gap-2">
@@ -100,9 +100,9 @@ const ProfileCard = () => {
               X
             </span>
             Synergy
-            <span className="absolute bottom-7 opacity-0 group-hover:opacity-100 transition-opacity bg-white text-black text-xs px-2 py-1 rounded shadow">
+            {/* <span className="absolute bottom-7 opacity-0 group-hover:opacity-100 transition-opacity bg-white text-black text-xs px-2 py-1 rounded shadow">
               Top 10
-            </span>
+            </span> */}
           </div>
         </div>
       </div>
