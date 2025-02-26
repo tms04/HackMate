@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState } from "react";
-import { FaPlus, FaTrash, FaTimes, FaUpload } from "react-icons/fa";
+import { FaPlus, FaTrash, FaTimes, FaUpload, FaUser } from "react-icons/fa";
 
 const ProfileForm = () => {
   const [year, setYear] = useState(1);
@@ -23,6 +23,14 @@ const ProfileForm = () => {
     setFunction(state.includes(item) ? state.filter(i => i !== item) : [...state, item]);
   };
 
+  const handleRemoveSkill = (skill) => {
+    setSkills(skills.filter(s => s !== skill));
+  };
+
+  const handleRemoveRole = (role) => {
+    setRoles(roles.filter(r => r !== role));
+  };
+
   const handleAddExperience = () => {
     setExperience([...experience, { name: "", rank: "" }]);
   };
@@ -35,27 +43,42 @@ const ProfileForm = () => {
     setProfilePic(URL.createObjectURL(event.target.files[0]));
   };
 
+  const handleSaveChanges = () => {
+    console.log("Changes Saved:");
+    console.log("Year:", year);
+    console.log("Department:", department);
+    console.log("Skills:", skills);
+    console.log("Roles:", roles);
+    console.log("Experience:", experience);
+    console.log("Profile Picture:", profilePic);
+    // Implement logic to save changes to database or backend here
+  };
+
   return (
     <div className="min-h-screen w-full bg-base-300 flex justify-center items-center p-6">
       <div className="card bg-base-100 w-full max-w-3xl shadow-2xl p-6 rounded-xl">
         <h1 className="text-3xl font-bold text-center mb-6">Complete Your Profile</h1>
         
-        {/* Profile Picture Upload */}
-        <div className="flex flex-col items-center mb-4">
-          <label className="avatar cursor-pointer w-24 h-24 border rounded-full overflow-hidden">
-            {profilePic ? (
-              <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-600">
-                <FaUpload size={24} />
-              </div>
-            )}
-            <input type="file" className="hidden" onChange={handleProfilePicUpload} />
-          </label>
-          <p className="text-sm text-gray-500 mt-2">Upload Profile Picture</p>
-        </div>
+     
 
-        <form className="space-y-4">
+
+
+{/* Profile Picture Upload */}
+<div className="flex flex-col items-center mb-4">
+  <label className="avatar cursor-pointer w-24 h-24 border rounded-full overflow-hidden flex items-center justify-center">
+    {profilePic ? (
+      <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
+    ) : (
+      <FaUser size={48} />
+    )}
+    <input type="file" className="hidden" onChange={handleProfilePicUpload} />
+  </label>
+  <p className="text-sm text-gray-500 mt-2">Profile Picture</p>
+</div>
+
+<form className="space-y-4">
+
+          
           {/* Year Selection */}
           <div className="form-control">
             <label className="label">Year</label>
@@ -96,6 +119,16 @@ const ProfileForm = () => {
                 Add
               </button>
             </div>
+            <div className="mt-2">
+              {skills.map((skill, index) => (
+                <div key={index} className="flex gap-2 mb-2">
+                  <span className="badge badge-accent">{skill}</span>
+                  <button type="button" className="btn btn-error btn-sm" onClick={() => handleRemoveSkill(skill)}>
+                    <FaTrash />
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Role Selection */}
@@ -103,9 +136,25 @@ const ProfileForm = () => {
             <label className="label">Role</label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {roleOptions.map(role => (
-                <button key={role} type="button" className={`btn w-full ${roles.includes(role) ? "btn-secondary" : "btn-outline"}`} onClick={() => handleSelection(role, setRoles, roles)}>
+                <button key={role} type="button" className={`btn w-full ${roles.includes(role) ? "btn-accent" : "btn-outline"}`} onClick={() => handleSelection(role, setRoles, roles)}>
                   {role}
                 </button>
+              ))}
+            </div>
+            <div className="mt-2 flex gap-2">
+              <input type="text" placeholder="Other role" className="input input-bordered flex-grow" value={customRole} onChange={(e) => setCustomRole(e.target.value)} />
+              <button type="button" className="btn btn-neutral" onClick={() => { if (customRole.trim()) { setRoles([...roles, customRole]); setCustomRole(""); } }}>
+                Add
+              </button>
+            </div>
+            <div className="mt-2 flex border-black border">
+              {roles.map((role, index) => (
+                <div key={index} className="flex gap-2 mb-2">
+                  <span className="badge badge-neutral flex justify-between">{role}   <button type="button" className="btn btn-error btn-circle" onClick={() => handleRemoveRole(role)}>
+                    <FaTimes />
+                  </button></span>
+                
+                </div>
               ))}
             </div>
           </div>
@@ -132,6 +181,9 @@ const ProfileForm = () => {
             ))}
             <button type="button" className="btn btn-success w-full mt-2" onClick={handleAddExperience}><FaPlus /> Add More</button>
           </div>
+
+          {/* Save Changes Button */}
+          <button type="button" className="btn btn-primary w-full" onClick={handleSaveChanges}>Save Changes</button>
         </form>
       </div>
     </div>
