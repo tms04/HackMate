@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import MainPage from "./pages/MainPage";
 import Demo from "./pages/Demo";
 import ProfileForm from "./pages/ProfileForm";
+import TeamForm from "./pages/TeamForm";
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="/main" element={<MainPage/>} />
         <Route path="/demo" element={<Demo/>} />
         <Route path="/userdetails" element={<ProfileForm/>} />
+        <Route path="/newteam" element={<TeamForm/>} />
       </Routes>
     </Router>
   );

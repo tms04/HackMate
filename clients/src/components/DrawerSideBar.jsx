@@ -12,7 +12,7 @@ const DrawerSideBar = () => {
         {/* User Profile Section - Full Width */}
         <div className="w-full px-5 py-4 bg-neutral text-white flex items-center justify-between">
           <span className="text-lg font-semibold tracking-wide">Saurabhkumar!</span>
-          <button className="flex items-center gap-2 text-white hover:text-gray-300 transition-all" onClick={()=>{navigate("/userdetails")  }}>
+          <button className="flex items-center gap-2 text-white hover:text-gray-300 transition-all" onClick={()=>{navigate("/userdetails")  }} >
             <FiEdit size={18} />
             <span className="text-sm">Edit</span>
           </button>
@@ -20,7 +20,7 @@ const DrawerSideBar = () => {
 
         {/* Navigation Options */}
         <div className="flex flex-col flex-grow p-5 gap-4">
-          <button className="btn w-full h-32 bg-amber-500 hover:bg-amber-600 text-white text-lg font-medium flex items-center justify-center gap-3 rounded-xl shadow-md transition-all">
+          <button  className="btn w-full h-32 bg-amber-500 hover:bg-amber-600 text-white text-lg font-medium flex items-center justify-center gap-3 rounded-xl shadow-md transition-all" onClick={()=>{navigate("/newteam")  }}>
             <FiUsers size={26} />
             Create Team
           </button>
