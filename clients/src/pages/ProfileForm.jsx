@@ -24,7 +24,7 @@ const ProfileForm = () => {
   const departments = ["IT", "CS", "AI/ML", "Civil", "Mech", "EXTC"];
   const genders = ["Male", "Female", "Prefer Not to Say"];
   const skillOptions = ["MongoDB", "Express", "Node", "React", "Next", "Figma"];
-  const roleOptions = ["Frontend", "Backend", "Full Stack", "App Dev"];
+  const roleOptions = ["Frontend", "Backend", "Full Stack", "App Dev" ,"Presentation"];
 
   const handleSelection = (item, setFunction, state) => {
     setFunction(
@@ -111,6 +111,25 @@ const ProfileForm = () => {
             </div>
           </div>
 
+          {/* Gender Selection */}
+          <div className="form-control">
+            <label className="label">Gender</label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {genders.map((g) => (
+                <button
+                  key={g}
+                  type="button"
+                  className={`btn w-full ${
+                    gender === g ? "btn-accent" : "btn-outline"
+                  }`}
+                  onClick={() => setGender(g)}
+                >
+                  {g}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Department Selection */}
           <div className="form-control">
             <label className="label">Department</label>
@@ -129,7 +148,6 @@ const ProfileForm = () => {
               ))}
             </div>
           </div>
-
           {/* Skills Selection */}
           <div className="form-control">
             <label className="label">Skills</label>
@@ -175,7 +193,6 @@ const ProfileForm = () => {
                   key={index}
                   className="badge badge-neutral flex justify-between items-center gap-1 px-2 py-4 cursor-pointer"
                   onClick={() => handleRemoveSkill(skill)}
-                  
                 >
                   {skill}
                   {/* <button
@@ -189,23 +206,6 @@ const ProfileForm = () => {
               ))}
             </div>
           </div>
-
-            {/* <div className="mt-2">
-              {skills.map((skill, index) => (
-                <div key={index} className="flex gap-2 mb-2">
-                  <span className="badge badge-neutral">{skill}</span>
-                  <button
-                    type="button"
-                    className="btn btn-error btn-sm"
-                    onClick={() => handleRemoveSkill(skill)}
-                  >
-                    <FaTrash />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div> */}
-
           {/* Role Selection */}
           <div className="form-control">
             <label className="label">Role</label>
@@ -250,7 +250,6 @@ const ProfileForm = () => {
                   key={index}
                   className="badge badge-neutral flex justify-between items-center gap-1 px-2 py-4 cursor-pointer"
                   onClick={() => handleRemoveRole(role)}
-
                 >
                   {role}
                   {/* <button
@@ -264,7 +263,6 @@ const ProfileForm = () => {
               ))}
             </div>
           </div>
-
           {/* Experience Fields */}
           <div className="form-control">
             <label className="label">Experience</label>
@@ -306,7 +304,7 @@ const ProfileForm = () => {
               className="btn btn-neutral w-full mt-2"
               onClick={handleAddExperience}
             >
-             Add More
+              Add More
             </button>
           </div>
 
