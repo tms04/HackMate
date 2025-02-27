@@ -5,6 +5,7 @@ import toast, { Toaster } from "react-hot-toast";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
+    name: "", // ✅ Added Full Name
     username: "",
     email: "",
     password: "",
@@ -37,7 +38,7 @@ const SignUp = () => {
       Cookies.set("token", data.token, { expires: 1 }); // Token expires in 1 day
 
       toast.success("User registered successfully!");
-      navigate("/main"); // ✅ Redirect to /main after registration
+      navigate("/login"); // ✅ Redirect to /main after registration
     } catch (error) {
       toast.error(error.message || "Something went wrong!");
     }
@@ -59,6 +60,20 @@ const SignUp = () => {
         </div>
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
           <form className="card-body" onSubmit={handleSubmit}>
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Full Name</span>{" "}
+                {/* ✅ Added Full Name Field */}
+              </label>
+              <input
+                type="text"
+                name="name"
+                placeholder="Full Name"
+                className="input input-bordered"
+                required
+                onChange={handleChange}
+              />
+            </div>
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Username</span>

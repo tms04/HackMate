@@ -7,19 +7,25 @@ import MainPage from "./pages/MainPage";
 import Demo from "./pages/Demo";
 import ProfileForm from "./pages/ProfileForm";
 import TeamForm from "./pages/TeamForm";
+import ProtectedRoute from "./components/ProtectedRoutes.jsx"; // Import ProtectedRoute
 
 export default function App() {
   return (
     <Router>
-      <Toggle/>
+      <Toggle />
       <Routes>
-        <Route path="/" element={<Home/>} />
-        <Route path="/signup" element={<SignUp/>} />
-        <Route path="/login" element={<Login/>} />
-        <Route path="/main" element={<MainPage/>} />
-        <Route path="/demo" element={<Demo/>} />
-        <Route path="/userdetails" element={<ProfileForm/>} />
-        <Route path="/newteam" element={<TeamForm/>} />
+        {/* Public Routes */}
+        <Route path="/" element={<Home />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={<Login />} />
+
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/main" element={<MainPage />} />
+          <Route path="/demo" element={<Demo />} />
+          <Route path="/userdetails" element={<ProfileForm />} />
+          <Route path="/newteam" element={<TeamForm />} />
+        </Route>
       </Routes>
     </Router>
   );

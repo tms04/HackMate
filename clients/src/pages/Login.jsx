@@ -32,9 +32,12 @@ const Login = () => {
         throw new Error(data.message || "Login failed");
       }
 
-      Cookies.set("token", data.token, { expires: 1 }); // 1-day expiration
+      // ✅ Store JWT Token & User ID in Cookies
+      Cookies.set("token", data.token, { expires: 1 });
+      Cookies.set("userId", data.userId, { expires: 1 });
+
       toast.success("Login successful!");
-      navigate("/main"); // Redirect to main page after successful login
+      navigate("/main");
     } catch (error) {
       toast.error(error.message || "Something went wrong!");
     }
