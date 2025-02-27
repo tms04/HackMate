@@ -22,13 +22,13 @@ export default function App() {
         <Route path="/login" element={<Login />} />
 
         {/* Protected Routes */}
-        {/* <Route element={<ProtectedRoute />}> */}
+        <Route element={<ProtectedRoute />}>
           <Route path="/main" element={<MainPage />} />
           <Route path="/demo" element={<Demo />} />
           <Route path="/userdetails" element={<ProfileForm />} />
           <Route path="/newteam" element={<TeamForm />} />
           <Route path="/notifications" element={<Notifications/>} />
-        {/* </Route> */}
+        </Route>
       </Routes>
     </Router>
   );
