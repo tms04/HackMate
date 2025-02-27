@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Toggle from "./components/Toggle";
@@ -8,6 +9,7 @@ import Demo from "./pages/Demo";
 import ProfileForm from "./pages/ProfileForm";
 import TeamForm from "./pages/TeamForm";
 import ProtectedRoute from "./components/ProtectedRoutes.jsx"; // Import ProtectedRoute
+import Notifications from "./pages/Notifications.jsx";
 
 export default function App() {
   return (
@@ -25,6 +27,7 @@ export default function App() {
           <Route path="/demo" element={<Demo />} />
           <Route path="/userdetails" element={<ProfileForm />} />
           <Route path="/newteam" element={<TeamForm />} />
+          <Route path="/notifications" element={<Notifications/>} />
         </Route>
       </Routes>
     </Router>

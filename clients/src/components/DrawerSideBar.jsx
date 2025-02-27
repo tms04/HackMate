@@ -49,7 +49,9 @@ const DrawerSideBar = () => {
             <FiUsers size={26} />
             Create Team
           </button>
-          <button className="btn w-full h-32 bg-sky-500 hover:bg-sky-600 text-white text-lg font-medium flex items-center justify-center gap-3 rounded-xl shadow-md transition-all">
+          <button   onClick={() => {
+              navigate("/notifications");
+            }} className="btn w-full h-32 bg-sky-500 hover:bg-sky-600 text-white text-lg font-medium flex items-center justify-center gap-3 rounded-xl shadow-md transition-all">
             <FiMail size={26} />
             Requests
           </button>
