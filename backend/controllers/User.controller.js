@@ -1,6 +1,6 @@
 import User from "../models/User.model.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { sendCookie } from "../utils/sendCookie.js";
 
 // ✅ Register User
 export const registerUser = async (req, res) => {
@@ -42,7 +42,7 @@ export const loginUser = async (req, res) => {
   try {
     const { emailOrUsername, password } = req.body;
     console.log("Email/Username:", emailOrUsername); // Debugging Step
-    // **Find User in Database**
+    // Find User in Database
     const user = await User.findOne({
       $or: [{ email: emailOrUsername }, { username: emailOrUsername }],
     });
@@ -52,14 +52,14 @@ export const loginUser = async (req, res) => {
     console.log("Stored Password (Hashed):", user.password); // Debugging Step
     console.log("Entered Password (Plain):", password); // Debugging Step
 
-    // **Compare Passwords**
+    // Compare Passwords
     const isMatch = await bcrypt.compare(password, user.password);
     console.log("Password Match:", isMatch); // Debugging Step
 
     if (!isMatch) return res.status(400).json({ message: "Invalid Credentials" });
 
-    // **Generate JWT Token**
-    const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: "1h" });
+    // Generate JWT Token
+    const token = sendCookie(user._id, res);
 
     res.json({ message: "Login successful", token, userId: user._id });
   } catch (error) {
