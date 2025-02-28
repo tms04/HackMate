@@ -12,7 +12,7 @@ const MainPage = () => {
       {/* Page Content */}
       <div className="drawer-content bg-base-200 min-h-screen text-white">
         <div className="h-10 bg-base-400 text-center">
-          <Menu />
+          <Menu/>
         </div>
 
         {/* Drawer Button */}
