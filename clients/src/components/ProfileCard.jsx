@@ -119,3 +119,33 @@ const ProfileCard = () => {
 };
 
 export default ProfileCard;
+
+
+
+
+
+
+// const ProfileCard = ({ name, year, gender, department }) => {
+//   return (
+//     <motion.div
+//       className="relative bg-gradient-to-b from-base-100 to-base-200 p-5 w-72 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300"
+//       whileHover={{ scale: 1.05 }}
+//     >
+//       {/* Profile Image & Name */}
+//       <div className="flex flex-col items-center">
+//         <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-neutral">
+//           <img
+//             src="https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp"
+//             alt="Profile"
+//             className="w-full h-full object-cover"
+//           />
+//         </div>
+//         <h2 className="text-lg font-bold mt-2 text-base-content">{name}</h2>
+//         <p className="text-sm text-base-content/70">{department} | {year} | {gender}</p> 
+//       </div>
+//     </motion.div>
+//   );
+// };
+// export default ProfileCard;
+
+

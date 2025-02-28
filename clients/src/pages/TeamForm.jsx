@@ -1,96 +1,52 @@
 /* eslint-disable no-unused-vars */
 import { useState } from "react";
-import {
-  FaPlus,
-  FaTrash,
-  FaTimes,
-  FaUpload,
-  FaUser,
-  FaMinus,
-} from "react-icons/fa";
+import { FaTimes } from "react-icons/fa";
 
-const ProfileForm = () => {
-  const [year, setYear] = useState(1);
-  const [department, setDepartment] = useState("IT");
-  const [gender, setGender] = useState("Male");
-  const [skills, setSkills] = useState([]);
-  const [customSkill, setCustomSkill] = useState("");
-  const [roles, setRoles] = useState([]);
-  const [customRole, setCustomRole] = useState("");
-  const [experience, setExperience] = useState([{ name: "", rank: "" }]);
-  const [profilePic, setProfilePic] = useState(null);
+const TeamForm = () => {
   const [teamName, setTeamName] = useState("");
-  const years = [1, 2, 3, 4];
-  const departments = ["IT", "CS", "AI/ML", "Civil", "Mech", "EXTC"];
-  const genders = ["Male", "Female", "Prefer Not to Say"];
-  const skillOptions = ["MongoDB", "Express", "Node", "React", "Next", "Figma"];
-  const roleOptions = ["Frontend", "Backend", "Full Stack", "App Dev"];
+  const [members, setMembers] = useState(1);
+  const [hackathonName, setHackathonName] = useState("");
+  const [locationType, setLocationType] = useState("Online");
+  const [offlineLocation, setOfflineLocation] = useState("");
+  const [date, setDate] = useState("");
+  const [skills, setSkills] = useState([]);
 
-  const handleSelection = (item, setFunction, state) => {
-    setFunction(
-      state.includes(item) ? state.filter((i) => i !== item) : [...state, item]
-    );
+  const skillOptions = [
+    "Frontend (Web)",
+    "Backend (Web)",
+    "Full Stack (Web)",
+    "App Developer",
+    "AI/ML Developer",
+    "Blockchain Developer", 
+  ];
+
+  const handleSkillSelect = (e) => {
+    const selectedSkill = e.target.value;
+    if (selectedSkill && !skills.includes(selectedSkill)) {
+      setSkills([...skills, selectedSkill]);
+    }
   };
 
-  const handleRemoveSkill = (skill) => {
-    setSkills(skills.filter((s) => s !== skill));
+  const removeSkill = (skillToRemove) => {
+    setSkills(skills.filter((skill) => skill !== skillToRemove));
   };
 
-  const handleRemoveRole = (role) => {
-    setRoles(roles.filter((r) => r !== role));
-  };
-
-  const handleAddExperience = () => {
-    setExperience([...experience, { name: "", rank: "" }]);
-  };
-
-  const handleRemoveExperience = (index) => {
-    setExperience(experience.filter((_, i) => i !== index));
-  };
-
-  const handleProfilePicUpload = (event) => {
-    setProfilePic(URL.createObjectURL(event.target.files[0]));
-  };
-
-  const handleSaveChanges = () => {
-    console.log("Changes Saved:");
-    console.log("Year:", year);
-    console.log("Department:", department);
-    console.log("Skills:", skills);
-    console.log("Roles:", roles);
-    console.log("Experience:", experience);
-    console.log("Profile Picture:", profilePic);
-    // Implement logic to save changes to database or backend here
+  const handleSaveTeam = () => {
+    console.log("Team Created:", {
+      teamName,
+      members,
+      hackathonName,
+      locationType,
+      offlineLocation: locationType === "Offline" ? offlineLocation : "N/A",
+      date,
+      skills,
+    });
   };
 
   return (
     <div className="min-h-screen w-full bg-base-300 flex justify-center items-center p-6">
       <div className="card bg-base-100 w-full max-w-3xl shadow-2xl p-6 rounded-xl">
-        <h1 className="text-3xl font-bold text-center mb-6">
-          Complete Your Profile
-        </h1>
-
-        {/* Profile Picture Upload */}
-        <div className="flex flex-col items-center mb-4">
-          <label className="avatar cursor-pointer w-24 h-24 border rounded-full overflow-hidden flex items-center justify-center">
-            {profilePic ? (
-              <img
-                src={profilePic}
-                alt="Profile"
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <FaUser size={48} />
-            )}
-            <input
-              type="file"
-              className="hidden"
-              onChange={handleProfilePicUpload}
-            />
-          </label>
-          <p className="text-sm text-gray-500 mt-2">Profile Picture</p>
-        </div>
-
+        <h1 className="text-3xl font-bold text-center mb-6">Create a Team</h1>
         <form className="space-y-4">
           {/* Team Name */}
           <div className="form-control">
@@ -103,209 +59,107 @@ const ProfileForm = () => {
               onChange={(e) => setTeamName(e.target.value)}
             />
           </div>
-          {/* Year Selection */}
+
+          {/* Number of Members */}
           <div className="form-control">
-            <label className="label">Year</label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              {years.map((y) => (
+            <label className="label">Number of Members</label>
+            <input
+              type="number"
+              min="1"
+              max="10"
+              className="input input-bordered"
+              value={members}
+              onChange={(e) => setMembers(Number(e.target.value))}
+            />
+          </div>
+
+          {/* Hackathon Name */}
+          <div className="form-control">
+            <label className="label">Hackathon Name</label>
+            <input
+              type="text"
+              placeholder="Enter hackathon name"
+              className="input input-bordered"
+              value={hackathonName}
+              onChange={(e) => setHackathonName(e.target.value)}
+            />
+          </div>
+
+          {/* Location Type */}
+          <div className="form-control">
+            <label className="label">Location</label>
+            <div className="flex gap-2">
+              {["Online", "Offline"].map((type) => (
                 <button
-                  key={y}
+                  key={type}
                   type="button"
-                  className={`btn w-full ${
-                    year === y ? "btn-accent" : "btn-outline"
-                  }`}
-                  onClick={() => setYear(y)}
+                  className={`btn w-1/2 ${locationType === type ? "btn-accent" : "btn-outline"}`}
+                  onClick={() => setLocationType(type)}
                 >
-                  {y}
+                  {type}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Department Selection */}
-          <div className="form-control">
-            <label className="label">Department</label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {departments.map((dept) => (
-                <button
-                  key={dept}
-                  type="button"
-                  className={`btn w-full ${
-                    department === dept ? "btn-accent" : "btn-outline"
-                  }`}
-                  onClick={() => setDepartment(dept)}
-                >
-                  {dept}
-                </button>
-              ))}
+          {/* Offline Location */}
+          {locationType === "Offline" && (
+            <div className="form-control">
+              <label className="label">Offline Location</label>
+              <input
+                type="text"
+                placeholder="Enter location"
+                className="input input-bordered"
+                value={offlineLocation}
+                onChange={(e) => setOfflineLocation(e.target.value)}
+              />
             </div>
+          )}
+
+          {/* Date Selection */}
+          <div className="form-control">
+            <label className="label">Date</label>
+            <input
+              type="date"
+              className="input input-bordered"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
           </div>
+
           {/* Skills Selection */}
           <div className="form-control">
-            <label className="label">Skills</label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <label className="label">Skills Needed</label>
+            <select className="select select-bordered" onChange={handleSkillSelect}>
+              <option value="">Select a skill</option>
               {skillOptions.map((skill) => (
-                <button
-                  key={skill}
-                  type="button"
-                  className={`btn w-full ${
-                    skills.includes(skill) ? "btn-accent" : "btn-outline"
-                  }`}
-                  onClick={() => handleSelection(skill, setSkills, skills)}
-                >
+                <option key={skill} value={skill}>
                   {skill}
-                </button>
+                </option>
               ))}
-            </div>
-            <div className="mt-2 flex gap-2">
-              <input
-                type="text"
-                placeholder="Other skill"
-                className="input input-bordered flex-grow"
-                value={customSkill}
-                onChange={(e) => setCustomSkill(e.target.value)}
-              />
-              <button
-                type="button"
-                className="btn btn-neutral"
-                onClick={() => {
-                  if (customSkill.trim()) {
-                    setSkills([...skills, customSkill]);
-                    setCustomSkill("");
-                  }
-                }}
-              >
-                Add
-              </button>
-            </div>
+            </select>
+          </div>
 
-            <div className="mt-2 flex flex-wrap gap-2">
-              {skills.map((skill, index) => (
-                <span
-                  key={index}
-                  className="badge badge-neutral flex justify-between items-center gap-1 px-2 py-4 cursor-pointer"
-                  onClick={() => handleRemoveSkill(skill)}
-                >
-                  {skill}
-                  {/* <button
-                    type="button"
-                    className="btn btn-error btn-circle btn-xs p-1"
-                    onClick={() => handleRemoveSkill(skill)}
-                  >
-                    <FaMinus size={10} />
-                  </button> */}
-                </span>
-              ))}
-            </div>
-          </div>
-          {/* Role Selection */}
-          <div className="form-control">
-            <label className="label">Role</label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {roleOptions.map((role) => (
-                <button
-                  key={role}
-                  type="button"
-                  className={`btn w-full ${
-                    roles.includes(role) ? "btn-accent" : "btn-outline"
-                  }`}
-                  onClick={() => handleSelection(role, setRoles, roles)}
-                >
-                  {role}
-                </button>
-              ))}
-            </div>
-            <div className="mt-2 flex gap-2">
-              <input
-                type="text"
-                placeholder="Other role"
-                className="input input-bordered flex-grow"
-                value={customRole}
-                onChange={(e) => setCustomRole(e.target.value)}
-              />
-              <button
-                type="button"
-                className="btn btn-neutral"
-                onClick={() => {
-                  if (customRole.trim()) {
-                    setRoles([...roles, customRole]);
-                    setCustomRole("");
-                  }
-                }}
-              >
-                Add
-              </button>
-            </div>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {roles.map((role, index) => (
-                <span
-                  key={index}
-                  className="badge badge-neutral flex justify-between items-center gap-1 px-2 py-4 cursor-pointer"
-                  onClick={() => handleRemoveRole(role)}
-                >
-                  {role}
-                  {/* <button
-                    type="button"
-                    className="btn btn-error btn-circle btn-xs"
-                    onClick={() => handleRemoveRole(role)}
-                  >
-                    <FaMinus size={10} />
-                  </button> */}
-                </span>
-              ))}
-            </div>
-          </div>
-          {/* Experience Fields */}
-          <div className="form-control">
-            <label className="label">Experience</label>
-            {experience.map((exp, index) => (
-              <div key={index} className="flex gap-2 mb-2">
-                <input
-                  type="text"
-                  placeholder="Hackathon Name"
-                  className="input input-bordered flex-grow"
-                  value={exp.name}
-                  onChange={(e) => {
-                    const newExp = [...experience];
-                    newExp[index].name = e.target.value;
-                    setExperience(newExp);
-                  }}
-                />
-                <input
-                  type="text"
-                  placeholder="Rank"
-                  className="input input-bordered w-20"
-                  value={exp.rank}
-                  onChange={(e) => {
-                    const newExp = [...experience];
-                    newExp[index].rank = e.target.value;
-                    setExperience(newExp);
-                  }}
-                />
-                <button
-                  type="button"
-                  className="btn btn-error"
-                  onClick={() => handleRemoveExperience(index)}
-                >
-                  <FaTrash />
-                </button>
+          {/* Display Selected Skills */}
+          {skills.length > 0 && (
+            <div className="form-control">
+              <label className="label">Selected Skills</label>
+              <div className="flex flex-wrap gap-2">
+                {skills.map((skill) => (
+                  <div key={skill} className="badge badge-accent flex items-center gap-1">
+                    {skill}
+                    <button onClick={() => removeSkill(skill)}>
+                      <FaTimes className="ml-1 text-xs" />
+                    </button>
+                  </div>
+                ))}
               </div>
-            ))}
-            <button
-              type="button"
-              className="btn btn-neutral w-full mt-2"
-              onClick={handleAddExperience}
-            >
-              Add More
-            </button>
-          </div>
-          {/* Save Changes Button */}
-          <button
-            type="button"
-            className="btn btn-outline w-full"
-            onClick={handleSaveChanges}
-          >
-            Save Changes
+            </div>
+          )}
+
+          {/* Save Team Button */}
+          <button type="button" className="btn btn-outline w-full" onClick={handleSaveTeam}>
+            Create Team
           </button>
         </form>
       </div>
@@ -313,4 +167,4 @@ const ProfileForm = () => {
   );
 };
 
-export default ProfileForm;
+export default TeamForm;
