@@ -22,9 +22,9 @@ const CreatedTeamPage = () => {
       domains: ["AI", "Blockchain", "Cybersecurity"],
     },
     members: [
-      { id: 1, name: "Alice Johnson", role: "Frontend Developer", year: "TY", dept: "IT", gender: "Female" },
-      { id: 2, name: "Bob Smith", role: "Backend Developer", year: "TY", dept: "IT", gender: "Male" },
-      { id: 3, name: "Charlie Brown", role: "UI/UX Designer", year: "TY", dept: "IT", gender: "Male" },
+      { id: 1, name: "Alice Johnson", role: "Frontend Developer", year: "TY", dept: "IT", gender: "Female",state:"Accepted" },
+      { id: 2, name: "Bob Smith", role: "Backend Developer", year: "TY", dept: "IT", gender: "Male",state:"Accepted" },
+      { id: 3, name: "Charlie Brown", role: "UI/UX Designer", year: "TY", dept: "IT", gender: "Male",state:"Pending" },
     ],
   });
 
@@ -104,27 +104,32 @@ const CreatedTeamPage = () => {
 
           {/* Team Members List */}
           <div className="bg-base-100 dark:bg-neutral-800 p-4 rounded-lg shadow-md w-full mt-2 space-y-4">
-            {team.members.map((member) => (
-              <div key={member.id} className="flex items-center justify-between bg-success/15 p-3 rounded-lg border border-success">
-                <div className="flex items-center gap-3">
-                  <img
-                    src="https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp"
-                    alt={member.name}
-                    className="w-10 h-10 rounded-full"
-                  />
-                  <div className="text-sm">
-                    <p className="font-semibold">{member.name}</p>
-                    <p className="text-xs text-gray-400">{member.year} | {member.dept} | {member.gender}</p>
-                  </div>
-                </div>
-                <button
-                  className="btn btn-outline btn-sm bg-neutral text-white border-gray-700 hover:bg-gray-700 hover:text-white flex items-center gap-2"
-                  onClick={() => openRemoveModal(member)}
-                >
-                  <FaUserMinus /> Remove
-                </button>
-              </div>
-            ))}
+          {team.members.map((member) => (
+  <div 
+    key={member.id} 
+    className={`flex items-center justify-between p-3 rounded-lg border 
+      ${member.state === "Accepted" ? "bg-success/15 border-success" : "bg-warning/15 border-warning"}`}
+  >
+    <div className="flex items-center gap-3">
+      <img
+        src="https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp"
+        alt={member.name}
+        className="w-10 h-10 rounded-full"
+      />
+      <div className="text-sm">
+        <p className="font-semibold">{member.name}</p>
+        <p className="text-xs text-gray-400">{member.year} | {member.dept} | {member.gender}</p>
+      </div>
+    </div>
+    <button
+      className="btn btn-outline btn-sm bg-neutral text-white border-gray-700 hover:bg-gray-700 hover:text-white flex items-center gap-2"
+      onClick={() => openRemoveModal(member)}
+    >
+      <FaUserMinus /> Remove
+    </button>
+  </div>
+))}
+
           </div>
         </div>
 
