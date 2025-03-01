@@ -1,5 +1,4 @@
 import Notification from "../components/Requests/Notification";
-
 const notificationsData = [
   { 
     teamMember: "Mary Palmer", 
@@ -61,6 +60,7 @@ const notificationsData = [
 
 const Notifications = () => {
   return (
+    
     <div className="flex flex-col items-center gap-4 p-6 bg-base-200 min-h-screen">
       <h2 className="text-xl font-bold text-base-content">Hackathon Invitations</h2>
       <div className="flex flex-col gap-4 w-full max-w-2xl">
