@@ -1,4 +1,4 @@
-import { FiEdit, FiMail, FiUsers, FiLogOut } from "react-icons/fi";
+import { FiEdit, FiMail, FiUsers, FiLogOut, FiLayers } from "react-icons/fi"; // Added FiLayers for My Teams
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
@@ -13,6 +13,7 @@ const DrawerSideBar = () => {
     // 🔄 Redirect to login page
     navigate("/login");
   };
+
   return (
     <div className="drawer-side">
       <label
@@ -49,11 +50,24 @@ const DrawerSideBar = () => {
             <FiUsers size={26} />
             Create Team
           </button>
-          <button   onClick={() => {
+          <button
+            onClick={() => {
               navigate("/notifications");
-            }} className="btn w-full h-32 bg-sky-500 hover:bg-sky-600 text-white text-lg font-medium flex items-center justify-center gap-3 rounded-xl shadow-md transition-all">
+            }}
+            className="btn w-full h-32 bg-sky-500 hover:bg-sky-600 text-white text-lg font-medium flex items-center justify-center gap-3 rounded-xl shadow-md transition-all"
+          >
             <FiMail size={26} />
             Requests
+          </button>
+          {/* New "My Teams" Button */}
+          <button
+            onClick={() => {
+              navigate("/myteams");
+            }}
+            className="btn w-full h-32 bg-green-500 hover:bg-green-600 text-white text-lg font-medium flex items-center justify-center gap-3 rounded-xl shadow-md transition-all"
+          >
+            <FiLayers size={26} />
+            My Teams
           </button>
         </div>
 

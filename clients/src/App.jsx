@@ -10,6 +10,9 @@ import ProfileForm from "./pages/ProfileForm";
 import TeamForm from "./pages/TeamForm";
 import ProtectedRoute from "./components/ProtectedRoutes.jsx"; // Import ProtectedRoute
 import Notifications from "./pages/Notifications.jsx";
+import MyTeams from "./pages/MyTeams.jsx";
+import CreatedTeamPage from "./pages/CreatedTeam.jsx";
+import JoinedTeamPage from "./pages/JoinedTeam.jsx";
 
 export default function App() {
   return (
@@ -28,6 +31,9 @@ export default function App() {
           <Route path="/userdetails" element={<ProfileForm />} />
           <Route path="/newteam" element={<TeamForm />} />
           <Route path="/notifications" element={<Notifications/>} />
+          <Route path="/myteams" element={<MyTeams/>} />
+          <Route path="/createdteam" element={<CreatedTeamPage/>} />
+          <Route path="/joinedteam" element={<JoinedTeamPage/>} />
         </Route>
       </Routes>
     </Router>
