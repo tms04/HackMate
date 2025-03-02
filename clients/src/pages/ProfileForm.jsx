@@ -5,6 +5,8 @@ import RoleInput from "../components/ProfileForm/RoleInput";
 import SelectionButtons from "../components/ProfileForm/SelectionButtons";
 import SkillInput from "../components/ProfileForm/SkillInput";
 
+import { useNavigate } from "react-router-dom";
+
 const ProfileForm = () => {
   const [year, setYear] = useState(1);
   const [department, setDepartment] = useState("IT");
@@ -27,6 +29,19 @@ const ProfileForm = () => {
   ];
 
   const handleSaveChanges = () => {
+
+    const profileData = {
+      year,
+      department,
+      gender,
+      skills,
+      roles,
+      experience,
+      profilePic,
+    };
+    localStorage.setItem("profileData", JSON.stringify(profileData)); // Save to localStorage
+
+
     console.log("Changes Saved:");
     console.log("Year:", year);
     console.log("Department:", department);
@@ -34,6 +49,15 @@ const ProfileForm = () => {
     console.log("Roles:", roles);
     console.log("Experience:", experience);
     console.log("Profile Picture:", profilePic);
+
+     // Redirect to the Profile Page (optional if you want to navigate)
+    // window.location.href = "/profile"; // Or use `useNavigate` for React Router
+
+    const navigate = useNavigate();
+    navigate("/profile");
+
+
+
     // Implement logic to save changes to database or backend here
   };
 
