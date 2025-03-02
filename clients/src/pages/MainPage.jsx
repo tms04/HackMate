@@ -7,6 +7,9 @@ import { FiMenu } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { useState } from 'react';
 
+import { useNavigate } from "react-router-dom";
+
+
 
 
 
@@ -59,7 +62,16 @@ const MainPage = () => {
         (selectedGender === "All" || profile.gender === selectedGender)
     );
 
+    // ---------------------Profile Display Page------------------------------
 
+    const navigate = useNavigate();
+
+     // Handle redirect to profile details page
+     const handleRedirectToProfile = () => {
+      navigate("/profile"); // Navigate to the profile details page
+    };
+
+    // ------------------------------------------------------------------
 
 
   return (
@@ -73,9 +85,13 @@ const MainPage = () => {
           <Filter />
         </div>
 
+        <button className="btn btn-primary" onClick={handleRedirectToProfile}>
+          View Profile
+        </button>
+
         {/* Drawer Button */}
-        <label 
-          htmlFor="my-drawer" 
+        <label
+          htmlFor="my-drawer"
           className="btn btn-circle btn-neutral fixed top-4 left-4 z-50 transition-opacity duration-300 drawer-button"
         >
           <FiMenu size={24} />
@@ -103,12 +119,16 @@ const MainPage = () => {
             transition={{ duration: 0.5 }}
           >
             {filteredProfiles.map((profile) => (
-              <ProfileCard key={profile.id} name={profile.name} year={profile.year} gender={profile.gender} department={profile.department} />
+              <ProfileCard
+                key={profile.id}
+                name={profile.name}
+                year={profile.year}
+                gender={profile.gender}
+                department={profile.department}
+              />
             ))}
           </motion.div>
         </div>
-
-
       </div>
 
       <DrawerSideBar />
