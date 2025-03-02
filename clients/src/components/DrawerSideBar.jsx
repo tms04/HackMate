@@ -1,16 +1,34 @@
-import { FiEdit, FiMail, FiUsers, FiLogOut, FiLayers } from "react-icons/fi"; // Added FiLayers for My Teams
+import { FiEdit, FiMail, FiUsers, FiLogOut, FiLayers } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import Cookies from "js-cookie";
 
 const DrawerSideBar = () => {
   const navigate = useNavigate();
+  const [username, setUsername] = useState("User"); // Default placeholder
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      const userId = Cookies.get("userId");
+      if (!userId) return;
+
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/users/username/${userId}`
+        );
+        setUsername(response.data.username);
+      } catch (error) {
+        console.error("Error fetching username:", error);
+      }
+    };
+
+    fetchUsername();
+  }, []);
 
   const handleLogout = () => {
-    // ❌ Expire both cookies
     Cookies.remove("token");
     Cookies.remove("userId");
-
-    // 🔄 Redirect to login page
     navigate("/login");
   };
 
@@ -26,13 +44,11 @@ const DrawerSideBar = () => {
         {/* User Profile Section - Full Width */}
         <div className="w-full px-5 py-4 bg-neutral text-white flex items-center justify-between">
           <span className="text-lg font-semibold tracking-wide">
-            Saurabhkumar!
+            Hello {username}!
           </span>
           <button
             className="flex items-center gap-2 text-white hover:text-gray-300 transition-all"
-            onClick={() => {
-              navigate("/userdetails");
-            }}
+            onClick={() => navigate("/userdetails")}
           >
             <FiEdit size={18} />
             <span className="text-sm">Edit</span>
@@ -43,27 +59,20 @@ const DrawerSideBar = () => {
         <div className="flex flex-col flex-grow p-5 gap-4">
           <button
             className="btn w-full h-32 bg-amber-500 hover:bg-amber-600 text-white text-lg font-medium flex items-center justify-center gap-3 rounded-xl shadow-md transition-all"
-            onClick={() => {
-              navigate("/newteam");
-            }}
+            onClick={() => navigate("/newteam")}
           >
             <FiUsers size={26} />
             Create Team
           </button>
           <button
-            onClick={() => {
-              navigate("/notifications");
-            }}
+            onClick={() => navigate("/notifications")}
             className="btn w-full h-32 bg-sky-500 hover:bg-sky-600 text-white text-lg font-medium flex items-center justify-center gap-3 rounded-xl shadow-md transition-all"
           >
             <FiMail size={26} />
             Requests
           </button>
-          {/* New "My Teams" Button */}
           <button
-            onClick={() => {
-              navigate("/myteams");
-            }}
+            onClick={() => navigate("/myteams")}
             className="btn w-full h-32 bg-green-500 hover:bg-green-600 text-white text-lg font-medium flex items-center justify-center gap-3 rounded-xl shadow-md transition-all"
           >
             <FiLayers size={26} />
