@@ -12,6 +12,7 @@ import Notifications from "./pages/Notifications.jsx";
 import MyTeams from "./pages/MyTeams.jsx";
 import CreatedTeamPage from "./pages/CreatedTeam.jsx";
 import JoinedTeamPage from "./pages/JoinedTeam.jsx";
+import ProfilePage from "./pages/ProfilePage";
 
 export default function App() {
   return (
@@ -33,6 +34,11 @@ export default function App() {
           <Route path="/myteams" element={<MyTeams/>} />
           <Route path="/createdteam" element={<CreatedTeamPage/>} />
           <Route path="/joinedteam" element={<JoinedTeamPage/>} />
+
+
+          <Route path="/profile" element={<ProfilePage />} />
+
+          
         </Route>
       </Routes>
     </Router>
