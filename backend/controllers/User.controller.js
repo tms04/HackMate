@@ -107,6 +107,7 @@ export const getProfile = async (req, res) => {
     }
     
     res.status(200).json({
+      name: user.name,
       year: user.year,
       department: user.department,
       gender: user.gender,
