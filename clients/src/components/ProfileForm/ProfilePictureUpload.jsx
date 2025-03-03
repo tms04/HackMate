@@ -3,7 +3,49 @@ import { FaUser } from "react-icons/fa";
 
 const ProfilePictureUpload = ({ profilePic, setProfilePic }) => {
   const handleProfilePicUpload = (event) => {
-    setProfilePic(URL.createObjectURL(event.target.files[0]));
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        compressImage(reader.result, (compressedBase64) => {
+          setProfilePic(compressedBase64);
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const compressImage = (
+    base64Str,
+    callback,
+    maxWidth = 150,
+    maxHeight = 150,
+    quality = 0.7
+  ) => {
+    const img = new Image();
+    img.src = base64Str;
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      let width = img.width;
+      let height = img.height;
+
+      if (width > maxWidth || height > maxHeight) {
+        if (width > height) {
+          height *= maxWidth / width;
+          width = maxWidth;
+        } else {
+          width *= maxHeight / height;
+          height = maxHeight;
+        }
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, width, height);
+      const compressedBase64 = canvas.toDataURL("image/jpeg", quality); // Reduce quality
+      callback(compressedBase64);
+    };
   };
 
   return (
@@ -21,6 +63,7 @@ const ProfilePictureUpload = ({ profilePic, setProfilePic }) => {
         <input
           type="file"
           className="hidden"
+          accept="image/*"
           onChange={handleProfilePicUpload}
         />
       </label>

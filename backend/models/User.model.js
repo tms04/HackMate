@@ -5,16 +5,46 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  profilePicture: { type: String }, // Profile picture field
-  experience: [
-    {
-      name: String, // Hackathon name or experience name
-      rank: String, // Rank achieved
+  profilePic: {
+    type: String, // Base64 encoded string
+  },
+  year: {
+    type: Number,
+    enum: [1, 2, 3, 4],
+  },
+  department: {
+    type: String,
+    enum: ["IT", "CS", "AI/ML", "Civil", "Mech", "EXTC"],
+  },
+  gender: {
+    type: String,
+    enum: ["Male", "Female", "Prefer Not to Say"],
+  },
+  skills: [{
+    type: String,
+  }],
+  roles: [{
+    type: String,
+  }],
+  experience: [{
+    name: {
+      type: String,
     },
-  ],
-  role: { type: [String] }, // User's selected roles
-  skills: { type: [String] }, // User's selected skills
+    rank: {
+      type: String,
+    }
+  }],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
-
+userSchema.pre('findOneAndUpdate', function() {
+  this.set({ updatedAt: new Date() });
+});
 const User = mongoose.model("User", userSchema);
 export default User;

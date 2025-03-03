@@ -94,3 +94,91 @@ export const getUsername = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+export const getProfile = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    
+    // Find user without returning password
+    const user = await User.findById(userId).select('-password');
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    res.status(200).json({
+      year: user.year,
+      department: user.department,
+      gender: user.gender,
+      skills: user.skills,
+      roles: user.roles,
+      experience: user.experience,
+      profilePic: user.profilePic,
+    });
+  } catch (error) {
+    console.error('Error fetching profile:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// Update user profile
+export const updateProfile = async (req, res) => {
+  try {
+    const { 
+      userId, 
+      year, 
+      department, 
+      gender, 
+      skills, 
+      roles, 
+      experience, 
+      profilePic 
+    } = req.body;
+    console.log("Skills:", skills); // Debugging Step
+    // Ensure userId matches authenticated user
+    // if (userId !== req.user.id) {
+    //   return res.status(403).json({ message: 'Not authorized to update this profile' });
+    // }
+    
+    // Check if the profilePic is too large (optional size limit check)
+    if (profilePic && profilePic.length > 5000000) { // Roughly 5MB limit
+      return res.status(400).json({ message: 'Profile picture too large. Please upload a smaller image.' });
+    }
+    
+    // Update user
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        year,
+        department,
+        gender,
+        skills,
+        roles,
+        experience,
+        profilePic,
+      },
+      { new: true, runValidators: true }
+    ).select('-password');
+    
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    res.status(200).json({
+      message: 'Profile updated successfully',
+      user: {
+        year: updatedUser.year,
+        department: updatedUser.department,
+        gender: updatedUser.gender,
+        skills: updatedUser.skills,
+        roles: updatedUser.roles,
+        experience: updatedUser.experience,
+        // Don't send back the full profilePic to reduce response size
+        hasProfilePic: !!updatedUser.profilePic
+      }
+    });
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};

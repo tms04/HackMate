@@ -12,7 +12,8 @@ const app = express();
 app.use(express.json()); // Middleware for JSON parsing
 app.use(cors()); // Middleware for CORS
 app.use(morgan('dev'));
-
+app.use(express.json({ limit: '10mb' })); // Increased limit for base64 images
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Routes
 app.use("/api/users", userRoutes);
 
