@@ -71,7 +71,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./ProfilePage.css";
-import ProfilePictureUpload from "../components/ProfileForm/ProfilePictureUpload"; // Import the new styles
+import { FaUser } from "react-icons/fa";
+// import ProfilePictureUpload from "../components/ProfileForm/ProfilePictureUpload"; // Import the new styles
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -150,15 +151,22 @@ const ProfilePage = () => {
   return (
     <div className="min-h-screen w-full bg-base-300 flex justify-center items-center p-6">
       <div className="card bg-base-100 w-full max-w-3xl shadow-2xl p-6 rounded-xl profile-card">
-        <h1 className="text-3xl font-bold text-center mb-6">Profile</h1>
+        <h1 className="text-3xl font-bold text-center mb-6">User Profile</h1>
 
         {/* Profile Picture */}
-        <ProfilePictureUpload
-          profilePic={profilePic}
-          setProfilePic={setProfilePic}
-        />
-
-        {/* Profile Data */}
+        <div className="flex flex-col items-center mb-4">
+          <label className="avatar cursor-pointer w-24 h-24 border rounded-full overflow-hidden flex items-center justify-center">
+            {profilePic ? (
+              <img
+                src={profilePic}
+                alt="Profile"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <FaUser size={48} />
+            )}
+          </label>
+        </div>
 
         <div className="profile-info">
           <div className="profile-box">
