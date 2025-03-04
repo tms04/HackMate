@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaPlus } from "react-icons/fa";
 
 const ExperienceFields = ({ experience, setExperience }) => {
   const handleAddExperience = () => {
@@ -12,7 +12,12 @@ const ExperienceFields = ({ experience, setExperience }) => {
 
   return (
     <div className="form-control">
-      <label className="label">Experience</label>
+      <label className="label flex items-center justify-between">
+        Experience
+        <button type="button" className="btn btn-neutral btn-sm" onClick={handleAddExperience}>
+          <FaPlus />
+        </button>
+      </label>
       {experience.map((exp, index) => (
         <div key={index} className="flex gap-2 mb-2">
           <input
@@ -46,13 +51,6 @@ const ExperienceFields = ({ experience, setExperience }) => {
           </button>
         </div>
       ))}
-      <button
-        type="button"
-        className="btn btn-neutral w-full mt-2"
-        onClick={handleAddExperience}
-      >
-        Add More
-      </button>
     </div>
   );
 };

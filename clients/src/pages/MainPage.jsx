@@ -8,9 +8,7 @@ import { motion } from "framer-motion";
 import { useState } from 'react';
 
 import { useNavigate } from "react-router-dom";
-
-
-
+import { Menu } from "lucide-react";
 
 
 // const profiles = [
@@ -80,14 +78,15 @@ const MainPage = () => {
 
       {/* Page Content */}
       <div className="drawer-content bg-base-200 min-h-screen text-white">
-        <div className="h-10 bg-base-400 text-center">
+        
+        {/* <div className="h-10 bg-base-400 text-center"> */}
           {/* <Menu /> */}
-          <Filter />
-        </div>
+          {/* <Filter /> */}
+        {/* </div> */}
 
-        <button className="btn btn-primary" onClick={handleRedirectToProfile}>
-          View Profile
-        </button>
+        {/* <button className="btn btn-primary" onClick={handleRedirectToProfile}> */}
+          {/* View Profile */}
+        {/* </button> */}
 
         {/* Drawer Button */}
         <label
@@ -129,6 +128,7 @@ const MainPage = () => {
             ))}
           </motion.div>
         </div>
+
       </div>
 
       <DrawerSideBar />

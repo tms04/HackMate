@@ -47,12 +47,12 @@ const JoinedTeamPage = () => {
     <div className="w-full bg-base-200">
       <div className="p-6 max-w-3xl mx-auto bg-base-200 dark:bg-neutral-900 text-base-content min-h-screen">
         {/* Back Button */}
-        <button className="btn btn-outline mb-4 flex items-center gap-2" onClick={() => navigate("/myteams")}>
+        {/* <button className="btn btn-outline mb-4 flex items-center gap-2" onClick={() => navigate("/myteams")}>
           <FaArrowLeft /> Back to My Teams
-        </button>
+        </button> */}
 
         {/* Hackathon Details Card */}
-        <div>
+        <div className="mt-8">
           <h2 className="text-lg font-semibold mb-2 text-white text-center border border-gray-700 bg-neutral dark:bg-base-100 rounded-xl p-2">
             {team.hackathon.name}
           </h2>

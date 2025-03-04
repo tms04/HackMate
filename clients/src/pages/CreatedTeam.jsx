@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { 
@@ -58,15 +59,15 @@ const CreatedTeamPage = () => {
 
   return (
     <div className="w-full bg-base-200">
-      <div className="p-6 max-w-3xl mx-auto bg-base-200 dark:bg-neutral-900 text-base-content min-h-screen">
+      <div className="p-6 max-w-3xl mx-auto bg-base-200 dark:bg-neutral-900 text-base-content min-h-screen relative ">
         {/* Back Button */}
-        <button className="btn btn-outline mb-4 flex items-center gap-2" onClick={() => navigate("/myteams")}>
+        {/* <button className="btn btn-outline mb-4 flex items-center gap-2 absolute top-4 -left-10" onClick={() => navigate("/myteams")}>
           <FaArrowLeft /> Back to My Teams
-        </button>
+        </button> */}
 
         {/* Hackathon Details Card */}
-        <div>
-          <h2 className="text-lg font-semibold mb-2 text-white text-center border border-gray-700 bg-neutral dark:bg-base-100 rounded-xl p-2">
+        <div className="mt-8">
+          <h2 className="text-lg font-semibold mb-2 text-neutral-content text-center border border-gray-700 bg-neutral dark:bg-base-100 rounded-xl p-2">
             {team.hackathon.name}
           </h2>
 
@@ -98,7 +99,7 @@ const CreatedTeamPage = () => {
 
         {/* Team Name Heading */}
         <div className="mt-6">
-          <h2 className="text-lg font-semibold mb-2 text-white text-center border border-gray-700 bg-neutral dark:bg-base-100 rounded-xl p-2">
+          <h2 className="text-lg font-semibold mb-2 text-neutral-content text-center border border-gray-700 bg-neutral dark:bg-base-100 rounded-xl p-2">
             {team.name}
           </h2>
 
@@ -122,7 +123,7 @@ const CreatedTeamPage = () => {
       </div>
     </div>
     <button
-      className="btn btn-outline btn-sm bg-neutral text-white border-gray-700 hover:bg-gray-700 hover:text-white flex items-center gap-2"
+      className="btn btn-outline btn-sm bg-neutral text-neutral-content border-gray-700 hover:bg-gray-700 hover:text-white flex items-center gap-2"
       onClick={() => openRemoveModal(member)}
     >
       <FaUserMinus /> Remove
@@ -135,7 +136,7 @@ const CreatedTeamPage = () => {
 
         {/* Add Member & Delete Team Buttons (Side by Side) */}
         <div className="mt-6 flex justify-center gap-4">
-          <button className="btn btn-outline flex items-center gap-2">
+          <button className="btn btn-outline flex items-center gap-2" onClick={()=>(navigate("/main"))}>
             <FaUserPlus /> Add Member
           </button>
           <button className="btn btn-neutral flex items-center gap-2" onClick={openDeleteModal}>

@@ -197,7 +197,7 @@ const ProfileForm = () => {
 
           <button
             type="button"
-            className="btn btn-accent w-full"
+            className="btn btn-neutral w-full"
             onClick={handleSaveChanges}
             disabled={saving}
           >

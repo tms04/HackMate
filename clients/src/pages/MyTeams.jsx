@@ -39,7 +39,7 @@ const MyTeams = () => {
         {/* Teams Created */}
         {leaderTeams.length > 0 && (
           <div>
-<h2 className="text-lg font-semibold mb-2 text-white dark:text-base-content text-center border border-black bg-neutral rounded-xl p-2">
+<h2 className="text-lg font-semibold mb-2 text-center border border-black bg-neutral text-neutral-content mt-8 rounded-xl p-2">
   Teams Created
 </h2>
 
@@ -64,9 +64,11 @@ const MyTeams = () => {
         {/* Teams Joined */}
         {joinedTeams.length > 0 && (
           <div className="mt-6">
-<h2 className="text-lg font-semibold mb-2 text-white dark:text-base-content text-center border border-black bg-neutral rounded-xl p-2">
+<h1 className="text-lg font-semibold mb-2 text-center border border-black bg-neutral text-neutral-content rounded-xl p-2">
   Teams Joined
-</h2>            <div className="space-y-4">
+</h1>
+
+          <div className="space-y-4">
               {joinedTeams.map((team) => (
                 <div key={team.id} className="p-4 bg-base-100 dark:bg-neutral-800 rounded-lg shadow-md border border-gray-300 dark:border-gray-700 flex justify-between items-center">
                   <div>
