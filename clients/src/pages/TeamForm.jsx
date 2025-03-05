@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState } from "react";
-import { FaTimes } from "react-icons/fa";
+import { FaTimes, FaPlus, FaMinus } from "react-icons/fa";
 
 const TeamForm = () => {
   const [teamName, setTeamName] = useState("");
@@ -18,7 +18,7 @@ const TeamForm = () => {
     "Full Stack (Web)",
     "App Developer",
     "AI/ML Developer",
-    "Blockchain Developer", 
+    "Blockchain Developer",
   ];
 
   const handleDomainSelect = (e) => {
@@ -30,6 +30,13 @@ const TeamForm = () => {
 
   const removeDomain = (domainToRemove) => {
     setDomains(domains.filter((domain) => domain !== domainToRemove));
+  };
+
+  const handleMemberChange = (change) => {
+    setMembers(prevMembers => {
+      const newMembers = prevMembers + change;
+      return Math.max(1, Math.min(newMembers, 10));
+    });
   };
 
   const handleSaveTeam = () => {
@@ -65,14 +72,28 @@ const TeamForm = () => {
           {/* Number of Members */}
           <div className="form-control">
             <label className="label">Number of Members</label>
-            <input
-              type="number"
-              min="1"
-              max="10"
-              className="input input-bordered"
-              value={members}
-              onChange={(e) => setMembers(Number(e.target.value))}
-            />
+            <div className="flex items-center gap-4">
+              <button
+                type="button"
+                className="btn btn-circle btn-sm btn-outline hover:btn-accent"
+                onClick={() => handleMemberChange(-1)}
+                disabled={members <= 1}
+              >
+                <FaMinus />
+              </button>
+              <span className="text-xl font-bold w-12 text-center">{members}</span>
+              <button
+                type="button"
+                className="btn btn-circle btn-sm btn-outline hover:btn-accent"
+                onClick={() => handleMemberChange(1)}
+                disabled={members >= 10}
+              >
+                <FaPlus />
+              </button>
+            </div>
+            <p className="text-sm text-base-content/70 mt-1">
+              Min: 1, Max: 10 team members
+            </p>
           </div>
 
           {/* Hackathon Name */}
