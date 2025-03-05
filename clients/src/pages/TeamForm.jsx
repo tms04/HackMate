@@ -8,10 +8,11 @@ const TeamForm = () => {
   const [hackathonName, setHackathonName] = useState("");
   const [locationType, setLocationType] = useState("Online");
   const [offlineLocation, setOfflineLocation] = useState("");
-  const [date, setDate] = useState("");
-  const [skills, setSkills] = useState([]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [domains, setDomains] = useState([]);
 
-  const skillOptions = [
+  const domainOptions = [
     "Frontend (Web)",
     "Backend (Web)",
     "Full Stack (Web)",
@@ -20,15 +21,15 @@ const TeamForm = () => {
     "Blockchain Developer", 
   ];
 
-  const handleSkillSelect = (e) => {
-    const selectedSkill = e.target.value;
-    if (selectedSkill && !skills.includes(selectedSkill)) {
-      setSkills([...skills, selectedSkill]);
+  const handleDomainSelect = (e) => {
+    const selectedDomain = e.target.value;
+    if (selectedDomain && !domains.includes(selectedDomain)) {
+      setDomains([...domains, selectedDomain]);
     }
   };
 
-  const removeSkill = (skillToRemove) => {
-    setSkills(skills.filter((skill) => skill !== skillToRemove));
+  const removeDomain = (domainToRemove) => {
+    setDomains(domains.filter((domain) => domain !== domainToRemove));
   };
 
   const handleSaveTeam = () => {
@@ -38,8 +39,9 @@ const TeamForm = () => {
       hackathonName,
       locationType,
       offlineLocation: locationType === "Offline" ? offlineLocation : "N/A",
-      date,
-      skills,
+      startDate,
+      endDate,
+      domains,
     });
   };
 
@@ -116,39 +118,50 @@ const TeamForm = () => {
             </div>
           )}
 
-          {/* Date Selection */}
+          {/* Start Date Selection */}
           <div className="form-control">
-            <label className="label">Date</label>
+            <label className="label">Start Date</label>
             <input
               type="date"
               className="input input-bordered"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
             />
           </div>
 
-          {/* Skills Selection */}
+          {/* End Date Selection */}
           <div className="form-control">
-            <label className="label">Skills Needed</label>
-            <select className="select select-bordered" onChange={handleSkillSelect}>
-              <option value="">Select a skill</option>
-              {skillOptions.map((skill) => (
-                <option key={skill} value={skill}>
-                  {skill}
+            <label className="label">End Date</label>
+            <input
+              type="date"
+              className="input input-bordered"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+          </div>
+
+          {/* Domains Selection */}
+          <div className="form-control">
+            <label className="label">Domains Needed</label>
+            <select className="select select-bordered" onChange={handleDomainSelect}>
+              <option value="">Select a domain</option>
+              {domainOptions.map((domain) => (
+                <option key={domain} value={domain}>
+                  {domain}
                 </option>
               ))}
             </select>
           </div>
 
-          {/* Display Selected Skills */}
-          {skills.length > 0 && (
+          {/* Display Selected Domains */}
+          {domains.length > 0 && (
             <div className="form-control">
-              <label className="label">Selected Skills</label>
+              <label className="label">Selected Domains</label>
               <div className="flex flex-wrap gap-2">
-                {skills.map((skill) => (
-                  <div key={skill} className="badge badge-accent flex items-center gap-1">
-                    {skill}
-                    <button onClick={() => removeSkill(skill)}>
+                {domains.map((domain) => (
+                  <div key={domain} className="badge badge-accent flex items-center gap-1">
+                    {domain}
+                    <button onClick={() => removeDomain(domain)}>
                       <FaTimes className="ml-1 text-xs" />
                     </button>
                   </div>
