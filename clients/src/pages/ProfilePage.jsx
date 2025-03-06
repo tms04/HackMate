@@ -84,7 +84,7 @@ const ProfilePage = () => {
   const [gender, setGender] = useState("");
   const [skills, setSkills] = useState([]);
   const [roles, setRoles] = useState([]);
-  const [experience, setExperience] = useState([{ name: "", rank: "" }]);
+  const [experience, setExperience] = useState([]);
   const [profilePic, setProfilePic] = useState(null);
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -200,7 +200,16 @@ const ProfilePage = () => {
 
           <div className="profile-box">
             <span className="label">Experience:</span>
-            <span className="value">{experience.join(", ") || "N/A"}</span>
+            <span className="value">
+              {
+                experience.length > 0
+                  ? experience.map((element) => {
+                      return `${element.name} (Rank: ${element.rank})`;
+                    })
+                  : "N/A"
+              }
+            </span>
+            {/* {console.log(experience)} */}
           </div>
         </div>
       </div>
