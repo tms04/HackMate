@@ -1,151 +1,92 @@
-import { FaReact, FaNodeJs, FaFigma } from "react-icons/fa";
-import { SiExpress, SiNextdotjs } from "react-icons/si";
-import { motion } from "framer-motion";
+import React from "react";
 
-const ProfileCard = () => {
+const ProfileCard = ({
+  name,
+  year,
+  gender,
+  department,
+  profileImage,
+  roles,
+  skills,
+  achievements,
+}) => {
+  // console.log("Profile Image Data:", profileImage?.substring(0, 50)); // Logs first 50 chars for debugging
+
+  // const isBase64 = profileImage && profileImage.startsWith("/9j"); // JPEG Base64 check
+
   return (
-    <motion.div
-      className="relative bg-gradient-to-b from-base-100 to-base-200 p-5 w-72 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300"
-      whileHover={{ scale: 1.05 }}
-    >
-      {/* Profile Image & Name */}
-      <div className="flex flex-col items-center">
-        <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-neutral">
+    <div className="max-w-sm rounded-2xl overflow-hidden shadow-lg bg-white p-6 text-center">
+      {/* Profile Image */}
+      <div className="flex justify-center">
+        {profileImage ? (
           <img
-            src="https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp"
+            src={`${profileImage}`}
             alt="Profile"
-            className="w-full h-full object-cover"
+            className="w-32 h-32 rounded-full object-cover border border-gray-300"
           />
+        ) : (
+          <img
+            src="https://via.placeholder.com/128" // Placeholder image
+            alt="Default"
+            className="w-32 h-32 rounded-full object-cover border border-gray-300"
+          />
+        )}
+      </div>
+
+      {/* User Details */}
+      <h2 className="text-xl font-semibold mt-3">{name || "User Name"}</h2>
+      <p className="text-gray-600">
+        {department || "Department not available"}
+      </p>
+      <p className="text-gray-500">
+        {year ? `Year: ${year}` : "Year not available"}
+      </p>
+      <p className="text-gray-500">
+        {gender ? `Gender: ${gender}` : "Gender not available"}
+      </p>
+
+      {/* Roles */}
+      {roles?.length > 0 && (
+        <div className="mt-2">
+          <h3 className="font-semibold">Roles:</h3>
+          <ul className="text-gray-500">
+            {roles.map((role, index) => (
+              <li key={index}>{role}</li>
+            ))}
+          </ul>
         </div>
-        <h2 className="text-lg font-bold mt-2 text-base-content">Saurabhkumar Sharma</h2>
-        <p className="text-sm text-base-content/70">IT | TY | Male</p>
-      </div>
+      )}
 
-      {/* Roles with '>>' Symbol */}
-      <div className="mt-4 flex justify-center items-center gap-2 text-sm font-medium text-base-content">
-        <span className="px-3 py-1 text-xs font-semibold bg-neutral text-neutral-content rounded-full">
-          Frontend
-        </span>
-        <span className="text-lg text-neutral">&raquo;</span>
-        <span className="px-3 py-1 text-xs font-semibold bg-neutral text-neutral-content rounded-full">
-          Backend
-        </span>
-        <span className="text-lg text-neutral">&raquo;</span>
-        <span className="px-3 py-1 text-xs font-semibold bg-neutral text-neutral-content rounded-full">
-          App
-        </span>
-      </div>
-
-      {/* Skills Icons with Tooltips */}
-      <div className="mt-4">
-        <div className="flex justify-center gap-3 text-lg text-base-content">
-          <div className="relative group">
-            <FaFigma />
-            <span className="absolute bottom-7 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white text-black text-xs px-2 py-1 rounded shadow">
-              Figma
-            </span>
-          </div>
-          <div className="relative group">
-            <FaReact />
-            <span className="absolute bottom-7 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white text-black text-xs px-2 py-1 rounded shadow">
-              React.js
-            </span>
-          </div>
-          <div className="relative group">
-            <FaNodeJs />
-            <span className="absolute bottom-7 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white text-black text-xs px-2 py-1 rounded shadow">
-              Node.js
-            </span>
-          </div>
-          <div className="relative group">
-            <SiExpress />
-            <span className="absolute bottom-7 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white text-black text-xs px-2 py-1 rounded shadow">
-              Express.js
-            </span>
-          </div>
-          <div className="relative group">
-            <SiNextdotjs />
-            <span className="absolute bottom-7 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white text-black text-xs px-2 py-1 rounded shadow">
-              Next.js
-            </span>
-          </div>
+      {/* Skills */}
+      {skills?.length > 0 && (
+        <div className="mt-2">
+          <h3 className="font-semibold">Skills:</h3>
+          <ul className="text-gray-500 flex flex-wrap justify-center">
+            {skills.map((skill, index) => (
+              <li
+                key={index}
+                className="bg-gray-200 rounded-full px-3 py-1 text-sm m-1"
+              >
+                {skill}
+              </li>
+            ))}
+          </ul>
         </div>
-      </div>
+      )}
 
-      {/* Hackathon Achievements with Hover Tooltips */}
-      <div className="mt-4">
-        <div className="text-xs text-center text-base-content space-y-2">
-          <div className="relative group flex justify-center items-center gap-2">
-            <span className="w-6 h-6 flex items-center justify-center text-xs font-bold bg-neutral text-neutral-content rounded-full">
-              I
-            </span>
-            HackNiche
-            {/* <span className="absolute bottom-7 opacity-0 group-hover:opacity-100 transition-opacity bg-white text-black text-xs px-2 py-1 rounded shadow">
-              1st Place
-            </span> */}
-          </div>
-
-          <div className="relative group flex justify-center items-center gap-2">
-            <span className="w-6 h-6 flex items-center justify-center text-xs font-bold bg-neutral text-neutral-content rounded-full">
-              II
-            </span>
-            CodeShastra
-            {/* <span className="absolute bottom-7 opacity-0 group-hover:opacity-100 transition-opacity bg-white text-black text-xs px-2 py-1 rounded shadow">
-              2nd Place
-            </span> */}
-          </div>
-
-          <div className="relative group flex justify-center items-center gap-2">
-            <span className="w-6 h-6 flex items-center justify-center text-xs font-bold bg-neutral text-neutral-content rounded-full">
-              X
-            </span>
-            Synergy
-            {/* <span className="absolute bottom-7 opacity-0 group-hover:opacity-100 transition-opacity bg-white text-black text-xs px-2 py-1 rounded shadow">
-              Top 10
-            </span> */}
-          </div>
+      {/* Achievements */}
+      {achievements?.length > 0 && (
+        <div className="mt-2">
+          <h3 className="font-semibold">Achievements:</h3>
+          <ul className="text-gray-500">
+            {achievements.map((achievement, index) => (
+              <li key={index}>{achievement}</li>
+            ))}
+          </ul>
         </div>
-      </div>
-
-      {/* Add Button */}
-      <motion.button
-        className="btn btn-outline w-full mt-4 rounded-lg text-sm"
-        whileHover={{ scale: 1.1 }}
-      >
-        Connect
-      </motion.button>
-    </motion.div>
+      )}
+    </div>
   );
 };
 
 export default ProfileCard;
-
-
-
-
-
-
-// const ProfileCard = ({ name, year, gender, department }) => {
-//   return (
-//     <motion.div
-//       className="relative bg-gradient-to-b from-base-100 to-base-200 p-5 w-72 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300"
-//       whileHover={{ scale: 1.05 }}
-//     >
-//       {/* Profile Image & Name */}
-//       <div className="flex flex-col items-center">
-//         <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-neutral">
-//           <img
-//             src="https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp"
-//             alt="Profile"
-//             className="w-full h-full object-cover"
-//           />
-//         </div>
-//         <h2 className="text-lg font-bold mt-2 text-base-content">{name}</h2>
-//         <p className="text-sm text-base-content/70">{department} | {year} | {gender}</p> 
-//       </div>
-//     </motion.div>
-//   );
-// };
-// export default ProfileCard;
-
-
