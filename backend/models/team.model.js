@@ -54,7 +54,6 @@ const teamSchema = new mongoose.Schema(
             type: String,
             ref: "User",
             required: true,
-            unique: true,
         }
     },
     { timestamps: true }
