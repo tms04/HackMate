@@ -1,6 +1,6 @@
-/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { FaTimes, FaPlus, FaMinus } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const TeamForm = () => {
   const [teamName, setTeamName] = useState("");
@@ -33,13 +33,20 @@ const TeamForm = () => {
   };
 
   const handleMemberChange = (change) => {
-    setMembers(prevMembers => {
+    setMembers((prevMembers) => {
       const newMembers = prevMembers + change;
       return Math.max(1, Math.min(newMembers, 10));
     });
   };
 
-  const handleSaveTeam = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!teamName || !hackathonName || !startDate || !endDate || (locationType === "Offline" && !offlineLocation) || domains.length === 0) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+
     console.log("Team Created:", {
       teamName,
       members,
@@ -56,7 +63,7 @@ const TeamForm = () => {
     <div className="min-h-screen w-full bg-base-300 flex justify-center items-center p-6">
       <div className="card bg-base-100 w-full max-w-3xl shadow-2xl p-6 rounded-xl">
         <h1 className="text-3xl font-bold text-center mb-6">Create a Team</h1>
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           {/* Team Name */}
           <div className="form-control">
             <label className="label">Team Name</label>
@@ -66,6 +73,7 @@ const TeamForm = () => {
               className="input input-bordered"
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
+              required
             />
           </div>
 
@@ -73,27 +81,15 @@ const TeamForm = () => {
           <div className="form-control">
             <label className="label">Number of Members</label>
             <div className="flex items-center gap-4">
-              <button
-                type="button"
-                className="btn btn-circle btn-sm btn-outline hover:btn-accent"
-                onClick={() => handleMemberChange(-1)}
-                disabled={members <= 1}
-              >
+              <button type="button" className="btn btn-circle btn-sm btn-outline hover:btn-accent" onClick={() => handleMemberChange(-1)}>
                 <FaMinus />
               </button>
               <span className="text-xl font-bold w-12 text-center">{members}</span>
-              <button
-                type="button"
-                className="btn btn-circle btn-sm btn-outline hover:btn-accent"
-                onClick={() => handleMemberChange(1)}
-                disabled={members >= 10}
-              >
+              <button type="button" className="btn btn-circle btn-sm btn-outline hover:btn-accent" onClick={() => handleMemberChange(1)}>
                 <FaPlus />
               </button>
             </div>
-            <p className="text-sm text-base-content/70 mt-1">
-              Min: 1, Max: 10 team members
-            </p>
+            <p className="text-sm text-base-content/70 mt-1">Min: 1, Max: 10 team members</p>
           </div>
 
           {/* Hackathon Name */}
@@ -105,6 +101,7 @@ const TeamForm = () => {
               className="input input-bordered"
               value={hackathonName}
               onChange={(e) => setHackathonName(e.target.value)}
+              required
             />
           </div>
 
@@ -135,30 +132,21 @@ const TeamForm = () => {
                 className="input input-bordered"
                 value={offlineLocation}
                 onChange={(e) => setOfflineLocation(e.target.value)}
+                required={locationType === "Offline"}
               />
             </div>
           )}
 
-          {/* Start Date Selection */}
+          {/* Start Date */}
           <div className="form-control">
             <label className="label">Start Date</label>
-            <input
-              type="date"
-              className="input input-bordered"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
+            <input type="date" className="input input-bordered" value={startDate} onChange={(e) => setStartDate(e.target.value)} required />
           </div>
 
-          {/* End Date Selection */}
+          {/* End Date */}
           <div className="form-control">
             <label className="label">End Date</label>
-            <input
-              type="date"
-              className="input input-bordered"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
+            <input type="date" className="input input-bordered" value={endDate} onChange={(e) => setEndDate(e.target.value)} required />
           </div>
 
           {/* Domains Selection */}
@@ -182,7 +170,7 @@ const TeamForm = () => {
                 {domains.map((domain) => (
                   <div key={domain} className="badge badge-accent flex items-center gap-1">
                     {domain}
-                    <button onClick={() => removeDomain(domain)}>
+                    <button type="button" onClick={() => removeDomain(domain)}>
                       <FaTimes className="ml-1 text-xs" />
                     </button>
                   </div>
@@ -191,8 +179,8 @@ const TeamForm = () => {
             </div>
           )}
 
-          {/* Save Team Button */}
-          <button type="button" className="btn btn-outline w-full" onClick={handleSaveTeam}>
+          {/* Submit Button */}
+          <button type="submit" className="btn btn-accent w-full">
             Create Team
           </button>
         </form>

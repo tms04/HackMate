@@ -13,37 +13,29 @@ import MyTeams from "./pages/MyTeams.jsx";
 import CreatedTeamPage from "./pages/CreatedTeam.jsx";
 import JoinedTeamPage from "./pages/JoinedTeam.jsx";
 import ProfilePage from "./pages/ProfilePage";
+import { Toaster } from "react-hot-toast";
 
 export default function App() {
   return (
     <Router>
+      <Toaster />
       <Toggle />
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
-
         {/* Protected Routes */}
-
-
-
-        
         <Route element={<ProtectedRoute />}>
-
-
-
           <Route path="/main" element={<MainPage />} />
           <Route path="/demo" element={<Demo />} />
           <Route path="/userdetails" element={<ProfileForm />} />
           <Route path="/newteam" element={<TeamForm />} />
-          <Route path="/notifications" element={<Notifications/>} />
-          <Route path="/myteams" element={<MyTeams/>} />
-          <Route path="/createdteam" element={<CreatedTeamPage/>} />
-          <Route path="/joinedteam" element={<JoinedTeamPage/>} />
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/myteams" element={<MyTeams />} />
+          <Route path="/createdteam" element={<CreatedTeamPage />} />
+          <Route path="/joinedteam" element={<JoinedTeamPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-
-          
         </Route>
       </Routes>
     </Router>
