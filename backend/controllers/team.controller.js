@@ -34,9 +34,36 @@ export const createTeam = async(req, res) => {
 
     } catch (error) {
         console.log("Error in createTeam controller", error.message);
-        res.status(500).json({ error: "Internal server error" });
+        res.status(500).json({ error: "Internal server error in createTeamController" });
     }
 }
+
+// Delete a Team
+export const deleteTeam = async (req, res) => {
+    try {
+        const { teamId } = req.body;
+        const userId = req.user.id; // Authenticated user ID
+
+        // Find the team
+        const team = await Team.findById(teamId);
+        if (!team) {
+            return res.status(404).json({ message: "Team not found." });
+        }
+
+        // Check if the user is the team leader
+        if (team.teamLeader.toString() !== userId) {
+            return res.status(403).json({ message: "Only the team leader can delete the team." });
+        }
+
+        // Delete the team
+        await Team.findByIdAndDelete(teamId);
+
+        return res.status(200).json({ message: "Team deleted successfully." });
+    } catch (error) {
+        console.error("Error in deleteTeam controller:", error.message);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
 
 // Adding a Team Member to the team
 export const addTeamMember = async (req, res) => {
@@ -76,6 +103,43 @@ export const addTeamMember = async (req, res) => {
 
     } catch (error) {
         console.log("Error in addTeamMember controller", error.message);
-        res.status(500).json({ error: "Error in addTeamMember Internal server error" });
+        res.status(500).json({ error: "Internal server error in addTeamController" });
+    }
+};
+
+// Removing a Team Member to the team
+export const removeTeamMember = async (req, res) => {
+    try {
+        const { teamId, requesterId } = req.body;
+        const leaderId = req.user.id; // Leader's ID from auth middleware
+
+        // Find the team
+        const team = await Team.findById(teamId);
+        if (!team) {
+            return res.status(404).json({ message: "Team not found" });
+        }
+
+        // Ensure the request is handled by the team leader
+        if (team.teamLeader.toString() !== leaderId) {
+            return res.status(403).json({ message: "Only the team leader can remove members" });
+        }
+
+        // Check if the team member exists in the team
+        if (!team.teamMembers.includes(requesterId)) {
+            return res.status(400).json({ message: "User is not a member of this team" });
+        }
+
+        // Add requester to team members
+        team.teamMembers.pop(requesterId);
+        await team.save();
+
+        return res.status(200).json({ 
+            message: "Member removed successfully",
+            team
+        });
+
+    } catch (error) {
+        console.log("Error in removeTeamMember controller", error.message);
+        res.status(500).json({ error: "Internal server error in removeTeamController" });
     }
 };
