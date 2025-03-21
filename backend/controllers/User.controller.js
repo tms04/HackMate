@@ -1,4 +1,4 @@
-import User from "../models/User.model.js";
+import {User} from "../models/User.model.js";
 import bcrypt from "bcrypt";
 import { sendCookie } from "../utils/sendCookie.js";
 
@@ -94,6 +94,24 @@ export const loginUser = async (req, res) => {
     res.json({ message: "Login successful", token, userId: user._id });
   } catch (error) {
     res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
+
+// ✅ Logout User
+export const logoutUser = (req, res) => {
+  try {
+    res
+      .status(200)
+      .cookie("token", "", {
+        maxAge: 0,
+      })
+      .json({
+        success: true,
+        message: "Successfully logged out",
+      });
+  } catch (error) {
+    console.log("Error in logout controller", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 

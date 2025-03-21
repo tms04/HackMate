@@ -1,8 +1,10 @@
 // middleware/auth.js
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+import jwt from "jsonwebtoken";
+import {User} from "../models/User.model.js";
+// const jwt = require('jsonwebtoken');
+// const User = require('../models/User');
 
-module.exports = async (req, res, next) => {
+export const auth = async (req, res, next) => {
   try {
     // Get token from header
     const token = req.header('Authorization')?.split(' ')[1];
@@ -12,7 +14,7 @@ module.exports = async (req, res, next) => {
     }
     
     // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
     
     // Check if user exists
     const user = await User.findById(decoded.id).select('-password');

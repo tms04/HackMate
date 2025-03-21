@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
   },
   department: {
     type: String,
-    enum: ["IT", "CS", "AI/ML", "Civil", "Mech", "EXTC"],
+    enum: ["IT", "CS", "CSDS", "AI/ML", "Civil", "Mech", "EXTC"],
   },
   gender: {
     type: String,
@@ -46,5 +46,4 @@ const userSchema = new mongoose.Schema({
 userSchema.pre('findOneAndUpdate', function() {
   this.set({ updatedAt: new Date() });
 });
-const User = mongoose.model("User", userSchema);
-export default User;
+export const User = new mongoose.model("User", userSchema);
