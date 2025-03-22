@@ -7,8 +7,38 @@ import ProfileCard from "../components/ProfileCard";
 
 const MainPage = () => {
   const [users, setUsers] = useState([]); // State to store fetched users
+  const [filteredUsers, setFilteredUsers] = useState([]); // State to store filtered users
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
+  
+  // Filter states
+  const [filters, setFilters] = useState({
+    department: "",
+    year: "",
+    gender: ""
+  });
+
+  // Department, year, gender options
+  const departmentOptions = ["IT", "CS", "CSDS", "AI/ML", "Civil", "Mech", "EXTC"];
+  const yearOptions = [1, 2, 3, 4];
+  const genderOptions = ["Male", "Female", "Prefer Not to Say"];
+
+  // Handle filter changes
+  const handleFilterChange = (filterName, value) => {
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      [filterName]: value
+    }));
+  };
+
+  // Reset all filters
+  const resetFilters = () => {
+    setFilters({
+      department: "",
+      year: "",
+      gender: ""
+    });
+  };
 
   // Fetch users from the backend
   useEffect(() => {
@@ -18,6 +48,7 @@ const MainPage = () => {
           `${import.meta.env.VITE_BACKEND_URL}/api/users/all`
         ); // Replace with your API endpoint
         setUsers(response.data.data); // Set the fetched users
+        setFilteredUsers(response.data.data); // Initially set filtered users to all users
         setLoading(false); // Set loading to false
       } catch (err) {
         console.error("Error fetching users:", err);
@@ -28,6 +59,30 @@ const MainPage = () => {
 
     fetchUsers();
   }, []);
+
+  // Apply filters whenever filters state changes
+  useEffect(() => {
+    if (users.length > 0) {
+      let result = [...users];
+      
+      // Apply department filter
+      if (filters.department) {
+        result = result.filter(user => user.department === filters.department);
+      }
+      
+      // Apply year filter
+      if (filters.year) {
+        result = result.filter(user => user.year === Number(filters.year));
+      }
+      
+      // Apply gender filter
+      if (filters.gender) {
+        result = result.filter(user => user.gender === filters.gender);
+      }
+      
+      setFilteredUsers(result);
+    }
+  }, [filters, users]);
 
   // Display loading state
   if (loading) {
@@ -61,15 +116,81 @@ const MainPage = () => {
           <FiMenu size={24} />
         </label>
 
+        {/* Filter Bar */}
+        <div className="pt-16 px-10 pb-4">
+          <div className="bg-base-100 p-4 rounded-lg shadow-md">
+            <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+              <h2 className="text-lg font-semibold">Filter Profiles</h2>
+              
+              <div className="flex flex-wrap gap-3 items-center">
+                {/* Department Filter */}
+                <div className="form-control w-full max-w-xs">
+                  <select 
+                    className="select select-bordered w-full max-w-xs" 
+                    value={filters.department}
+                    onChange={(e) => handleFilterChange("department", e.target.value)}
+                  >
+                    <option value="">All Departments</option>
+                    {departmentOptions.map(dept => (
+                      <option key={dept} value={dept}>{dept}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                {/* Year Filter */}
+                <div className="form-control w-full max-w-xs">
+                  <select 
+                    className="select select-bordered w-full max-w-xs" 
+                    value={filters.year}
+                    onChange={(e) => handleFilterChange("year", e.target.value)}
+                  >
+                    <option value="">All Years</option>
+                    {yearOptions.map(year => (
+                      <option key={year} value={year}>Year {year}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                {/* Gender Filter */}
+                <div className="form-control w-full max-w-xs">
+                  <select 
+                    className="select select-bordered w-full max-w-xs" 
+                    value={filters.gender}
+                    onChange={(e) => handleFilterChange("gender", e.target.value)}
+                  >
+                    <option value="">All Genders</option>
+                    {genderOptions.map(gender => (
+                      <option key={gender} value={gender}>{gender}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                {/* Reset Filters Button */}
+                <button 
+                  className="btn btn-outline btn-sm"
+                  onClick={resetFilters}
+                >
+                  Reset Filters
+                </button>
+              </div>
+            </div>
+            
+            {/* Filter Results Count */}
+            <div className="mt-3 text-sm opacity-80">
+              Showing {filteredUsers.length} of {users.length} profiles
+            </div>
+          </div>
+        </div>
+
         {/* Profile Cards Grid */}
-        <div className="p-10 pt-14">
+        <div className="px-10 pb-10">
           <motion.div
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 place-items-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            {users.map((profile) => (
+            {filteredUsers.length > 0 ? filteredUsers.map((profile) => (
               <ProfileCard
                 key={profile._id} // Use _id from MongoDB
                 name={profile.name}
@@ -81,7 +202,17 @@ const MainPage = () => {
                 skills={profile.skills} // Pass skills if available
                 achievements={profile.achievements} // Pass achievements if available
               />
-            ))}
+            )) : (
+              <div className="col-span-full py-10 text-center">
+                <p className="text-lg">No profiles match the selected filters</p>
+                <button 
+                  className="btn btn-primary mt-4"
+                  onClick={resetFilters}
+                >
+                  Reset Filters
+                </button>
+              </div>
+            )}
           </motion.div>
         </div>
       </div>
