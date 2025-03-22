@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { FiMenu, FiSearch } from "react-icons/fi";
+import { FiMenu, FiSearch, FiX } from "react-icons/fi";
 import { motion } from "framer-motion";
 import DrawerSideBar from "../components/DrawerSideBar";
 import ProfileCard from "../components/ProfileCard";
@@ -10,7 +10,8 @@ const MainPage = () => {
   const [filteredUsers, setFilteredUsers] = useState([]); // State to store filtered users
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
-  const [searchQuery, setSearchQuery] = useState(""); // State for search query
+  const [searchInput, setSearchInput] = useState(""); // State for current search input
+  const [searchTerms, setSearchTerms] = useState([]); // State for active search terms
   
   // Filter states
   const [filters, setFilters] = useState({
@@ -33,8 +34,32 @@ const MainPage = () => {
   };
 
   // Handle search input change
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
+  const handleSearchInputChange = (e) => {
+    setSearchInput(e.target.value);
+  };
+
+  // Add search term when Enter is pressed
+  const handleSearchKeyDown = (e) => {
+    if (e.key === 'Enter' && searchInput.trim()) {
+      // Add the search term if it doesn't already exist
+      if (!searchTerms.includes(searchInput.trim())) {
+        setSearchTerms(prev => [...prev, searchInput.trim()]);
+      }
+      setSearchInput(""); // Clear the input
+    }
+  };
+
+  // Add search term from the input
+  const addSearchTerm = () => {
+    if (searchInput.trim() && !searchTerms.includes(searchInput.trim())) {
+      setSearchTerms(prev => [...prev, searchInput.trim()]);
+      setSearchInput(""); // Clear the input
+    }
+  };
+
+  // Remove a specific search term
+  const removeSearchTerm = (term) => {
+    setSearchTerms(searchTerms.filter(t => t !== term));
   };
 
   // Reset all filters and search
@@ -44,7 +69,8 @@ const MainPage = () => {
       year: "",
       gender: ""
     });
-    setSearchQuery("");
+    setSearchTerms([]);
+    setSearchInput("");
   };
 
   // Fetch users from the backend
@@ -67,7 +93,7 @@ const MainPage = () => {
     fetchUsers();
   }, []);
 
-  // Apply filters whenever filters state or search query changes
+  // Apply filters whenever filters state or search terms change
   useEffect(() => {
     if (users.length > 0) {
       let result = [...users];
@@ -87,31 +113,35 @@ const MainPage = () => {
         result = result.filter(user => user.gender === filters.gender);
       }
       
-      // Apply search query
-      if (searchQuery.trim()) {
-        const query = searchQuery.toLowerCase().trim();
+      // Apply search terms - each term is ANDed (all terms must match)
+      if (searchTerms.length > 0) {
         result = result.filter(user => {
-          // Search in name
-          const nameMatch = user.name && user.name.toLowerCase().includes(query);
-          
-          // Search in skills
-          const skillsMatch = user.skills && Array.isArray(user.skills) && 
-            user.skills.some(skill => skill.toLowerCase().includes(query));
-          
-          // Search in roles
-          const rolesMatch = user.roles && Array.isArray(user.roles) && 
-            user.roles.some(role => role.toLowerCase().includes(query));
+          // Check if user matches ALL search terms
+          return searchTerms.every(term => {
+            const query = term.toLowerCase();
             
-          // Search in department
-          const deptMatch = user.department && user.department.toLowerCase().includes(query);
-          
-          return nameMatch || skillsMatch || rolesMatch || deptMatch;
+            // Search in name
+            const nameMatch = user.name && user.name.toLowerCase().includes(query);
+            
+            // Search in skills
+            const skillsMatch = user.skills && Array.isArray(user.skills) && 
+              user.skills.some(skill => skill.toLowerCase().includes(query));
+            
+            // Search in roles
+            const rolesMatch = user.roles && Array.isArray(user.roles) && 
+              user.roles.some(role => role.toLowerCase().includes(query));
+              
+            // Search in department
+            const deptMatch = user.department && user.department.toLowerCase().includes(query);
+            
+            return nameMatch || skillsMatch || rolesMatch || deptMatch;
+          });
         });
       }
       
       setFilteredUsers(result);
     }
-  }, [filters, users, searchQuery]);
+  }, [filters, users, searchTerms]);
 
   // Display loading state
   if (loading) {
@@ -149,27 +179,47 @@ const MainPage = () => {
         <div className="pt-16 px-10 pb-4">
           <div className="bg-base-100 p-4 rounded-lg shadow-md">
             {/* Search bar */}
-            <div className="relative mb-4">
+            <div className="mb-4">
               <div className="join w-full">
                 <div className="join-item bg-base-300 flex items-center pl-3">
                   <FiSearch className="text-base-content" />
                 </div>
                 <input 
                   type="text" 
-                  placeholder="Search by name, skills, roles..." 
+                  placeholder="Search by name, skills, roles... (Press Enter to add)" 
                   className="input input-bordered join-item w-full" 
-                  value={searchQuery}
-                  onChange={handleSearchChange}
+                  value={searchInput}
+                  onChange={handleSearchInputChange}
+                  onKeyDown={handleSearchKeyDown}
                 />
-                {searchQuery && (
-                  <button 
-                    className="btn join-item"
-                    onClick={() => setSearchQuery("")}
-                  >
-                    Clear
-                  </button>
-                )}
+                <button 
+                  className="btn join-item"
+                  onClick={addSearchTerm}
+                  disabled={!searchInput.trim()}
+                >
+                  Add
+                </button>
               </div>
+              
+              {/* Search terms display */}
+              {searchTerms.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {searchTerms.map((term, index) => (
+                    <div key={index} className="badge badge-primary gap-1">
+                      {term}
+                      <button onClick={() => removeSearchTerm(term)} className="btn btn-xs btn-circle btn-ghost">
+                        <FiX size={12} />
+                      </button>
+                    </div>
+                  ))}
+                  <button 
+                    className="badge badge-outline cursor-pointer"
+                    onClick={() => setSearchTerms([])}
+                  >
+                    Clear all
+                  </button>
+                </div>
+              )}
             </div>
             
             <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
@@ -231,8 +281,8 @@ const MainPage = () => {
             {/* Filter Results Count */}
             <div className="mt-3 text-sm opacity-80">
               Showing {filteredUsers.length} of {users.length} profiles
-              {searchQuery && (
-                <span> • Searching for: <span className="font-semibold">{searchQuery}</span></span>
+              {searchTerms.length > 0 && (
+                <span> • Active search filters: {searchTerms.length}</span>
               )}
             </div>
           </div>
