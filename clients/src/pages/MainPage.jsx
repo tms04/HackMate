@@ -40,7 +40,7 @@ const MainPage = () => {
         // Clear cookies
         Cookies.remove("token");
         Cookies.remove("userId");
-        
+        sessionStorage.removeItem("welcomed"); // Reset the welcome state
         // Show success message
         toast.success("Successfully logged out");
         

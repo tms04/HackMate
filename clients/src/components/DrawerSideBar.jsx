@@ -36,6 +36,7 @@ const DrawerSideBar = () => {
     Cookies.remove("token");
     Cookies.remove("userId");
     handleNavigation("/login"); // Navigate to login and close drawer
+    sessionStorage.removeItem("welcomed"); // Reset the welcome state
   };
 
   return (
