@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { FiMenu } from "react-icons/fi";
+import { FiMenu, FiSearch } from "react-icons/fi";
 import { motion } from "framer-motion";
 import DrawerSideBar from "../components/DrawerSideBar";
 import ProfileCard from "../components/ProfileCard";
@@ -10,6 +10,7 @@ const MainPage = () => {
   const [filteredUsers, setFilteredUsers] = useState([]); // State to store filtered users
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
+  const [searchQuery, setSearchQuery] = useState(""); // State for search query
   
   // Filter states
   const [filters, setFilters] = useState({
@@ -31,13 +32,19 @@ const MainPage = () => {
     }));
   };
 
-  // Reset all filters
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Reset all filters and search
   const resetFilters = () => {
     setFilters({
       department: "",
       year: "",
       gender: ""
     });
+    setSearchQuery("");
   };
 
   // Fetch users from the backend
@@ -60,7 +67,7 @@ const MainPage = () => {
     fetchUsers();
   }, []);
 
-  // Apply filters whenever filters state changes
+  // Apply filters whenever filters state or search query changes
   useEffect(() => {
     if (users.length > 0) {
       let result = [...users];
@@ -80,9 +87,31 @@ const MainPage = () => {
         result = result.filter(user => user.gender === filters.gender);
       }
       
+      // Apply search query
+      if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase().trim();
+        result = result.filter(user => {
+          // Search in name
+          const nameMatch = user.name && user.name.toLowerCase().includes(query);
+          
+          // Search in skills
+          const skillsMatch = user.skills && Array.isArray(user.skills) && 
+            user.skills.some(skill => skill.toLowerCase().includes(query));
+          
+          // Search in roles
+          const rolesMatch = user.roles && Array.isArray(user.roles) && 
+            user.roles.some(role => role.toLowerCase().includes(query));
+            
+          // Search in department
+          const deptMatch = user.department && user.department.toLowerCase().includes(query);
+          
+          return nameMatch || skillsMatch || rolesMatch || deptMatch;
+        });
+      }
+      
       setFilteredUsers(result);
     }
-  }, [filters, users]);
+  }, [filters, users, searchQuery]);
 
   // Display loading state
   if (loading) {
@@ -119,6 +148,30 @@ const MainPage = () => {
         {/* Filter Bar */}
         <div className="pt-16 px-10 pb-4">
           <div className="bg-base-100 p-4 rounded-lg shadow-md">
+            {/* Search bar */}
+            <div className="relative mb-4">
+              <div className="join w-full">
+                <div className="join-item bg-base-300 flex items-center pl-3">
+                  <FiSearch className="text-base-content" />
+                </div>
+                <input 
+                  type="text" 
+                  placeholder="Search by name, skills, roles..." 
+                  className="input input-bordered join-item w-full" 
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                />
+                {searchQuery && (
+                  <button 
+                    className="btn join-item"
+                    onClick={() => setSearchQuery("")}
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+            </div>
+            
             <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
               <h2 className="text-lg font-semibold">Filter Profiles</h2>
               
@@ -178,6 +231,9 @@ const MainPage = () => {
             {/* Filter Results Count */}
             <div className="mt-3 text-sm opacity-80">
               Showing {filteredUsers.length} of {users.length} profiles
+              {searchQuery && (
+                <span> • Searching for: <span className="font-semibold">{searchQuery}</span></span>
+              )}
             </div>
           </div>
         </div>
