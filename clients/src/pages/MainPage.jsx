@@ -178,111 +178,120 @@ const MainPage = () => {
         {/* Filter Bar */}
         <div className="pt-16 px-10 pb-4">
           <div className="bg-base-100 p-4 rounded-lg shadow-md">
-            {/* Search bar */}
-            <div className="mb-4">
-              <div className="join w-full">
+            {/* Search bar and filters in a single line */}
+            <div className="flex flex-col lg:flex-row gap-3 items-center">
+              {/* Search Input */}
+              <div className="join w-full lg:w-2/5">
                 <div className="join-item bg-base-300 flex items-center pl-3">
                   <FiSearch className="text-base-content" />
                 </div>
                 <input 
                   type="text" 
-                  placeholder="Search by name, skills, roles... (Press Enter to add)" 
+                  placeholder="Search for skills, roles, names..." 
                   className="input input-bordered join-item w-full" 
                   value={searchInput}
                   onChange={handleSearchInputChange}
                   onKeyDown={handleSearchKeyDown}
                 />
                 <button 
-                  className="btn join-item"
+                  className="btn join-item btn-primary"
                   onClick={addSearchTerm}
                   disabled={!searchInput.trim()}
                 >
-                  Add
+                  <span className="hidden sm:inline">Add</span>
+                  <span className="sm:hidden">+</span>
                 </button>
               </div>
               
-              {/* Search terms display */}
-              {searchTerms.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {searchTerms.map((term, index) => (
-                    <div key={index} className="badge badge-primary gap-1">
-                      {term}
-                      <button onClick={() => removeSearchTerm(term)} className="btn btn-xs btn-circle btn-ghost">
-                        <FiX size={12} />
-                      </button>
-                    </div>
-                  ))}
-                  <button 
-                    className="badge badge-outline cursor-pointer"
-                    onClick={() => setSearchTerms([])}
-                  >
-                    Clear all
-                  </button>
-                </div>
-              )}
-            </div>
-            
-            <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-              <h2 className="text-lg font-semibold">Filter Profiles</h2>
-              
-              <div className="flex flex-wrap gap-3 items-center">
+              {/* Filters Group */}
+              <div className="flex flex-1 gap-2 w-full lg:w-auto">
                 {/* Department Filter */}
-                <div className="form-control w-full max-w-xs">
-                  <select 
-                    className="select select-bordered w-full max-w-xs" 
-                    value={filters.department}
-                    onChange={(e) => handleFilterChange("department", e.target.value)}
-                  >
-                    <option value="">All Departments</option>
-                    {departmentOptions.map(dept => (
-                      <option key={dept} value={dept}>{dept}</option>
-                    ))}
-                  </select>
-                </div>
+                <select 
+                  className="select select-bordered flex-1" 
+                  value={filters.department}
+                  onChange={(e) => handleFilterChange("department", e.target.value)}
+                >
+                  <option value="">Department</option>
+                  {departmentOptions.map(dept => (
+                    <option key={dept} value={dept}>{dept}</option>
+                  ))}
+                </select>
                 
                 {/* Year Filter */}
-                <div className="form-control w-full max-w-xs">
-                  <select 
-                    className="select select-bordered w-full max-w-xs" 
-                    value={filters.year}
-                    onChange={(e) => handleFilterChange("year", e.target.value)}
-                  >
-                    <option value="">All Years</option>
-                    {yearOptions.map(year => (
-                      <option key={year} value={year}>Year {year}</option>
-                    ))}
-                  </select>
-                </div>
+                <select 
+                  className="select select-bordered flex-1" 
+                  value={filters.year}
+                  onChange={(e) => handleFilterChange("year", e.target.value)}
+                >
+                  <option value="">Year</option>
+                  {yearOptions.map(year => (
+                    <option key={year} value={year}>Year {year}</option>
+                  ))}
+                </select>
                 
                 {/* Gender Filter */}
-                <div className="form-control w-full max-w-xs">
-                  <select 
-                    className="select select-bordered w-full max-w-xs" 
-                    value={filters.gender}
-                    onChange={(e) => handleFilterChange("gender", e.target.value)}
-                  >
-                    <option value="">All Genders</option>
-                    {genderOptions.map(gender => (
-                      <option key={gender} value={gender}>{gender}</option>
-                    ))}
-                  </select>
-                </div>
-                
-                {/* Reset Filters Button */}
-                <button 
-                  className="btn btn-outline btn-sm"
-                  onClick={resetFilters}
+                <select 
+                  className="select select-bordered flex-1" 
+                  value={filters.gender}
+                  onChange={(e) => handleFilterChange("gender", e.target.value)}
                 >
-                  Reset Filters
-                </button>
+                  <option value="">Gender</option>
+                  {genderOptions.map(gender => (
+                    <option key={gender} value={gender}>{gender}</option>
+                  ))}
+                </select>
               </div>
+              
+              {/* Reset Filters Button */}
+              <button 
+                className="btn btn-outline btn-sm w-full lg:w-auto"
+                onClick={resetFilters}
+              >
+                Reset All
+              </button>
             </div>
             
+            {/* Search terms display */}
+            {searchTerms.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-3 pb-1">
+                <span className="text-sm opacity-70 self-center">Active filters:</span>
+                {searchTerms.map((term, index) => (
+                  <span key={index} className="badge badge-primary gap-1 py-3">
+                    {term}
+                    <button 
+                      onClick={() => removeSearchTerm(term)} 
+                      className="btn btn-xs btn-circle btn-ghost"
+                      aria-label={`Remove ${term} filter`}
+                    >
+                      <FiX size={14} />
+                    </button>
+                  </span>
+                ))}
+                <button 
+                  className="badge badge-outline cursor-pointer py-3"
+                  onClick={() => setSearchTerms([])}
+                >
+                  Clear all terms
+                </button>
+              </div>
+            )}
+            
             {/* Filter Results Count */}
-            <div className="mt-3 text-sm opacity-80">
-              Showing {filteredUsers.length} of {users.length} profiles
-              {searchTerms.length > 0 && (
-                <span> • Active search filters: {searchTerms.length}</span>
+            <div className="mt-3 text-sm opacity-80 flex items-center">
+              <span className="badge badge-neutral badge-sm mr-2">{filteredUsers.length}</span> 
+              of {users.length} profiles shown
+              {(filters.department || filters.year || filters.gender) && (
+                <div className="ml-2 flex gap-1">
+                  {filters.department && (
+                    <span className="badge badge-sm badge-outline">{filters.department}</span>
+                  )}
+                  {filters.year && (
+                    <span className="badge badge-sm badge-outline">Year {filters.year}</span>
+                  )}
+                  {filters.gender && (
+                    <span className="badge badge-sm badge-outline">{filters.gender}</span>
+                  )}
+                </div>
               )}
             </div>
           </div>
