@@ -1,15 +1,11 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { FiMenu, FiSearch, FiX, FiLogOut } from "react-icons/fi";
+import { FiMenu, FiSearch, FiX } from "react-icons/fi";
 import { motion } from "framer-motion";
 import DrawerSideBar from "../components/DrawerSideBar";
 import ProfileCard from "../components/ProfileCard";
-import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
 
 const MainPage = () => {
-  const navigate = useNavigate();
   const [users, setUsers] = useState([]); // State to store fetched users
   const [filteredUsers, setFilteredUsers] = useState([]); // State to store filtered users
   const [loading, setLoading] = useState(true); // Loading state
@@ -28,30 +24,6 @@ const MainPage = () => {
   const departmentOptions = ["IT", "CS", "CSDS", "AI/ML", "Civil", "Mech", "EXTC"];
   const yearOptions = [1, 2, 3, 4];
   const genderOptions = ["Male", "Female", "Prefer Not to Say"];
-
-  // Handle logout
-  const handleLogout = async () => {
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/users/logout`
-      );
-      
-      if (response.data.success) {
-        // Clear cookies
-        Cookies.remove("token");
-        Cookies.remove("userId");
-        
-        // Show success message
-        toast.success("Successfully logged out");
-        
-        // Redirect to login page
-        navigate("/login");
-      }
-    } catch (err) {
-      console.error("Logout error:", err);
-      toast.error("Failed to logout. Please try again.");
-    }
-  };
 
   // Handle filter changes
   const handleFilterChange = (filterName, value) => {
@@ -202,15 +174,6 @@ const MainPage = () => {
         >
           <FiMenu size={24} />
         </label>
-
-        {/* Logout Button - Fixed at top right */}
-        <button
-          className="btn btn-circle btn-error fixed top-4 right-4 z-50"
-          onClick={handleLogout}
-          aria-label="Logout"
-        >
-          <FiLogOut size={18} />
-        </button>
 
         {/* Filter Bar */}
         <div className="pt-16 px-10 pb-4">
