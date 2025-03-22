@@ -45,7 +45,7 @@ const Login = () => {
 
   return (
     <div className="hero bg-base-300 min-h-screen">
-      <Toaster />
+      {/* <Toaster /> */}
       <div className="hero-content flex-col lg:flex-row-reverse gap-x-32">
         <div className="text-center lg:text-left">
           <h1 className="text-5xl font-bold">Welcome Back!</h1>

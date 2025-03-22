@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import toast from "react-hot-toast";
 
 const DrawerSideBar = () => {
   const navigate = useNavigate();
@@ -32,10 +33,29 @@ const DrawerSideBar = () => {
     document.getElementById("my-drawer").checked = false; // Close drawer
   };
 
-  const handleLogout = () => {
-    Cookies.remove("token");
-    Cookies.remove("userId");
-    handleNavigation("/login"); // Navigate to login and close drawer
+  const handleLogout = async () => {
+    try {
+      // Call the logout API endpoint
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/users/logout`
+      );
+      
+      // Remove cookies
+      Cookies.remove("token");
+      Cookies.remove("userId");
+      
+      // Show success message and redirect
+      toast.success(response.data.message || "Successfully logged out");
+      navigate("/login");
+    } catch (error) {
+      console.error("Error during logout:", error);
+      toast.error("Failed to logout. Please try again.");
+      
+      // Fallback: still remove cookies and redirect if API call fails
+      Cookies.remove("token");
+      Cookies.remove("userId");
+      navigate("/login");
+    }
   };
 
   return (
