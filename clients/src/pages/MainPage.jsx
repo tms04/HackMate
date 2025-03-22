@@ -291,34 +291,46 @@ const MainPage = () => {
         {/* Profile Cards Grid */}
         <div className="px-10 pb-10">
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 place-items-center"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            {filteredUsers.length > 0 ? filteredUsers.map((profile) => (
-              <ProfileCard
-                key={profile._id} // Use _id from MongoDB
-                name={profile.name}
-                year={profile.year}
-                gender={profile.gender}
-                department={profile.department}
-                profileImage={profile.profilePic} // Pass profile image if available
-                roles={profile.roles} // Pass roles if available
-                skills={profile.skills} // Pass skills if available
-                achievements={profile.achievements} // Pass achievements if available
-              />
-            )) : (
-              <div className="col-span-full py-10 text-center">
-                <p className="text-lg">No profiles match the selected filters</p>
-                <button 
-                  className="btn btn-primary mt-4"
-                  onClick={resetFilters}
-                >
-                  Reset Filters
-                </button>
-              </div>
-            )}
+           {filteredUsers.length > 0 ? filteredUsers
+  .filter(profile => 
+    profile._id && 
+    profile.name && 
+    profile.year && 
+    profile.gender && 
+    profile.department && 
+    profile.profilePic && 
+    profile.roles?.length > 0 && 
+    profile.skills?.length > 0
+  )
+  .map((profile) => (
+    <ProfileCard
+      key={profile._id} // Use _id from MongoDB
+      name={profile.name}
+      year={profile.year}
+      gender={profile.gender}
+      department={profile.department}
+      profileImage={profile.profilePic} // Pass profile image if available
+      roles={profile.roles} // Pass roles if available
+      skills={profile.skills} // Pass skills if available
+      achievements={profile.achievements} // Pass achievements if available
+    />
+  )) : (
+    <div className="col-span-full py-10 text-center">
+      <p className="text-lg">No profiles match the selected filters</p>
+      <button 
+        className="btn btn-primary mt-4"
+        onClick={resetFilters}
+      >
+        Reset Filters
+      </button>
+    </div>
+  )}
+
           </motion.div>
         </div>
       </div>
