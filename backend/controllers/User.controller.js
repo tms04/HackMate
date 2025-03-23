@@ -231,3 +231,133 @@ export const updateProfile = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
+// Check if a user with a given email exists
+export const checkEmailExists = async (req, res) => {
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ 
+        message: "Email is required", 
+        exists: false 
+      });
+    }
+    
+    const user = await User.findOne({ email });
+    
+    return res.status(200).json({ 
+      exists: !!user 
+    });
+  } catch (error) {
+    return res.status(500).json({ 
+      message: "Server error", 
+      error: error.message, 
+      exists: false 
+    });
+  }
+};
+
+// Register user via OAuth
+export const registerOAuthUser = async (req, res) => {
+  try {
+    const { name, username, email, profilePic, clerkUserId } = req.body;
+    console.log("OAuth registration request:", { name, username, email, clerkUserId });
+
+    // Validate required fields
+    if (!name || !username || !email || !clerkUserId) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Missing required fields" 
+      });
+    }
+
+    // Check if user exists with the same email or username
+    const existingUser = await User.findOne({ 
+      $or: [{ email }, { username }]
+    });
+    
+    if (existingUser) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Username or Email already exists" 
+      });
+    }
+
+    // Create new user with OAuth information
+    const newUser = new User({
+      name,
+      username,
+      email,
+      profilePic,
+      clerkUserId,
+      // No password for OAuth users
+    });
+
+    await newUser.save();
+    console.log("New OAuth user created:", newUser._id);
+
+    // Generate JWT token
+    const token = sendCookie(newUser._id, res);
+
+    return res.status(201).json({ 
+      success: true, 
+      message: "User registered successfully with OAuth", 
+      token,
+      userId: newUser._id
+    });
+  } catch (error) {
+    console.error("OAuth registration error:", error);
+    return res.status(500).json({ 
+      success: false, 
+      message: "Error registering OAuth user", 
+      error: error.message 
+    });
+  }
+};
+
+// Login user via OAuth
+export const loginOAuthUser = async (req, res) => {
+  try {
+    const { email, clerkUserId } = req.body;
+    console.log("OAuth login request:", { email, clerkUserId });
+
+    // Validate required fields
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    // Find user by email
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      console.log("OAuth login failed: User not found with email", email);
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    console.log("OAuth login: User found", user._id);
+
+    // Update the clerkUserId if it's not set
+    if (!user.clerkUserId && clerkUserId) {
+      user.clerkUserId = clerkUserId;
+      await user.save();
+      console.log("Updated clerkUserId for user", user._id);
+    }
+
+    // Generate JWT token
+    const token = sendCookie(user._id, res);
+    console.log("OAuth login successful for user", user._id);
+
+    return res.status(200).json({ 
+      message: "OAuth login successful", 
+      token, 
+      userId: user._id 
+    });
+  } catch (error) {
+    console.error("OAuth login error:", error);
+    return res.status(500).json({ 
+      message: "Server error during OAuth login", 
+      error: error.message 
+    });
+  }
+};
