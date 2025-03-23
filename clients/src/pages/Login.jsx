@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import toast, { Toaster } from "react-hot-toast";
+import SocialAuth from "../components/SocialAuth";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -52,7 +53,7 @@ const Login = () => {
           <p className="py-6">
             Connect with your teammates and join exciting projects. Log in to
             explore opportunities, collaborate, and build amazing solutions with
-            like-minded individuals. Let’s get started!
+            like-minded individuals. Let's get started!
           </p>
         </div>
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
@@ -88,9 +89,13 @@ const Login = () => {
                 Log In
               </button>
             </div>
+            
+            {/* Add Social Auth Component */}
+            <SocialAuth mode="signin" />
+            
             <div className="text-center mt-4">
               <p className="text-sm">
-                Don’t have an account?
+                Don't have an account?
                 <a
                   href="/signup"
                   className="text-primary font-semibold link link-hover ml-1"

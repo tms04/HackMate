@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import toast, { Toaster } from "react-hot-toast";
+import SocialAuth from "../components/SocialAuth";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -118,6 +119,10 @@ const SignUp = () => {
                 Sign Up
               </button>
             </div>
+            
+            {/* Add Social Auth Component */}
+            <SocialAuth mode="signup" />
+            
             <div className="text-center mt-4">
               <p className="text-sm">
                 Already have an account?
