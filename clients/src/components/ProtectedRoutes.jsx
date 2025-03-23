@@ -1,70 +1,71 @@
-import { useEffect, useRef, useState } from "react";
+import { useState, useEffect } from "react";
 import { Navigate, Outlet } from "react-router-dom";
+import axios from "axios";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
-import { FiMenu } from "react-icons/fi";
-import DrawerSideBar from "./DrawerSideBar";
 import { useAuth } from "@clerk/clerk-react";
 
 const ProtectedRoute = () => {
-  const token = Cookies.get("token");
-  const userId = Cookies.get("userId");
-  const clerkUserId = Cookies.get("clerkUserId");
+  const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { isLoaded, isSignedIn } = useAuth();
-  const hasFetched = useRef(false);
-  const [hasWelcomed, setHasWelcomed] = useState(false);
-  const [isAuthenticating, setIsAuthenticating] = useState(true);
-  
-  // Check for Google authentication flag
-  const googleAuthenticated = localStorage.getItem("googleAuthenticated") === "true";
-
-  // Determine if user is authenticated either via traditional auth, Clerk, or other means
-  const isAuthenticated = token || (isLoaded && isSignedIn) || clerkUserId || googleAuthenticated;
 
   useEffect(() => {
-    // Set authenticating to false once Clerk is loaded
-    if (isLoaded) {
-      setIsAuthenticating(false);
-      
-      if (isSignedIn) {
-        console.log("User is authenticated via Clerk");
-      } else if (token) {
-        console.log("User is authenticated via JWT token");
-      } else if (clerkUserId) {
-        console.log("User is authenticated via Clerk User ID cookie");
-      } else if (googleAuthenticated) {
-        console.log("User is authenticated via Google OAuth flag");
-      }
-    }
-  }, [isLoaded, isSignedIn, token, clerkUserId, googleAuthenticated]);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      if (userId && !hasFetched.current) {
-        try {
-          const response = await fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/api/users/profile/${userId}`
-          );
-          const data = await response.json();
-          if (response.ok) {
-            if (!sessionStorage.getItem("welcomed")) {
-              toast.success(`Welcome, ${data.username}!`);
-              sessionStorage.setItem("welcomed", "true");
-              setHasWelcomed(true);
+    const verifyAuth = async () => {
+      try {
+        // First check for regular JWT authentication
+        const token = Cookies.get("token");
+        const userId = Cookies.get("userId");
+        
+        if (token && userId) {
+          try {
+            // Verify the token with the backend
+            const response = await axios.get(
+              `${import.meta.env.VITE_BACKEND_URL}/api/users/${userId}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            
+            if (response.data) {
+              console.log("User authenticated via JWT");
+              setIsAuthenticated(true);
+              setLoading(false);
+              return;
             }
+          } catch (error) {
+            console.error("JWT validation failed:", error);
+            // Don't clear tokens here, we'll check Clerk auth next
           }
-        } catch (error) {
-          console.error("Error fetching user:", error);
         }
-        hasFetched.current = true;
+        
+        // Check for Clerk authentication if JWT fails
+        const clerkUserId = Cookies.get("clerkUserId");
+        if (isLoaded && isSignedIn) {
+          console.log("User authenticated via Clerk");
+          setIsAuthenticated(true);
+          setLoading(false);
+          return;
+        }
+        
+        // If we get here, user is not authenticated
+        console.log("User is not authenticated");
+        setIsAuthenticated(false);
+        setLoading(false);
+      } catch (error) {
+        console.error("Authentication verification error:", error);
+        setIsAuthenticated(false);
+        setLoading(false);
       }
     };
 
-    fetchUser();
-  }, [userId]);
+    verifyAuth();
+  }, [isLoaded, isSignedIn]);
 
-  // Show loading state while authenticating
-  if (isAuthenticating) {
+  if (loading) {
+    // Show loading state while checking authentication
     return (
       <div className="flex justify-center items-center min-h-screen bg-base-200">
         <div className="loading loading-spinner loading-lg"></div>
@@ -72,31 +73,14 @@ const ProtectedRoute = () => {
     );
   }
 
-  return isAuthenticated ? (
-    <div className="drawer">
-      <input id="my-drawer" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content bg-base-200 min-h-screen">
-        <label
-          htmlFor="my-drawer"
-          className="btn btn-circle btn-neutral fixed top-4 left-4 z-50 transition-opacity duration-300 drawer-button"
-        >
-          <FiMenu size={24} />
-        </label>
-        <Outlet />
-      </div>
-      <DrawerSideBar />
-      <style>
-        {`
-          #my-drawer:checked ~ .drawer-content .drawer-button {
-            opacity: 0;
-            pointer-events: none;
-          }
-        `}
-      </style>
-    </div>
-  ) : (
-    <Navigate to="/login" replace />
-  );
+  // If authenticated, render the child routes
+  if (isAuthenticated) {
+    return <Outlet />;
+  }
+
+  // If not authenticated, redirect to login
+  toast.error("Please log in to continue");
+  return <Navigate to="/login" />;
 };
 
 export default ProtectedRoute;

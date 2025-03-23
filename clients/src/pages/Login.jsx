@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import toast, { Toaster } from "react-hot-toast";
 import SocialAuth from "../components/SocialAuth";
+import ClerkDebug from "../components/ClerkDebug";
 
 const Login = () => {
   const [formData, setFormData] = useState({
     emailOrUsername: "",
     password: "",
   });
+  const [showDebug, setShowDebug] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -55,6 +57,17 @@ const Login = () => {
             explore opportunities, collaborate, and build amazing solutions with
             like-minded individuals. Let's get started!
           </p>
+          
+          {/* Debug toggle button */}
+          <button 
+            className="btn btn-xs btn-ghost opacity-50"
+            onClick={() => setShowDebug(!showDebug)}
+          >
+            {showDebug ? "Hide Debug" : "Debug Mode"}
+          </button>
+          
+          {/* Debug component */}
+          {showDebug && <ClerkDebug />}
         </div>
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
           <form className="card-body" onSubmit={handleSubmit}>

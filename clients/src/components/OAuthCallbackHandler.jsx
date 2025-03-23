@@ -16,44 +16,66 @@ const OAuthCallbackHandler = () => {
 
   // Debug effect to monitor auth state
   useEffect(() => {
+    console.log("OAuthCallbackHandler: Auth state changed");
     console.log("Auth state:", { isLoaded, isSignedIn, userId, sessionId });
-    console.log("User state:", { isUserLoaded, user: user ? "exists" : "null" });
+    
+    if (user) {
+      console.log("User data:", { 
+        id: user.id,
+        email: user.primaryEmailAddress?.emailAddress,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        hasImage: !!user.imageUrl
+      });
+    } else {
+      console.log("User data not available yet");
+    }
 
     setDebugInfo({
       isAuthLoaded: isLoaded,
       isSignedIn,
       userId,
       isUserLoaded,
-      hasUserData: !!user
+      hasUserData: !!user,
+      timestamp: new Date().toISOString()
     });
 
-    // If user is signed in but we're not processing, redirect directly to main page
-    if (isLoaded && isSignedIn && !isProcessing && !redirectAttempted) {
-      console.log("User is signed in with Clerk but not processing - redirecting to main page");
+    // If user is signed in but we're still waiting, let's redirect
+    if (isLoaded && isSignedIn && !redirectAttempted) {
+      console.log("User is signed in with Clerk - redirecting to main page");
       setRedirectAttempted(true);
+      setIsProcessing(false);
       
-      // Set a local flag to indicate we have a Google authenticated user
-      localStorage.setItem("googleAuthenticated", "true");
-      
-      // Try to get the user's info directly from Clerk
+      // Store Clerk user info directly in local storage
+      // This avoids the network call to our backend which may be failing
       if (user) {
-        console.log("User data from Clerk:", {
+        const userInfo = {
           id: user.id,
           email: user.primaryEmailAddress?.emailAddress,
-          name: `${user.firstName} ${user.lastName}`.trim()
-        });
+          name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+          imageUrl: user.imageUrl
+        };
+        
+        localStorage.setItem("clerkUser", JSON.stringify(userInfo));
+        Cookies.set("clerkUserId", user.id, { expires: 1 });
+        
+        console.log("Stored clerk user data:", userInfo);
       }
       
-      // Direct redirect to main page without going through the backend
       toast.success("Successfully signed in with Google!");
-      navigate("/main");
+      
+      // Add small delay to ensure the toast message is seen
+      setTimeout(() => {
+        navigate("/main");
+      }, 1000);
     }
 
     // Auto-redirect after 10 seconds if stuck (safety measure)
     const timeout = setTimeout(() => {
-      if (isProcessing) {
+      if (isProcessing && !redirectAttempted) {
         console.log("Auth processing timeout - redirecting to login");
         setIsProcessing(false);
+        setError("Authentication is taking too long");
         toast.error("Authentication is taking too long. Please try again.");
         navigate("/login");
       }
@@ -62,15 +84,24 @@ const OAuthCallbackHandler = () => {
     return () => clearTimeout(timeout);
   }, [isLoaded, isUserLoaded, isSignedIn, userId, user, isProcessing, navigate, redirectAttempted]);
 
+  // Backend sync attempt - only if we haven't redirected
   useEffect(() => {
     const saveUserToDatabase = async () => {
+      // If we've already redirected, don't try to save
+      if (redirectAttempted) return;
+      
       // Wait for Clerk auth to be loaded and user to be available
-      if (!isLoaded || !isSignedIn || !user) {
-        if (isLoaded && !isSignedIn) {
-          console.log("Auth loaded but not signed in - redirecting to login");
-          setIsProcessing(false);
-          navigate("/login");
-        }
+      if (!isLoaded || !isUserLoaded) {
+        console.log("Auth or user not loaded yet, waiting...");
+        return;
+      }
+      
+      if (!isSignedIn || !user) {
+        console.log("Authentication failed: No sign-in or user data");
+        setIsProcessing(false);
+        setError("Authentication failed. Please try again.");
+        toast.error("Authentication failed. Please try again.");
+        navigate("/login");
         return;
       }
 
@@ -89,7 +120,7 @@ const OAuthCallbackHandler = () => {
         const imageUrl = user.imageUrl;
         
         // Create a unique username based on email (remove special chars)
-        const username = primaryEmail?.split("@")[0].replace(/[^a-zA-Z0-9]/g, "") || "";
+        const username = `${primaryEmail?.split("@")[0].replace(/[^a-zA-Z0-9]/g, "")}_${Math.floor(Math.random() * 1000)}`;
         
         console.log("Checking if user exists:", primaryEmail);
         
@@ -119,15 +150,13 @@ const OAuthCallbackHandler = () => {
               Cookies.set("token", loginResponse.data.token, { expires: 1 });
               Cookies.set("userId", loginResponse.data.userId, { expires: 1 });
               
+              setIsProcessing(false);
               toast.success("Successfully signed in!");
               navigate("/main");
             } catch (loginError) {
               console.error("Login request failed:", loginError);
-              // If backend login fails, still redirect to main since Clerk auth succeeded
-              console.log("Falling back to Clerk authentication");
-              Cookies.set("clerkUserId", user.id, { expires: 1 });
-              toast.success("Signed in with Google");
-              navigate("/main");
+              // Fall back to Clerk-only auth
+              performFallbackAuth();
             }
           } else {
             console.log("User doesn't exist, registering new user");
@@ -150,91 +179,91 @@ const OAuthCallbackHandler = () => {
                 Cookies.set("token", registerResponse.data.token, { expires: 1 });
                 Cookies.set("userId", registerResponse.data.userId, { expires: 1 });
                 
-                toast.success("Account created successfully!");
-                // Redirect to profile form to complete the profile
-                navigate("/userdetails");
-              } else {
-                console.error("Registration failed:", registerResponse.data);
-                // If backend registration fails, still redirect to main since Clerk auth succeeded
-                Cookies.set("clerkUserId", user.id, { expires: 1 });
-                toast.success("Signed in with Google");
+                setIsProcessing(false);
+                toast.success("Account created and signed in!");
                 navigate("/main");
+              } else {
+                throw new Error(registerResponse.data.message || "Registration failed");
               }
             } catch (registerError) {
-              console.error("Register request failed:", registerError);
-              // If backend registration fails, still redirect to main since Clerk auth succeeded
-              Cookies.set("clerkUserId", user.id, { expires: 1 });
-              toast.success("Signed in with Google");
-              navigate("/main");
+              console.error("Registration failed:", registerError);
+              // Fall back to Clerk-only auth
+              performFallbackAuth();
             }
           }
-        } catch (backendError) {
-          console.error("Backend request failed:", backendError);
-          // If backend is unreachable, still redirect to main since Clerk auth succeeded
-          Cookies.set("clerkUserId", user.id, { expires: 1 });
-          toast.success("Signed in with Google");
-          navigate("/main");
+        } catch (checkError) {
+          console.error("Error checking if user exists:", checkError);
+          // Fall back to Clerk-only auth
+          performFallbackAuth();
         }
       } catch (error) {
-        console.error("Error processing OAuth login:", error);
-        setError(error.message || "Authentication failed");
-        // Even if there's an error, if we have Clerk authentication, redirect to main
-        if (isSignedIn) {
-          Cookies.set("clerkUserId", userId, { expires: 1 });
-          toast.success("Signed in with Google");
-          navigate("/main");
+        console.error("Error in OAuth processing:", error);
+        // Fall back to Clerk-only auth if we have user data
+        if (isSignedIn && user) {
+          performFallbackAuth();
         } else {
-          toast.error("Authentication failed. Please try again.");
+          setError(error.message);
+          setIsProcessing(false);
+          toast.error(error.message || "Authentication error");
           navigate("/login");
         }
-      } finally {
-        setIsProcessing(false);
       }
     };
+    
+    // Helper function for fallback authentication when backend fails
+    const performFallbackAuth = () => {
+      console.log("Falling back to Clerk-only authentication");
+      if (user) {
+        const userInfo = {
+          id: user.id,
+          email: user.primaryEmailAddress?.emailAddress,
+          name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+          imageUrl: user.imageUrl
+        };
+        
+        localStorage.setItem("clerkUser", JSON.stringify(userInfo));
+        Cookies.set("clerkUserId", user.id, { expires: 1 });
+      }
+      
+      setIsProcessing(false);
+      toast.success("Signed in with Google (Limited mode)");
+      navigate("/main");
+    };
 
-    if (isLoaded && isSignedIn && user && isProcessing) {
+    if (isSignedIn && user && isProcessing && !redirectAttempted) {
+      console.log("User is authenticated, trying to save to database...");
       saveUserToDatabase();
     }
-  }, [isLoaded, isSignedIn, user, navigate, isProcessing, userId]);
+  }, [isLoaded, isUserLoaded, isSignedIn, user, navigate, isProcessing, redirectAttempted]);
 
-  if (!isLoaded || isProcessing) {
+  if (error) {
     return (
-      <div className="flex flex-col justify-center items-center min-h-screen bg-base-200">
-        <div className="text-center">
-          <div className="loading loading-spinner loading-lg"></div>
-          <p className="mt-4 text-white">Processing your sign in...</p>
-          {error && (
-            <div className="mt-4 text-error">
-              <p>Error: {error}</p>
-            </div>
-          )}
-          
-          {/* Debug information in development */}
-          {import.meta.env.DEV && (
-            <div className="mt-8 text-xs text-left bg-base-300 p-4 rounded w-96">
-              <h3 className="font-bold">Debug Info:</h3>
-              <pre className="overflow-auto">{JSON.stringify(debugInfo, null, 2)}</pre>
-              <button 
-                className="btn btn-sm btn-primary mt-2"
-                onClick={() => {
-                  setIsProcessing(false);
-                  if (isSignedIn) {
-                    navigate("/main");
-                  } else {
-                    navigate("/login");
-                  }
-                }}
-              >
-                Force Redirect
-              </button>
-            </div>
-          )}
+      <div className="min-h-screen flex flex-col items-center justify-center bg-base-200 p-4">
+        <div className="card bg-base-100 shadow-xl p-8 max-w-md w-full">
+          <h2 className="text-2xl font-bold text-center mb-4">Authentication Error</h2>
+          <p className="text-error text-center mb-4">{error}</p>
+          <button 
+            className="btn btn-primary w-full" 
+            onClick={() => navigate("/login")}
+          >
+            Back to Login
+          </button>
         </div>
       </div>
     );
   }
 
-  return null;
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-base-200">
+      <div className="card bg-base-100 shadow-xl p-8">
+        <h2 className="text-2xl font-bold text-center mb-4">Processing Authentication</h2>
+        <div className="flex justify-center my-4">
+          <div className="loading loading-spinner loading-lg"></div>
+        </div>
+        <p className="text-center">Almost there! We're completing your sign-in...</p>
+      </div>
+    </div>
+  );
 };
 
 export default OAuthCallbackHandler; 
