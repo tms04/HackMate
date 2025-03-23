@@ -1,91 +1,91 @@
+/* eslint-disable react/prop-types */
 import React from "react";
+import { FaReact, FaNodeJs, FaFigma, FaRegQuestionCircle } from "react-icons/fa";
+import { SiExpress, SiNextdotjs } from "react-icons/si";
+import { motion } from "framer-motion";
 
-const ProfileCard = ({
-  name,
-  year,
-  gender,
-  department,
-  profileImage,
-  roles,
-  skills,
-  achievements,
-}) => {
-  // console.log("Profile Image Data:", profileImage?.substring(0, 50)); // Logs first 50 chars for debugging
-
-  // const isBase64 = profileImage && profileImage.startsWith("/9j"); // JPEG Base64 check
+const ProfileCard = ({ name, year, gender, department, profileImage, roles = [], skills = [], achievements = [] }) => {
+  
+  // Year Mapping for Better Readability
+  const yearMap = { 1: "FY", 2: "SY", 3: "TY", 4: "Final" };
+  year = yearMap[year] || "Unknown";
 
   return (
-    <div className="max-w-sm rounded-2xl overflow-hidden shadow-lg bg-white p-6 text-center">
-      {/* Profile Image */}
-      <div className="flex justify-center">
-        {profileImage ? (
-          <img
-            src={`${profileImage}`}
-            alt="Profile"
-            className="w-32 h-32 rounded-full object-cover border border-gray-300"
-          />
+    <motion.div
+      className="relative bg-gradient-to-b from-base-100 to-base-200 p-5 min-w-80 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 h-full"
+      whileHover={{ scale: 1.05 }}
+    >
+      {/* Profile Image & Name */}
+      <div className="flex flex-col items-center">
+        <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-neutral">
+          <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
+        </div>
+        <h2 className="text-lg font-bold mt-2 text-base-content">{name}</h2>
+        <p className="text-sm text-base-content/70">{department} | {year} | {gender}</p>
+      </div>
+
+      {/* Roles with Separator */}
+      {roles.length > 0 && (
+        <div className="mt-4 flex justify-center items-center gap-2 text-sm font-medium text-base-content">
+          {roles.slice(0, 3).map((role, index) => (
+            <React.Fragment key={index}>
+              <span className="px-3 py-1 text-xs font-semibold bg-neutral text-neutral-content rounded-full">{role}</span>
+              {index !== Math.min(roles.length - 1, 2) && <span className="text-lg text-neutral">&raquo;</span>}
+            </React.Fragment>
+          ))}
+        </div>
+      )}
+
+      {/* Skills Icons */}
+      {skills.length > 0 && (
+        <div className="mt-4 flex justify-center gap-3 text-lg text-base-content">
+          {skills.map((skill, index) => {
+            const icons = {
+              Figma: <FaFigma />,
+              React: <FaReact />,
+              Node: <FaNodeJs />,
+              Express: <SiExpress />,
+              NextJS: <SiNextdotjs />,
+            };
+
+            return (
+              <div key={index} className="relative group">
+                {icons[skill] || <FaRegQuestionCircle />} {/* Show Question Icon if Skill not in List */}
+                <span className="absolute bottom-7 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white text-black text-xs px-2 py-1 rounded shadow">
+                  {skill}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Achievements (Ensuring Consistent UI) */}
+      <div className="mt-4 flex justify-center min-h-[60px]"> 
+        {achievements.length > 0 ? (
+          <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-xs text-base-content place-items-start">
+            {achievements.slice(0, 3).map((achievement, index) => (
+              <div key={index} className="flex items-center gap-2">
+                <span className="w-6 h-6 flex items-center justify-center text-xs font-bold bg-neutral text-neutral-content rounded-full">
+                  {achievement.rank}
+                </span>
+                <span className="text-left">{achievement.name}</span>
+              </div>
+            ))}
+          </div>
         ) : (
-          <img
-            src="https://via.placeholder.com/128" // Placeholder image
-            alt="Default"
-            className="w-32 h-32 rounded-full object-cover border border-gray-300"
-          />
+          <p className="text-xs text-base-content/60 italic">No Achievements Yet</p>
         )}
       </div>
 
-      {/* User Details */}
-      <h2 className="text-xl font-semibold mt-3">{name || "User Name"}</h2>
-      <p className="text-gray-600">
-        {department || "Department not available"}
-      </p>
-      <p className="text-gray-500">
-        {year ? `Year: ${year}` : "Year not available"}
-      </p>
-      <p className="text-gray-500">
-        {gender ? `Gender: ${gender}` : "Gender not available"}
-      </p>
-
-      {/* Roles */}
-      {roles?.length > 0 && (
-        <div className="mt-2">
-          <h3 className="font-semibold">Roles:</h3>
-          <ul className="text-gray-500">
-            {roles.map((role, index) => (
-              <li key={index}>{role}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* Skills */}
-      {skills?.length > 0 && (
-        <div className="mt-2">
-          <h3 className="font-semibold">Skills:</h3>
-          <ul className="text-gray-500 flex flex-wrap justify-center">
-            {skills.map((skill, index) => (
-              <li
-                key={index}
-                className="bg-gray-200 rounded-full px-3 py-1 text-sm m-1"
-              >
-                {skill}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* Achievements */}
-      {achievements?.length > 0 && (
-        <div className="mt-2">
-          <h3 className="font-semibold">Achievements:</h3>
-          <ul className="text-gray-500">
-            {achievements.map((achievement, index) => (
-              <li key={index}>{achievement}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
+      {/* Connect Button */}
+      <motion.button
+        className="btn btn-outline w-full mt-4 rounded-lg text-sm"
+        whileHover={{ scale: 1.1 }}
+      >
+        Connect
+      </motion.button>
+    </motion.div>
   );
 };
 
