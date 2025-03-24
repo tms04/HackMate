@@ -1,9 +1,10 @@
 import express from "express"
 import { auth } from "../middlewares/auth.js"
-import { acceptRequest, createTeam, deleteTeam, getAllRequests, getCreatedTeams, getJoinedTeams, leaveTeam, removeTeamMember, sendRequest } from "../controllers/team.controller.js";
+import { acceptRequest, createTeam, deleteTeam, getAllRequests, getCreatedTeams, getJoinedTeams, leaveTeam, removeTeamMember, sendRequest, teamDetails } from "../controllers/team.controller.js";
 
 const router = express.Router();
 
+router.get("/:teamId", auth, teamDetails);
 router.post("/createTeam", auth, createTeam);
 router.post("/sendRequest", auth, sendRequest);
 router.post("/acceptRequest", auth, acceptRequest);

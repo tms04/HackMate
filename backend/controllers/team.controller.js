@@ -1,5 +1,22 @@
 import {Team} from "../models/team.model.js"
 
+// Fetch Team Details
+export const teamDetails = async (req, res) => {
+    try {
+        const { teamId } = req.params;
+    
+        const team = await Team.findById(teamId);
+        if (!team) {
+          return res.status(404).json({ message: "Team not found" });
+        }
+    
+        res.status(200).json(team);
+      } catch (error) {
+        console.error("Error fetching team details:", error);
+        res.status(500).json({ message: "Server error" });
+      }
+}
+
 // Creating a Team 
 export const createTeam = async(req, res) => {
     try {
