@@ -11,7 +11,12 @@ const PORT = process.env.PORT || 5000;
 
 const app = express();
 app.use(express.json()); // Middleware for JSON parsing
-app.use(cors()); // Middleware for CORS
+app.use(
+  cors({
+    origin: "http://localhost:5173", // ✅ Replace with frontend URL
+    credentials: true, // ✅ Allows cookies & authentication headers
+  })
+);
 app.use(morgan('dev'));
 app.use(express.json({ limit: '10mb' })); // Increased limit for base64 images
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
