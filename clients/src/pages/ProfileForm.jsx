@@ -121,7 +121,7 @@ const ProfileForm = () => {
         }
       );
       console.log("Profile pic", profilePic);
-      navigate("/profile");
+      navigate("/main");
     } catch (error) {
       console.error("Error saving profile data:", error);
       setError("Failed to save profile data. Please try again.");
