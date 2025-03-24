@@ -11,6 +11,7 @@ export const createTeam = async(req, res) => {
             return res.status(400).json({ message: "Team leader has already created a team for this hackathon." });
         }
         const teamMembers = [teamLeader];
+        const requestedTeamMembers = [];
         const newTeam = new Team({
             teamName,
             maxSize,
@@ -21,6 +22,7 @@ export const createTeam = async(req, res) => {
             endDate,
             domains,
             teamMembers,
+            requestedTeamMembers,
             teamLeader,
         });
 
@@ -66,7 +68,7 @@ export const deleteTeam = async (req, res) => {
 };
 
 // Adding a Team Member to the team
-export const addTeamMember = async (req, res) => {
+export const sendRequest = async (req, res) => {
     try {
         const { teamId, requesterId } = req.body;
         const leaderId = req.user.id; // Leader's ID from auth middleware
@@ -79,12 +81,17 @@ export const addTeamMember = async (req, res) => {
 
         // Ensure the request is handled by the team leader
         if (team.teamLeader.toString() !== leaderId) {
-            return res.status(403).json({ message: "Only the team leader can accept members" });
+            return res.status(403).json({ message: "Only the team leader can add members" });
         }
 
         // Check if the requester already exists in the team
         if (team.teamMembers.includes(requesterId)) {
             return res.status(400).json({ message: "User is already a member of this team" });
+        }
+
+        // Check if the request has already been sent to the user once
+        if (team.requestedTeamMembers.includes(requesterId)) {
+            return res.status(400).json({ message: "User has been already sent the request once" });
         }
 
         // Check if the team is full
@@ -93,11 +100,11 @@ export const addTeamMember = async (req, res) => {
         }
 
         // Add requester to team members
-        team.teamMembers.push(requesterId);
+        team.requestedTeamMembers.push(requesterId);
         await team.save();
 
         return res.status(200).json({ 
-            message: "Member added successfully",
+            message: "Member added to requestedTeamMembers successfully",
             team
         });
 
