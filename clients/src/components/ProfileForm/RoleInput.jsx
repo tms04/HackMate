@@ -16,7 +16,12 @@ const RoleInput = ({ roles, setRoles, roleOptions }) => {
 
   return (
     <div className="form-control">
-      <label className="label">Role</label>
+   <div className="flex">
+   <label className="label font-semibold">
+        Role<span className="text-red-500 ms-2">*</span>{" "}
+        <span className="text-sm text-gray-500">(as per your preference, highest first)</span>
+      </label>
+   </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
         {roleOptions.map((role) => (
           <button
