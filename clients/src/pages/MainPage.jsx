@@ -23,7 +23,7 @@ const MainPage = () => {
   // Department, year, gender options
   const departmentOptions = ["IT", "CS", "CSDS", "AI/ML", "Civil", "Mech", "EXTC"];
   const yearOptions = [1, 2, 3, 4];
-  const genderOptions = ["Male", "Female", "Prefer Not to Say"];
+  const genderOptions = ["Male", "Female", "Prefer  Not to Say"];
 
   // Handle filter changes
   const handleFilterChange = (filterName, value) => {
@@ -360,3 +360,5 @@ const MainPage = () => {
 };
 
 export default MainPage;
+
+
