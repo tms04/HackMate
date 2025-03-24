@@ -50,6 +50,10 @@ const teamSchema = new mongoose.Schema(
             type: String,
             ref: "User"
         }],
+        requestedTeamMembers: [{
+            type: String,
+            ref: "User"
+        }],
         teamLeader: {
             type: String,
             ref: "User",
