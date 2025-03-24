@@ -147,8 +147,8 @@ export const removeTeamMember = async (req, res) => {
 //Get all teams created by the user
 export const getCreatedTeams = async (req, res) => {
     try {
-        const userid = req.user.id;
-        const teams = await Team.find({ teamLeader: userid });
+        const { userId } = req.params;
+        const teams = await Team.find({ teamLeader: userId });
         return res.status(200).json({ 
             message: "Created Teams by the user",
             teams
@@ -162,7 +162,7 @@ export const getCreatedTeams = async (req, res) => {
 //Get all teams created by the user
 export const getJoinedTeams = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const { userId } = req.params;
         // Find teams where the user is in teamMembers but is not the teamLeader
         const teams = await Team.find({
             teamMembers: { $in: [userId] },

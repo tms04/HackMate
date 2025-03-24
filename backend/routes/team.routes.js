@@ -13,7 +13,7 @@ router.post("/createTeam", auth, createTeam);
 router.post("/addTeamMember", auth, addTeamMember);
 router.post("/removeTeamMember", auth, removeTeamMember);
 router.post("/deleteTeam", auth, deleteTeam);
-router.get("/createdTeams", auth, getCreatedTeams);
-router.get("/joinedTeams", auth, getJoinedTeams);
+router.get("/createdTeams/:userId", auth, getCreatedTeams);
+router.get("/joinedTeams/:userId", auth, getJoinedTeams);
 
 export default router;
