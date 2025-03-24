@@ -1,19 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Cookies from "js-cookie";
 import { FaEye, FaTrophy, FaUserFriends } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "react-hot-toast";
 const MyTeams = () => {
   const navigate = useNavigate();
 
-  const [teams, setTeams] = useState([
-    { id: 1, name: "Code Warriors", hackathon: "Hack4Impact", members: ["Alice", "Bob", "Charlie"], role: "Team Leader" },
-    { id: 2, name: "Byte Crushers", hackathon: "CodeFest 2025", members: ["David", "Eva", "Frank"], role: "Member" },
-    { id: 3, name: "AI Pioneers", hackathon: "AI Challenge 2025", members: ["Sophia", "Ethan", "Mia"], role: "Team Leader" },
-    { id: 4, name: "Bug Busters", hackathon: "CyberSec Hack 2025", members: ["Ava", "Liam", "Noah"], role: "Member" },
-  ]);
-
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [actionType, setActionType] = useState(""); // "delete" or "leave"
+  const [createdTeams, setCreatedTeams] = useState([]);
+  const [joinedTeams, setJoinedTeams] = useState([]);
 
   // Open modal function
   const openModal = (team, action) => {
@@ -23,33 +20,113 @@ const MyTeams = () => {
   };
 
   // Confirm delete/leave action
-  const handleConfirm = () => {
-    setTeams(teams.filter((team) => team.id !== selectedTeam.id));
-    document.getElementById("confirmation_modal").close();
-  };
+  const handleConfirm = async () => {
+    try {
+      const userToken = Cookies.get("token");
+      if (!userToken) {
+        toast.error("User not authenticated");
+        return;
+      }
 
-  // Filter teams
-  const leaderTeams = teams.filter((team) => team.role === "Team Leader");
-  const joinedTeams = teams.filter((team) => team.role !== "Team Leader");
+      let apiUrl = "";
+      let requestData = {};
+
+      if (actionType === "delete") {
+        apiUrl = `${import.meta.env.VITE_BACKEND_URL}/api/team/deleteTeam`;
+        requestData = { teamId: selectedTeam._id };
+      } else if (actionType === "leave") {
+        apiUrl = `${import.meta.env.VITE_BACKEND_URL}/api/team/leaveTeam`;
+        requestData = { teamId: selectedTeam._id, userId: Cookies.get("userId") };
+      }
+
+      const response = await axios.post(apiUrl, requestData, {
+        headers: { Authorization: `Bearer ${userToken}` },
+      });
+
+      if (response.status === 200) {
+        toast.success(actionType === "delete" ? "Team deleted successfully" : "You left the team");
+        // Update frontend state
+        if (actionType === "delete") {
+          setCreatedTeams((prevTeams) => prevTeams.filter(team => team._id !== selectedTeam._id));
+        } else if (actionType === "leave") {
+          setJoinedTeams((prevTeams) => prevTeams.filter(team => team._id !== selectedTeam._id));
+        }
+      }
+    } catch (error) {
+      console.error(`Error in ${actionType} team:`, error);
+      toast.error(error.response?.data?.message || `Failed to ${actionType} team`);
+    } finally {
+      document.getElementById("confirmation_modal").close();
+    }
+  };
+  
+  useEffect(() => {
+    const fetchCreatedTeams = async () => {
+      try {
+        const userId = Cookies.get("userId");
+        const token = Cookies.get("token");
+        if (!userId) {
+          toast.error("User not logged in");
+          return;
+        }
+
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/team/createdTeams/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setCreatedTeams(response.data.teams);
+      } catch (error) {
+        console.error("Error fetching created teams:", error);
+        toast.error("Failed to fetch created teams");
+      }
+    };
+
+    fetchCreatedTeams();
+  }, []);
+
+  useEffect(() => {
+    const fetchJoinedTeams = async () => {
+      try {
+        const userId = Cookies.get("userId");
+        const token = Cookies.get("token");
+        if (!userId) {
+          toast.error("User not logged in");
+          return;
+        }
+
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/team/joinedTeams/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setJoinedTeams(response.data.teams);
+      } catch (error) {
+        console.error("Error fetching created teams:", error);
+        toast.error("Failed to fetch created teams");
+      }
+    };
+    fetchJoinedTeams();
+  }, []);
 
   return (
     <div className="w-full bg-base-200">
       <div className="p-6 max-w-3xl mx-auto bg-base-200 dark:bg-neutral-900 text-base-content min-h-screen">
-        
+
         {/* Teams Created */}
-        {leaderTeams.length > 0 && (
+        {createdTeams.length > 0 && (
           <div>
-<h2 className="text-lg font-semibold mb-2 text-center border border-black bg-neutral text-neutral-content mt-8 rounded-xl p-2">
-  Teams Created
-</h2>
+            <h2 className="text-lg font-semibold mb-2 text-center border border-black bg-neutral text-neutral-content mt-8 rounded-xl p-2">
+              Teams Created
+            </h2>
 
             <div className="space-y-4">
-              {leaderTeams.map((team) => (
-                <div key={team.id} className="p-4 bg-base-100 dark:bg-neutral-800 rounded-lg shadow-md border border-gray-300 dark:border-gray-700 flex justify-between items-center">
+              {createdTeams.map((team) => (
+                <div key={team._id} className="p-4 bg-base-100 dark:bg-neutral-800 rounded-lg shadow-md border border-gray-300 dark:border-gray-700 flex justify-between items-center">
                   <div>
-                    <h2 className="text-lg font-semibold text-base-content">{team.name}</h2>
-                    <p className="text-sm flex items-center gap-2 text-base-content"><FaTrophy /> {team.hackathon}</p>
-                    <p className="text-sm flex items-center gap-2 text-base-content"><FaUserFriends /> {team.members.join(", ")}</p>
+                    <h2 className="text-lg font-semibold text-base-content">{team.teamName}</h2>
+                    <p className="text-sm flex items-center gap-2 text-base-content"><FaTrophy /> {team.hackathonName}</p>
+                    <p className="text-sm flex items-center gap-2 text-base-content"><FaUserFriends /> {team.teamMembers?.map(member => member.name).join(", ") || "No Members"}</p>
                   </div>
                   <div className="flex gap-3">
                     <button className="btn btn-outline btn-sm px-6" onClick={() => navigate(`/createdteam`)}><FaEye /></button>
@@ -64,17 +141,17 @@ const MyTeams = () => {
         {/* Teams Joined */}
         {joinedTeams.length > 0 && (
           <div className="mt-6">
-<h1 className="text-lg font-semibold mb-2 text-center border border-black bg-neutral text-neutral-content rounded-xl p-2">
-  Teams Joined
-</h1>
+            <h1 className="text-lg font-semibold mb-2 text-center border border-black bg-neutral text-neutral-content rounded-xl p-2">
+              Teams Joined
+            </h1>
 
-          <div className="space-y-4">
+            <div className="space-y-4">
               {joinedTeams.map((team) => (
-                <div key={team.id} className="p-4 bg-base-100 dark:bg-neutral-800 rounded-lg shadow-md border border-gray-300 dark:border-gray-700 flex justify-between items-center">
+                <div key={team._id} className="p-4 bg-base-100 dark:bg-neutral-800 rounded-lg shadow-md border border-gray-300 dark:border-gray-700 flex justify-between items-center">
                   <div>
-                    <h2 className="text-lg font-semibold text-base-content">{team.name}</h2>
-                    <p className="text-sm flex items-center gap-2 text-base-content"><FaTrophy /> {team.hackathon}</p>
-                    <p className="text-sm flex items-center gap-2 text-base-content"><FaUserFriends /> {team.members.join(", ")}</p>
+                    <h2 className="text-lg font-semibold text-base-content">{team.teamName}</h2>
+                    <p className="text-sm flex items-center gap-2 text-base-content"><FaTrophy /> {team.hackathonName}</p>
+                    <p className="text-sm flex items-center gap-2 text-base-content"><FaUserFriends /> {team.teamMembers?.map(member => member.name).join(", ") || "No Members"}</p>
                   </div>
                   <div className="flex gap-3">
                     <button className="btn btn-outline btn-sm px-6" onClick={() => navigate(`/joinedteam`)}><FaEye /></button>
@@ -87,7 +164,7 @@ const MyTeams = () => {
         )}
 
         {/* If No Teams Exist */}
-        {teams.length === 0 && (
+        {createdTeams.length === 0 && joinedTeams.length == 0 && (
           <p className="text-gray-500 text-center">You are not part of any teams yet.</p>
         )}
 
