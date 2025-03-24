@@ -143,3 +143,39 @@ export const removeTeamMember = async (req, res) => {
         res.status(500).json({ error: "Internal server error in removeTeamController" });
     }
 };
+
+//Get all teams created by the user
+export const getCreatedTeams = async (req, res) => {
+    try {
+        const userid = req.user.id;
+        const teams = await Team.find({ teamLeader: userid });
+        return res.status(200).json({ 
+            message: "Created Teams by the user",
+            teams
+        });
+    } catch (error) {
+        console.log("Error in removeTeamMember controller", error.message);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+//Get all teams created by the user
+export const getJoinedTeams = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        // Find teams where the user is in teamMembers but is not the teamLeader
+        const teams = await Team.find({
+            teamMembers: { $in: [userId] },
+            teamLeader: { $ne: userId }
+        });
+
+        return res.status(200).json({
+            message: "Joined teams retrieved successfully",
+            teams
+        });
+
+    } catch (error) {
+        console.log("Error in getJoinedTeams controller", error.message);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};

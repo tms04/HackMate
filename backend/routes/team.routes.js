@@ -4,6 +4,8 @@ import { createTeam } from "../controllers/team.controller.js";
 import { addTeamMember } from "../controllers/team.controller.js";
 import { removeTeamMember } from "../controllers/team.controller.js";
 import { deleteTeam } from "../controllers/team.controller.js";
+import { getCreatedTeams } from "../controllers/team.controller.js";
+import { getJoinedTeams } from "../controllers/team.controller.js";
 
 const router = express.Router();
 
@@ -11,5 +13,7 @@ router.post("/createTeam", auth, createTeam);
 router.post("/addTeamMember", auth, addTeamMember);
 router.post("/removeTeamMember", auth, removeTeamMember);
 router.post("/deleteTeam", auth, deleteTeam);
+router.get("/createdTeams", auth, getCreatedTeams);
+router.get("/joinedTeams", auth, getJoinedTeams);
 
 export default router;
