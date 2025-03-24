@@ -12,24 +12,32 @@ const MainPage = () => {
   const [error, setError] = useState(null); // Error state
   const [searchInput, setSearchInput] = useState(""); // State for current search input
   const [searchTerms, setSearchTerms] = useState([]); // State for active search terms
-  
+
   // Filter states
   const [filters, setFilters] = useState({
     department: "",
     year: "",
-    gender: ""
+    gender: "",
   });
 
   // Department, year, gender options
-  const departmentOptions = ["IT", "CS", "CSDS", "AI/ML", "Civil", "Mech", "EXTC"];
+  const departmentOptions = [
+    "IT",
+    "CS",
+    "CSDS",
+    "AI/ML",
+    "Civil",
+    "Mech",
+    "EXTC",
+  ];
   const yearOptions = [1, 2, 3, 4];
   const genderOptions = ["Male", "Female", "Prefer  Not to Say"];
 
   // Handle filter changes
   const handleFilterChange = (filterName, value) => {
-    setFilters(prevFilters => ({
+    setFilters((prevFilters) => ({
       ...prevFilters,
-      [filterName]: value
+      [filterName]: value,
     }));
   };
 
@@ -40,10 +48,10 @@ const MainPage = () => {
 
   // Add search term when Enter is pressed
   const handleSearchKeyDown = (e) => {
-    if (e.key === 'Enter' && searchInput.trim()) {
+    if (e.key === "Enter" && searchInput.trim()) {
       // Add the search term if it doesn't already exist
       if (!searchTerms.includes(searchInput.trim())) {
-        setSearchTerms(prev => [...prev, searchInput.trim()]);
+        setSearchTerms((prev) => [...prev, searchInput.trim()]);
       }
       setSearchInput(""); // Clear the input
     }
@@ -52,14 +60,14 @@ const MainPage = () => {
   // Add search term from the input
   const addSearchTerm = () => {
     if (searchInput.trim() && !searchTerms.includes(searchInput.trim())) {
-      setSearchTerms(prev => [...prev, searchInput.trim()]);
+      setSearchTerms((prev) => [...prev, searchInput.trim()]);
       setSearchInput(""); // Clear the input
     }
   };
 
   // Remove a specific search term
   const removeSearchTerm = (term) => {
-    setSearchTerms(searchTerms.filter(t => t !== term));
+    setSearchTerms(searchTerms.filter((t) => t !== term));
   };
 
   // Reset all filters and search
@@ -67,7 +75,7 @@ const MainPage = () => {
     setFilters({
       department: "",
       year: "",
-      gender: ""
+      gender: "",
     });
     setSearchTerms([]);
     setSearchInput("");
@@ -97,48 +105,56 @@ const MainPage = () => {
   useEffect(() => {
     if (users.length > 0) {
       let result = [...users];
-      
+
       // Apply department filter
       if (filters.department) {
-        result = result.filter(user => user.department === filters.department);
+        result = result.filter(
+          (user) => user.department === filters.department
+        );
       }
-      
+
       // Apply year filter
       if (filters.year) {
-        result = result.filter(user => user.year === Number(filters.year));
+        result = result.filter((user) => user.year === Number(filters.year));
       }
-      
+
       // Apply gender filter
       if (filters.gender) {
-        result = result.filter(user => user.gender === filters.gender);
+        result = result.filter((user) => user.gender === filters.gender);
       }
-      
+
       // Apply search terms - each term is ANDed (all terms must match)
       if (searchTerms.length > 0) {
-        result = result.filter(user => {
+        result = result.filter((user) => {
           // Check if user matches ALL search terms
-          return searchTerms.every(term => {
+          return searchTerms.every((term) => {
             const query = term.toLowerCase();
-            
+
             // Search in name
-            const nameMatch = user.name && user.name.toLowerCase().includes(query);
-            
+            const nameMatch =
+              user.name && user.name.toLowerCase().includes(query);
+
             // Search in skills
-            const skillsMatch = user.skills && Array.isArray(user.skills) && 
-              user.skills.some(skill => skill.toLowerCase().includes(query));
-            
+            const skillsMatch =
+              user.skills &&
+              Array.isArray(user.skills) &&
+              user.skills.some((skill) => skill.toLowerCase().includes(query));
+
             // Search in roles
-            const rolesMatch = user.roles && Array.isArray(user.roles) && 
-              user.roles.some(role => role.toLowerCase().includes(query));
-              
+            const rolesMatch =
+              user.roles &&
+              Array.isArray(user.roles) &&
+              user.roles.some((role) => role.toLowerCase().includes(query));
+
             // Search in department
-            const deptMatch = user.department && user.department.toLowerCase().includes(query);
-            
+            const deptMatch =
+              user.department && user.department.toLowerCase().includes(query);
+
             return nameMatch || skillsMatch || rolesMatch || deptMatch;
           });
         });
       }
-      
+
       setFilteredUsers(result);
     }
   }, [filters, users, searchTerms]);
@@ -185,15 +201,15 @@ const MainPage = () => {
                 <div className="join-item bg-base-300 flex items-center pl-3">
                   <FiSearch className="text-base-content" />
                 </div>
-                <input 
-                  type="text" 
-                  placeholder="Search for skills, roles, names..." 
-                  className="input input-bordered join-item w-full" 
+                <input
+                  type="text"
+                  placeholder="Search for skills, roles, names..."
+                  className="input input-bordered join-item w-full"
                   value={searchInput}
                   onChange={handleSearchInputChange}
                   onKeyDown={handleSearchKeyDown}
                 />
-                <button 
+                <button
                   className="btn join-item btn-primary"
                   onClick={addSearchTerm}
                   disabled={!searchInput.trim()}
@@ -202,64 +218,74 @@ const MainPage = () => {
                   <span className="sm:hidden">+</span>
                 </button>
               </div>
-              
+
               {/* Filters Group */}
               <div className="flex flex-1 gap-2 w-full lg:w-auto">
                 {/* Department Filter */}
-                <select 
-                  className="select select-bordered flex-1" 
+                <select
+                  className="select select-bordered flex-1"
                   value={filters.department}
-                  onChange={(e) => handleFilterChange("department", e.target.value)}
+                  onChange={(e) =>
+                    handleFilterChange("department", e.target.value)
+                  }
                 >
                   <option value="">Department</option>
-                  {departmentOptions.map(dept => (
-                    <option key={dept} value={dept}>{dept}</option>
+                  {departmentOptions.map((dept) => (
+                    <option key={dept} value={dept}>
+                      {dept}
+                    </option>
                   ))}
                 </select>
-                
+
                 {/* Year Filter */}
-                <select 
-                  className="select select-bordered flex-1" 
+                <select
+                  className="select select-bordered flex-1"
                   value={filters.year}
                   onChange={(e) => handleFilterChange("year", e.target.value)}
                 >
                   <option value="">Year</option>
-                  {yearOptions.map(year => (
-                    <option key={year} value={year}>Year {year}</option>
+                  {yearOptions.map((year) => (
+                    <option key={year} value={year}>
+                      Year {year}
+                    </option>
                   ))}
                 </select>
-                
+
                 {/* Gender Filter */}
-                <select 
-                  className="select select-bordered flex-1" 
+                <select
+                  className="select select-bordered flex-1"
                   value={filters.gender}
                   onChange={(e) => handleFilterChange("gender", e.target.value)}
                 >
                   <option value="">Gender</option>
-                  {genderOptions.map(gender => (
-                    <option key={gender} value={gender}>{gender}</option>
+                  {genderOptions.map((gender) => (
+                    <option key={gender} value={gender}>
+                      {gender}
+                    </option>
                   ))}
                 </select>
               </div>
-              
+
               {/* Reset Filters Button */}
-              <button 
+              <button
                 className="btn btn-outline btn-sm w-full lg:w-auto"
                 onClick={resetFilters}
               >
                 Reset All
               </button>
             </div>
-            
+
             {/* Search terms display */}
             {searchTerms.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-3 pb-1">
-                <span className="text-sm opacity-70 self-center">Active filters:</span>
+                <span className="text-sm opacity-70 self-center">
+                  Active filters:
+                </span>
                 {searchTerms.map((term, index) => (
                   <span key={index} className="badge badge-primary gap-1 py-3">
                     {term}
-                    <button 
-                      onClick={() => removeSearchTerm(term)} 
+                    <button
+                      onClick={() => removeSearchTerm(term)}
                       className="btn btn-xs btn-circle btn-ghost"
                       aria-label={`Remove ${term} filter`}
                     >
@@ -267,7 +293,7 @@ const MainPage = () => {
                     </button>
                   </span>
                 ))}
-                <button 
+                <button
                   className="badge badge-outline cursor-pointer py-3"
                   onClick={() => setSearchTerms([])}
                 >
@@ -275,21 +301,29 @@ const MainPage = () => {
                 </button>
               </div>
             )}
-            
+
             {/* Filter Results Count */}
             <div className="mt-3 text-sm opacity-80 flex items-center">
-              <span className="badge badge-neutral badge-sm mr-2">{filteredUsers.length}</span> 
+              <span className="badge badge-neutral badge-sm mr-2">
+                {filteredUsers.length}
+              </span>
               of {users.length} profiles shown
               {(filters.department || filters.year || filters.gender) && (
                 <div className="ml-2 flex gap-1">
                   {filters.department && (
-                    <span className="badge badge-sm badge-outline">{filters.department}</span>
+                    <span className="badge badge-sm badge-outline">
+                      {filters.department}
+                    </span>
                   )}
                   {filters.year && (
-                    <span className="badge badge-sm badge-outline">Year {filters.year}</span>
+                    <span className="badge badge-sm badge-outline">
+                      Year {filters.year}
+                    </span>
                   )}
                   {filters.gender && (
-                    <span className="badge badge-sm badge-outline">{filters.gender}</span>
+                    <span className="badge badge-sm badge-outline">
+                      {filters.gender}
+                    </span>
                   )}
                 </div>
               )}
@@ -305,41 +339,42 @@ const MainPage = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-           {filteredUsers.length > 0 ? filteredUsers
-  .filter(profile => 
-    profile._id && 
-    profile.name && 
-    profile.year && 
-    profile.gender && 
-    profile.department && 
-    profile.profilePic && 
-    profile.roles?.length > 0 && 
-    profile.skills?.length > 0
-  )
-  .map((profile) => (
-    <ProfileCard
-      key={profile._id} // Use _id from MongoDB
-      name={profile.name}
-      year={profile.year}
-      gender={profile.gender}
-      department={profile.department}
-      profileImage={profile.profilePic} // Pass profile image if available
-      roles={profile.roles} // Pass roles if available
-      skills={profile.skills} // Pass skills if available
-      achievements={profile.achievements} // Pass achievements if available
-    />
-  )) : (
-    <div className="col-span-full py-10 text-center">
-      <p className="text-lg">No profiles match the selected filters</p>
-      <button 
-        className="btn btn-primary mt-4"
-        onClick={resetFilters}
-      >
-        Reset Filters
-      </button>
-    </div>
-  )}
-
+            {filteredUsers.length > 0 ? (
+              filteredUsers
+                .filter(
+                  (profile) =>
+                    profile._id &&
+                    profile.name &&
+                    profile.year &&
+                    profile.gender &&
+                    profile.department &&
+                    profile.profilePic &&
+                    profile.roles?.length > 0 &&
+                    profile.skills?.length > 0
+                )
+                .map((profile) => (
+                  <ProfileCard
+                    key={profile._id} // Use _id from MongoDB
+                    name={profile.name}
+                    year={profile.year}
+                    gender={profile.gender}
+                    department={profile.department}
+                    profileImage={profile.profilePic} // Pass profile image if available
+                    roles={profile.roles} // Pass roles if available
+                    skills={profile.skills} // Pass skills if available
+                    achievements={profile.experience} // Pass achievements if available
+                  />
+                ))
+            ) : (
+              <div className="col-span-full py-10 text-center">
+                <p className="text-lg">
+                  No profiles match the selected filters
+                </p>
+                <button className="btn btn-primary mt-4" onClick={resetFilters}>
+                  Reset Filters
+                </button>
+              </div>
+            )}
           </motion.div>
         </div>
       </div>
