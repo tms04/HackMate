@@ -84,6 +84,16 @@ export const sendRequest = async (req, res) => {
             return res.status(403).json({ message: "Only the team leader can add members" });
         }
 
+        // Check if the requester is already registered in another team for the same hackathon
+        const existingTeam = await Team.findOne({
+            hackathonName: team.hackathonName,
+            teamMembers: requesterId
+        });
+
+        if (existingTeam) {
+            return res.status(400).json({ message: "User is already in a team for this hackathon" });
+        }
+        
         // Check if the requester already exists in the team
         if (team.teamMembers.includes(requesterId)) {
             return res.status(400).json({ message: "User is already a member of this team" });
@@ -109,10 +119,73 @@ export const sendRequest = async (req, res) => {
         });
 
     } catch (error) {
-        console.log("Error in addTeamMember controller", error.message);
-        res.status(500).json({ error: "Internal server error in addTeamController" });
+        console.log("Error in sendRequest controller", error.message);
+        res.status(500).json({ error: "Internal server error" });
     }
 };
+
+export const getAllRequests = async (req, res) => {
+    try {
+        const userId = req.user.id; // Logged-in user ID
+
+        // Find teams where the user is in requestedTeamMembers
+        const teams = await Team.find({ requestedTeamMembers: userId }).select("teamName teamLeader");
+
+        if (!teams.length) {
+            return res.status(200).json({ message: "No pending requests", requests: [] });
+        }
+
+        return res.status(200).json({ 
+            message: "Pending team join requests fetched successfully",
+            requests: teams
+        });
+
+    } catch (error) {
+        console.error("Error in getReceivedRequests controller:", error.message);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+
+export const acceptRequest = async (req, res) => {
+    try {
+        const { teamId } = req.body;
+        const userId = req.user.id; // User accepting the request
+
+        // Find the team
+        const team = await Team.findById(teamId);
+        if (!team) {
+            return res.status(404).json({ message: "Team not found" });
+        }
+
+        // Check if the user has a pending request
+        if (!team.requestedTeamMembers.includes(userId)) {
+            return res.status(400).json({ message: "No pending request found for this user" });
+        }
+
+        // Check if the team is already full
+        if (team.teamMembers.length >= team.maxSize) {
+            return res.status(400).json({ message: "Team is already full" });
+        }
+
+        // Remove user from requestedTeamMembers
+        team.requestedTeamMembers = team.requestedTeamMembers.filter(id => id.toString() !== userId);
+
+        // Add user to teamMembers
+        team.teamMembers.push(userId);
+        await team.save();
+
+        return res.status(200).json({
+            message: "User successfully added to the team",
+            team
+        });
+
+    } catch (error) {
+        console.error("Error in acceptRequest controller:", error.message);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
 
 // Removing a Team Member to the team
 export const removeTeamMember = async (req, res) => {
