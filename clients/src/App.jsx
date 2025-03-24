@@ -98,7 +98,7 @@ export default function App() {
                 <MyTeams />
               </AuthenticatedLayout>
             } />
-            <Route path="/createdteam" element={
+            <Route path="/createdteam/:teamId" element={
               <AuthenticatedLayout>
                 <CreatedTeamPage />
               </AuthenticatedLayout>
