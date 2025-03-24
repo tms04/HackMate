@@ -67,6 +67,34 @@ export const deleteTeam = async (req, res) => {
     }
 };
 
+//Leave a Team
+export const leaveTeam = async (req, res) => {
+    try {
+        const { teamId} = req.body;
+        const userId = req.user.id; // Authenticated user ID
+        // Find the team
+        const team = await Team.findById(teamId);
+        if (!team) {
+            return res.status(404).json({ message: "Team not found." });
+        }
+
+        // Check if the user is in the team
+        if (!team.teamMembers.includes(userId)) {
+            return res.status(400).json({ message: "User is not a member of this team." });
+        }
+
+        // Remove the user from teamMembers
+        team.teamMembers = team.teamMembers.filter(member => member.toString() !== userId);
+        await team.save();
+
+        return res.status(200).json({ message: "You have successfully left the team." });
+    } catch (error) {
+        console.error("Error in leaveTeam controller:", error.message);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+
 // Adding a Team Member to the team
 export const sendRequest = async (req, res) => {
     try {
@@ -228,7 +256,8 @@ export const removeTeamMember = async (req, res) => {
 export const getCreatedTeams = async (req, res) => {
     try {
         const { userId } = req.params;
-        const teams = await Team.find({ teamLeader: userId });
+        const teams = await Team.find({ teamLeader: userId }).populate("teamMembers", "name");
+
         return res.status(200).json({ 
             message: "Created Teams by the user",
             teams
@@ -247,7 +276,7 @@ export const getJoinedTeams = async (req, res) => {
         const teams = await Team.find({
             teamMembers: { $in: [userId] },
             teamLeader: { $ne: userId }
-        });
+        }).populate("teamMembers", "name");
 
         return res.status(200).json({
             message: "Joined teams retrieved successfully",
