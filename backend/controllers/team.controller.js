@@ -1,26 +1,26 @@
-import {Team} from "../models/team.model.js"
+import { Team } from "../models/team.model.js"
 
 // Fetch Team Details
 export const teamDetails = async (req, res) => {
     try {
         const { teamId } = req.params;
-    
+
         const team = await Team.findById(teamId);
         if (!team) {
-          return res.status(404).json({ message: "Team not found" });
+            return res.status(404).json({ message: "Team not found" });
         }
-    
+
         res.status(200).json(team);
-      } catch (error) {
+    } catch (error) {
         console.error("Error fetching team details:", error);
         res.status(500).json({ message: "Server error" });
-      }
+    }
 }
 
 // Creating a Team 
-export const createTeam = async(req, res) => {
+export const createTeam = async (req, res) => {
     try {
-        const { teamName, maxSize, hackathonName, mode, location, startDate, endDate, domains} = req.body;
+        const { teamName, maxSize, hackathonName, mode, location, startDate, endDate, domains } = req.body;
         const teamLeader = req.user.id;
         // Check if leader has already created a team in the same hackathon
         const existingTeam = await Team.findOne({ hackathonName, teamLeader });
@@ -87,7 +87,7 @@ export const deleteTeam = async (req, res) => {
 //Leave a Team
 export const leaveTeam = async (req, res) => {
     try {
-        const { teamId} = req.body;
+        const { teamId } = req.body;
         const userId = req.user.id; // Authenticated user ID
         // Find the team
         const team = await Team.findById(teamId);
@@ -138,7 +138,7 @@ export const sendRequest = async (req, res) => {
         if (existingTeam) {
             return res.status(400).json({ message: "User is already in a team for this hackathon" });
         }
-        
+
         // Check if the requester already exists in the team
         if (team.teamMembers.includes(requesterId)) {
             return res.status(400).json({ message: "User is already a member of this team" });
@@ -158,7 +158,7 @@ export const sendRequest = async (req, res) => {
         team.requestedTeamMembers.push(requesterId);
         await team.save();
 
-        return res.status(200).json({ 
+        return res.status(200).json({
             message: "Member added to requestedTeamMembers successfully",
             team
         });
@@ -175,22 +175,22 @@ export const getAllRequests = async (req, res) => {
         console.log("Fetching requests for user:", userId);
 
         // Find teams where the user is in requestedTeamMembers
-        const teams = await Team.find({ 
-            requestedTeamMembers: { $in: [userId] } 
+        const teams = await Team.find({
+            requestedTeamMembers: { $in: [userId] }
         }).select("_id teamName teamLeader");
 
         console.log("Teams found:", teams);
 
         if (!teams || teams.length === 0) {
             console.log("No pending requests found for user:", userId);
-            return res.status(200).json({ 
-                message: "No pending requests", 
-                requests: [] 
+            return res.status(200).json({
+                message: "No pending requests",
+                requests: []
             });
         }
 
         console.log(`Found ${teams.length} pending requests for user:`, userId);
-        return res.status(200).json({ 
+        return res.status(200).json({
             message: "Pending team join requests fetched successfully",
             requests: teams
         });
@@ -201,60 +201,34 @@ export const getAllRequests = async (req, res) => {
     }
 };
 
-
 export const acceptRequest = async (req, res) => {
     try {
         const { teamId } = req.body;
         const userId = req.user.id; // User accepting the request
 
-        console.log("Accept request params:", { teamId, userId });
-
         // Find the team
         const team = await Team.findById(teamId);
-        console.log("Team found:", team ? "yes" : "no");
-        
+
         if (!team) {
             return res.status(404).json({ message: "Team not found" });
         }
 
-        // Check if this is a test invitation with the fixed team leader ID
-        const isTestInvitation = team.teamLeader.toString() === "6602f00d3a991833b8357610";
-        console.log("Is test invitation:", isTestInvitation);
-
         // Check if the user has a pending request
-        const hasPendingRequest = team.requestedTeamMembers.includes(userId);
-        console.log("User has pending request:", hasPendingRequest);
-        
-        if (!hasPendingRequest) {
+        if (!team.requestedTeamMembers.includes(userId)) {
             return res.status(400).json({ message: "No pending request found for this user" });
         }
 
         // Check if the team is already full
-        const isTeamFull = team.teamMembers.length >= team.maxSize;
-        console.log("Team is full:", isTeamFull);
-        
-        if (isTeamFull) {
+        if (team.teamMembers.length >= team.maxSize) {
             return res.status(400).json({ message: "Team is already full" });
         }
-
-        console.log("Before update:", {
-            requestedTeamMembers: team.requestedTeamMembers,
-            teamMembers: team.teamMembers
-        });
 
         // Remove user from requestedTeamMembers
         team.requestedTeamMembers = team.requestedTeamMembers.filter(id => id.toString() !== userId);
 
         // Add user to teamMembers
         team.teamMembers.push(userId);
-        
-        console.log("After update:", {
-            requestedTeamMembers: team.requestedTeamMembers,
-            teamMembers: team.teamMembers
-        });
-        
         await team.save();
-        console.log("Team saved successfully");
 
         return res.status(200).json({
             message: "User successfully added to the team",
@@ -263,11 +237,47 @@ export const acceptRequest = async (req, res) => {
 
     } catch (error) {
         console.error("Error in acceptRequest controller:", error.message);
-        console.error("Error stack:", error.stack);
         res.status(500).json({ error: "Internal server error" });
     }
 };
 
+// Add this new controller function for declining team invitations
+export const declineRequest = async (req, res) => {
+    try {
+        const { teamId } = req.body;
+        const userId = req.user.id; // User declining the request
+
+        // Find the team
+        const team = await Team.findById(teamId);
+
+        if (!team) {
+            return res.status(404).json({ message: "Team not found" });
+        }
+
+        // Check if the user has a pending request
+        if (!team.requestedTeamMembers.includes(userId)) {
+            return res.status(400).json({ message: "No pending request found for this user" });
+        }
+
+        console.log("Before update:", {
+            requestedTeamMembers: team.requestedTeamMembers
+        });
+
+        // Remove user from requestedTeamMembers
+        team.requestedTeamMembers = team.requestedTeamMembers.filter(id => id.toString() !== userId);
+
+        await team.save();
+
+        return res.status(200).json({
+            message: "Invitation declined successfully",
+            team
+        });
+
+    } catch (error) {
+        console.error("Error in declineRequest controller:", error.message);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
 
 // Removing a Team Member to the team
 export const removeTeamMember = async (req, res) => {
@@ -295,7 +305,7 @@ export const removeTeamMember = async (req, res) => {
         team.teamMembers.pop(requesterId);
         await team.save();
 
-        return res.status(200).json({ 
+        return res.status(200).json({
             message: "Member removed successfully",
             team
         });
@@ -312,7 +322,7 @@ export const getCreatedTeams = async (req, res) => {
         const { userId } = req.params;
         const teams = await Team.find({ teamLeader: userId }).populate("teamMembers", "name");
 
-        return res.status(200).json({ 
+        return res.status(200).json({
             message: "Created Teams by the user",
             teams
         });
@@ -339,57 +349,6 @@ export const getJoinedTeams = async (req, res) => {
 
     } catch (error) {
         console.log("Error in getJoinedTeams controller", error.message);
-        res.status(500).json({ error: "Internal server error" });
-    }
-};
-
-// Add this new controller function for declining team invitations
-
-export const declineRequest = async (req, res) => {
-    try {
-        const { teamId } = req.body;
-        const userId = req.user.id; // User declining the request
-
-        console.log("Decline request params:", { teamId, userId });
-
-        // Find the team
-        const team = await Team.findById(teamId);
-        console.log("Team found:", team ? "yes" : "no");
-        
-        if (!team) {
-            return res.status(404).json({ message: "Team not found" });
-        }
-
-        // Check if the user has a pending request
-        const hasPendingRequest = team.requestedTeamMembers.includes(userId);
-        console.log("User has pending request:", hasPendingRequest);
-        
-        if (!hasPendingRequest) {
-            return res.status(400).json({ message: "No pending request found for this user" });
-        }
-
-        console.log("Before update:", {
-            requestedTeamMembers: team.requestedTeamMembers
-        });
-
-        // Remove user from requestedTeamMembers
-        team.requestedTeamMembers = team.requestedTeamMembers.filter(id => id.toString() !== userId);
-        
-        console.log("After update:", {
-            requestedTeamMembers: team.requestedTeamMembers
-        });
-        
-        await team.save();
-        console.log("Team saved successfully");
-
-        return res.status(200).json({
-            message: "Invitation declined successfully",
-            team
-        });
-
-    } catch (error) {
-        console.error("Error in declineRequest controller:", error.message);
-        console.error("Error stack:", error.stack);
         res.status(500).json({ error: "Internal server error" });
     }
 };
