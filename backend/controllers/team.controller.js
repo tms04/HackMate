@@ -207,28 +207,54 @@ export const acceptRequest = async (req, res) => {
         const { teamId } = req.body;
         const userId = req.user.id; // User accepting the request
 
+        console.log("Accept request params:", { teamId, userId });
+
         // Find the team
         const team = await Team.findById(teamId);
+        console.log("Team found:", team ? "yes" : "no");
+        
         if (!team) {
             return res.status(404).json({ message: "Team not found" });
         }
 
+        // Check if this is a test invitation with the fixed team leader ID
+        const isTestInvitation = team.teamLeader.toString() === "6602f00d3a991833b8357610";
+        console.log("Is test invitation:", isTestInvitation);
+
         // Check if the user has a pending request
-        if (!team.requestedTeamMembers.includes(userId)) {
+        const hasPendingRequest = team.requestedTeamMembers.includes(userId);
+        console.log("User has pending request:", hasPendingRequest);
+        
+        if (!hasPendingRequest) {
             return res.status(400).json({ message: "No pending request found for this user" });
         }
 
         // Check if the team is already full
-        if (team.teamMembers.length >= team.maxSize) {
+        const isTeamFull = team.teamMembers.length >= team.maxSize;
+        console.log("Team is full:", isTeamFull);
+        
+        if (isTeamFull) {
             return res.status(400).json({ message: "Team is already full" });
         }
+
+        console.log("Before update:", {
+            requestedTeamMembers: team.requestedTeamMembers,
+            teamMembers: team.teamMembers
+        });
 
         // Remove user from requestedTeamMembers
         team.requestedTeamMembers = team.requestedTeamMembers.filter(id => id.toString() !== userId);
 
         // Add user to teamMembers
         team.teamMembers.push(userId);
+        
+        console.log("After update:", {
+            requestedTeamMembers: team.requestedTeamMembers,
+            teamMembers: team.teamMembers
+        });
+        
         await team.save();
+        console.log("Team saved successfully");
 
         return res.status(200).json({
             message: "User successfully added to the team",
@@ -237,6 +263,7 @@ export const acceptRequest = async (req, res) => {
 
     } catch (error) {
         console.error("Error in acceptRequest controller:", error.message);
+        console.error("Error stack:", error.stack);
         res.status(500).json({ error: "Internal server error" });
     }
 };
@@ -323,20 +350,37 @@ export const declineRequest = async (req, res) => {
         const { teamId } = req.body;
         const userId = req.user.id; // User declining the request
 
+        console.log("Decline request params:", { teamId, userId });
+
         // Find the team
         const team = await Team.findById(teamId);
+        console.log("Team found:", team ? "yes" : "no");
+        
         if (!team) {
             return res.status(404).json({ message: "Team not found" });
         }
 
         // Check if the user has a pending request
-        if (!team.requestedTeamMembers.includes(userId)) {
+        const hasPendingRequest = team.requestedTeamMembers.includes(userId);
+        console.log("User has pending request:", hasPendingRequest);
+        
+        if (!hasPendingRequest) {
             return res.status(400).json({ message: "No pending request found for this user" });
         }
 
+        console.log("Before update:", {
+            requestedTeamMembers: team.requestedTeamMembers
+        });
+
         // Remove user from requestedTeamMembers
         team.requestedTeamMembers = team.requestedTeamMembers.filter(id => id.toString() !== userId);
+        
+        console.log("After update:", {
+            requestedTeamMembers: team.requestedTeamMembers
+        });
+        
         await team.save();
+        console.log("Team saved successfully");
 
         return res.status(200).json({
             message: "Invitation declined successfully",
@@ -345,6 +389,7 @@ export const declineRequest = async (req, res) => {
 
     } catch (error) {
         console.error("Error in declineRequest controller:", error.message);
+        console.error("Error stack:", error.stack);
         res.status(500).json({ error: "Internal server error" });
     }
 };

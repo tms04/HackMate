@@ -22,11 +22,15 @@ router.post("/create-test-invitation", auth, async (req, res) => {
   try {
     const userId = req.user.id;
     
+    // Generate random names to make each invitation unique
+    const randomId = Math.floor(Math.random() * 10000);
+    const timestamp = new Date().toISOString().substring(11, 19).replace(/:/g, '');
+    
     // Create a test team with the current user as a requested member
     const testTeam = new Team({
-      teamName: "Test Team",
+      teamName: `Test Team ${timestamp}-${randomId}`,
       maxSize: 5,
-      hackathonName: "Test Hackathon",
+      hackathonName: `Test Hackathon ${timestamp}-${randomId}`,
       mode: "Online",
       startDate: new Date(),
       endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1 week later

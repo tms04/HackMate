@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { FaEye, FaTrophy, FaUserFriends } from "react-icons/fa";
+import { FaEye, FaTrophy, FaUserFriends, FaSync } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+
 const MyTeams = () => {
   const navigate = useNavigate();
 
@@ -11,6 +12,7 @@ const MyTeams = () => {
   const [actionType, setActionType] = useState(""); // "delete" or "leave"
   const [createdTeams, setCreatedTeams] = useState([]);
   const [joinedTeams, setJoinedTeams] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // Open modal function
   const openModal = (team, action) => {
@@ -60,58 +62,68 @@ const MyTeams = () => {
     }
   };
   
-  useEffect(() => {
-    const fetchCreatedTeams = async () => {
-      try {
-        const userId = Cookies.get("userId");
-        const token = Cookies.get("token");
-        if (!userId) {
-          toast.error("User not logged in");
-          return;
-        }
-
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/team/createdTeams/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setCreatedTeams(response.data.teams);
-      } catch (error) {
-        console.error("Error fetching created teams:", error);
-        toast.error("Failed to fetch created teams");
+  // Combined function to fetch both types of teams
+  const fetchAllTeams = useCallback(async () => {
+    setLoading(true);
+    try {
+      const userId = Cookies.get("userId");
+      const token = Cookies.get("token");
+      if (!userId || !token) {
+        toast.error("User not logged in");
+        setLoading(false);
+        return;
       }
-    };
 
-    fetchCreatedTeams();
+      // Fetch both created and joined teams in parallel
+      const [createdResponse, joinedResponse] = await Promise.all([
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/team/createdTeams/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/team/joinedTeams/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+      ]);
+
+      console.log("Created teams:", createdResponse.data.teams);
+      console.log("Joined teams:", joinedResponse.data.teams);
+      
+      setCreatedTeams(createdResponse.data.teams);
+      setJoinedTeams(joinedResponse.data.teams);
+    } catch (error) {
+      console.error("Error fetching teams:", error);
+      toast.error("Failed to fetch teams");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
+  // Manually refresh teams data
+  const refreshTeams = () => {
+    toast.success("Refreshing teams...");
+    fetchAllTeams();
+  };
+  
   useEffect(() => {
-    const fetchJoinedTeams = async () => {
-      try {
-        const userId = Cookies.get("userId");
-        const token = Cookies.get("token");
-        if (!userId) {
-          toast.error("User not logged in");
-          return;
-        }
-
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/team/joinedTeams/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setJoinedTeams(response.data.teams);
-      } catch (error) {
-        console.error("Error fetching created teams:", error);
-        toast.error("Failed to fetch created teams");
-      }
-    };
-    fetchJoinedTeams();
-  }, []);
+    fetchAllTeams();
+  }, [fetchAllTeams]);
 
   return (
     <div className="w-full bg-base-200">
       <div className="p-6 max-w-3xl mx-auto bg-base-200 dark:bg-neutral-900 text-base-content min-h-screen">
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold">My Teams</h1>
+          <button 
+            onClick={refreshTeams} 
+            className="btn btn-sm btn-outline"
+            disabled={loading}
+          >
+            {loading ? (
+              <span className="loading loading-spinner loading-xs"></span>
+            ) : (
+              <><FaSync /> Refresh</>
+            )}
+          </button>
+        </div>
 
         {/* Teams Created */}
         {createdTeams.length > 0 && (
@@ -164,8 +176,15 @@ const MyTeams = () => {
         )}
 
         {/* If No Teams Exist */}
-        {createdTeams.length === 0 && joinedTeams.length == 0 && (
+        {createdTeams.length === 0 && joinedTeams.length === 0 && !loading && (
           <p className="text-gray-500 text-center">You are not part of any teams yet.</p>
+        )}
+
+        {/* Loading State */}
+        {loading && createdTeams.length === 0 && joinedTeams.length === 0 && (
+          <div className="flex justify-center items-center h-40">
+            <div className="loading loading-spinner loading-lg"></div>
+          </div>
         )}
 
         {/* DaisyUI Modal */}
