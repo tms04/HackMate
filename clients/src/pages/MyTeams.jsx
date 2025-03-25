@@ -166,7 +166,7 @@ const MyTeams = () => {
                     <p className="text-sm flex items-center gap-2 text-base-content"><FaUserFriends /> {team.teamMembers?.map(member => member.name).join(", ") || "No Members"}</p>
                   </div>
                   <div className="flex gap-3">
-                    <button className="btn btn-outline btn-sm px-6" onClick={() => navigate(`/joinedteam`)}><FaEye /></button>
+                    <button className="btn btn-outline btn-sm px-6" onClick={() => navigate(`/joinedteam/${team._id}`)}><FaEye /></button>
                     <button className="btn btn-neutral btn-sm" onClick={() => openModal(team, "leave")}>Leave</button>
                   </div>
                 </div>

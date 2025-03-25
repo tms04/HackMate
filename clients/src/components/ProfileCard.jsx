@@ -87,23 +87,24 @@ const ProfileCard = ({
 
       {/* Achievements (Ensuring Consistent UI) */}
       <div className="mt-4 flex justify-center min-h-[60px]">
-        {achievements.length > 0 ? (
-          <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-xs text-base-content place-items-start">
-            {achievements.slice(0, 3).map((achievement, index) => (
-              <div key={index} className="flex items-center gap-2">
-                <span className="w-6 h-6 flex items-center justify-center text-xs font-bold bg-neutral text-neutral-content rounded-full">
-                  {achievement.rank}
-                </span>
-                <span className="text-left">{achievement.name}</span>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-xs text-base-content/60 italic">
-            No Achievements Yet
-          </p>
-        )}
-      </div>
+  {achievements.length > 0 ? (
+    <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-xs text-base-content place-items-start">
+      {achievements.slice(0, 6).map((achievement, index) => (
+        <div key={index} className="flex items-center gap-2">
+          <span className="w-6 h-6 flex items-center justify-center text-xs font-bold bg-neutral text-neutral-content rounded-full">
+            {achievement.rank}
+          </span>
+          <span className="text-left">{achievement.name}</span>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <p className="text-xs text-base-content/60 italic">
+      No Achievements Yet
+    </p>
+  )}
+</div>
+
 
       {/* Connect Button */}
       {teamId == null ? (
