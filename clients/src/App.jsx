@@ -62,57 +62,87 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
-          
+
           {/* OAuth Callback Route - outside protected routes */}
-          <Route path="/oauth-callback-handler" element={<OAuthCallbackHandler />} />
-          
+          <Route
+            path="/oauth-callback-handler"
+            element={<OAuthCallbackHandler />}
+          />
+
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
-            <Route path="/main" element={
-              <AuthenticatedLayout>
-                <MainPage />
-              </AuthenticatedLayout>
-            } />
-            <Route path="/demo" element={
-              <AuthenticatedLayout>
-                <Demo />
-              </AuthenticatedLayout>
-            } />
-            <Route path="/userdetails" element={
-              <AuthenticatedLayout>
-                <ProfileForm />
-              </AuthenticatedLayout>
-            } />
-            <Route path="/newteam" element={
-              <AuthenticatedLayout>
-                <TeamForm />
-              </AuthenticatedLayout>
-            } />
-            <Route path="/notifications" element={
-              <AuthenticatedLayout>
-                <Notifications />
-              </AuthenticatedLayout>
-            } />
-            <Route path="/myteams" element={
-              <AuthenticatedLayout>
-                <MyTeams />
-              </AuthenticatedLayout>
-            } />
-            <Route path="/createdteam/:teamId" element={
-              <AuthenticatedLayout>
-                <CreatedTeamPage />
-              </AuthenticatedLayout>
-            } />
-            <Route path="/joinedteam/:teamId" element={
-              <AuthenticatedLayout>
-                <JoinedTeamPage />
-              </AuthenticatedLayout>
-            } />
-            <Route path="/profile" element={
-              <AuthenticatedLayout>
-                <ProfilePage />
-              </AuthenticatedLayout>
-            } />
+            <Route
+              path="/main"
+              element={
+                <AuthenticatedLayout>
+                  <MainPage />
+                </AuthenticatedLayout>
+              }
+            />
+            <Route
+              path="/demo"
+              element={
+                <AuthenticatedLayout>
+                  <Demo />
+                </AuthenticatedLayout>
+              }
+            />
+            <Route
+              path="/userdetails"
+              element={
+                <AuthenticatedLayout>
+                  <ProfileForm />
+                </AuthenticatedLayout>
+              }
+            />
+            <Route
+              path="/newteam"
+              element={
+                <AuthenticatedLayout>
+                  <TeamForm />
+                </AuthenticatedLayout>
+              }
+            />
+            <Route
+              path="/notifications"
+              element={
+                <AuthenticatedLayout>
+                  <Notifications />
+                </AuthenticatedLayout>
+              }
+            />
+            <Route
+              path="/myteams"
+              element={
+                <AuthenticatedLayout>
+                  <MyTeams />
+                </AuthenticatedLayout>
+              }
+            />
+            <Route
+              path="/createdteam/:teamId"
+              element={
+                <AuthenticatedLayout>
+                  <CreatedTeamPage />
+                </AuthenticatedLayout>
+              }
+            />
+            <Route
+              path="/joinedteam/:teamId"
+              element={
+                <AuthenticatedLayout>
+                  <JoinedTeamPage />
+                </AuthenticatedLayout>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <AuthenticatedLayout>
+                  <ProfilePage />
+                </AuthenticatedLayout>
+              }
+            />
           </Route>
         </Routes>
       </ClerkLoaded>

@@ -4,14 +4,21 @@ import { FiMenu, FiSearch, FiX } from "react-icons/fi";
 import { motion } from "framer-motion";
 import DrawerSideBar from "../components/DrawerSideBar";
 import ProfileCard from "../components/ProfileCard";
+import { useLocation } from "react-router-dom";
+import Cookies from "js-cookie";
 
-const MainPage = ({ teamId = null }) => {
+const MainPage = () => {
+  const userId = Cookies.get("userId");
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const teamId = queryParams.get("teamId");
   const [users, setUsers] = useState([]); // State to store fetched users
   const [filteredUsers, setFilteredUsers] = useState([]); // State to store filtered users
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
   const [searchInput, setSearchInput] = useState(""); // State for current search input
   const [searchTerms, setSearchTerms] = useState([]); // State for active search terms
+  // const [currentTeamId, setCurrentTeamId] = useState(null);
 
   // Filter states
   const [filters, setFilters] = useState({
@@ -81,7 +88,8 @@ const MainPage = ({ teamId = null }) => {
     setSearchInput("");
   };
 
-  // Fetch users from the backend
+  // Fetch users from the backend using teamId
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -177,6 +185,7 @@ const MainPage = ({ teamId = null }) => {
     );
   }
 
+  // console.log(profile.userId);
   return (
     <div className="drawer">
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
@@ -190,7 +199,6 @@ const MainPage = ({ teamId = null }) => {
         >
           <FiMenu size={24} />
         </label>
-
         {/* Filter Bar */}
         <div className="pt-16 px-10 pb-4">
           <div className="bg-base-100 p-4 rounded-lg shadow-md">
@@ -363,7 +371,8 @@ const MainPage = ({ teamId = null }) => {
                     profileImage={profile.profilePic} // Pass profile image if available
                     roles={profile.roles} // Pass roles if available
                     skills={profile.skills} // Pass skills if available
-                    achievements={profile.experience} // Pass achievements if available
+                    achievements={profile.experience}
+                    // userId1={profile.userId} // Pass achievements if available
                   />
                 ))
             ) : (
@@ -396,5 +405,3 @@ const MainPage = ({ teamId = null }) => {
 };
 
 export default MainPage;
-
-

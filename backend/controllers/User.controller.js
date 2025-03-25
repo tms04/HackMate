@@ -58,10 +58,10 @@ export const registerUser = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({}, { 
-      password: 0, 
-      __v: 0 
-    }).lean(); 
+    const users = await User.find({}, {
+      password: 0,
+      __v: 0
+    }).lean();
 
     if (users.length === 0) {
       return res.status(404).json({

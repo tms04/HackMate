@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from "react";
+import React, { useEffect } from "react";
 import {
   FaReact,
   FaNodeJs,
@@ -8,7 +8,8 @@ import {
 } from "react-icons/fa";
 import { SiExpress, SiNextdotjs } from "react-icons/si";
 import { motion } from "framer-motion";
-
+import Cookies from "js-cookie";
+import axios from "axios";
 const ProfileCard = ({
   name,
   year,
@@ -23,6 +24,34 @@ const ProfileCard = ({
   // Year Mapping for Better Readability
   const yearMap = { 1: "FY", 2: "SY", 3: "TY", 4: "Final" };
   year = yearMap[year] || "Unknown";
+
+  const userId = Cookies.get("userId");
+  const handleSendRequest = async () => {
+    if (!userId) {
+      console.error("User not logged in.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/team/sendRequest`,
+        {
+          teamId, // Team to which the request is being sent
+          requesterId: userId, // The user being requested to join
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("token")}`, // Authentication
+          },
+        }
+      );
+      console.log("Request sent successfully:", response.data);
+      alert("Request sent successfully!");
+    } catch (error) {
+      console.error("Error sending request:", error.response?.data || error);
+      alert(error.response?.data?.message || "Failed to send request.");
+    }
+  };
 
   return (
     <motion.div
@@ -87,32 +116,30 @@ const ProfileCard = ({
 
       {/* Achievements (Ensuring Consistent UI) */}
       <div className="mt-4 flex justify-center min-h-[60px]">
-  {achievements.length > 0 ? (
-    <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-xs text-base-content place-items-start">
-      {achievements.slice(0, 6).map((achievement, index) => (
-        <div key={index} className="flex items-center gap-2">
-          <span className="w-6 h-6 flex items-center justify-center text-xs font-bold bg-neutral text-neutral-content rounded-full">
-            {achievement.rank}
-          </span>
-          <span className="text-left">{achievement.name}</span>
-        </div>
-      ))}
-    </div>
-  ) : (
-    <p className="text-xs text-base-content/60 italic">
-      No Achievements Yet
-    </p>
-  )}
-</div>
-
+        {achievements.length > 0 ? (
+          <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-xs text-base-content place-items-start">
+            {achievements.slice(0, 6).map((achievement, index) => (
+              <div key={index} className="flex items-center gap-2">
+                <span className="w-6 h-6 flex items-center justify-center text-xs font-bold bg-neutral text-neutral-content rounded-full">
+                  {achievement.rank}
+                </span>
+                <span className="text-left">{achievement.name}</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-xs text-base-content/60 italic">
+            No Achievements Yet
+          </p>
+        )}
+      </div>
 
       {/* Connect Button */}
-      {teamId == null ? (
-        <></>
-      ) : (
+      {teamId && (
         <motion.button
           className="btn btn-outline w-full mt-4 rounded-lg text-sm"
           whileHover={{ scale: 1.1 }}
+          onClick={handleSendRequest}
         >
           Connect
         </motion.button>

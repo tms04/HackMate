@@ -208,7 +208,7 @@ const CreatedTeamPage = () => {
         <div className="mt-6 flex justify-center gap-4">
           <button
             className="btn btn-outline flex items-center gap-2"
-            onClick={() => navigate("/main")}
+            onClick={() => navigate(`/main?teamId=${teamId}`)}
           >
             <FaUserPlus /> Add Member
           </button>
