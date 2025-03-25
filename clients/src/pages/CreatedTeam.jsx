@@ -120,10 +120,34 @@ const CreatedTeamPage = () => {
     document.getElementById("delete_team_modal").showModal();
   };
 
-  const confirmDeleteTeam = () => {
-    navigate("/myteams");
-    document.getElementById("delete_team_modal").close();
+  const confirmDeleteTeam = async () => {
+    try {
+      const token = Cookies.get("token");
+  
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/team/deleteTeam`,
+        { teamId: team._id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      if (response.status === 200) {
+        navigate("/myteams");
+      }
+    } catch (error) {
+      console.error(
+        "Error deleting team:",
+        error.response?.data || error.message
+      );
+    } finally {
+      document.getElementById("delete_team_modal").close();
+    }
   };
+  
+
   return (
     <div className="w-full bg-base-200">
       <div className="p-6 max-w-3xl mx-auto bg-base-200 dark:bg-neutral-900 text-base-content min-h-screen relative">
@@ -235,6 +259,27 @@ const CreatedTeamPage = () => {
                 onClick={() =>
                   document.getElementById("remove_member_modal").close()
                 }
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </dialog>
+        <dialog id="delete_team_modal" className="modal">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">Confirm Deletion</h3>
+            <p className="py-4">
+              Are you sure you want to delete the team <strong>{team?.teamName}</strong>?
+              This action cannot be undone.
+            </p>
+
+            <div className="modal-action">
+              <button className="btn btn-error" onClick={confirmDeleteTeam}>
+                Yes, Delete
+              </button>
+              <button
+                className="btn"
+                onClick={() => document.getElementById("delete_team_modal").close()}
               >
                 Cancel
               </button>
