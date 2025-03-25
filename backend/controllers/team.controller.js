@@ -172,21 +172,31 @@ export const sendRequest = async (req, res) => {
 export const getAllRequests = async (req, res) => {
     try {
         const userId = req.user.id; // Logged-in user ID
+        console.log("Fetching requests for user:", userId);
 
         // Find teams where the user is in requestedTeamMembers
-        const teams = await Team.find({ requestedTeamMembers: userId }).select("teamName teamLeader");
+        const teams = await Team.find({ 
+            requestedTeamMembers: { $in: [userId] } 
+        }).select("_id teamName teamLeader");
 
-        if (!teams.length) {
-            return res.status(200).json({ message: "No pending requests", requests: [] });
+        console.log("Teams found:", teams);
+
+        if (!teams || teams.length === 0) {
+            console.log("No pending requests found for user:", userId);
+            return res.status(200).json({ 
+                message: "No pending requests", 
+                requests: [] 
+            });
         }
 
+        console.log(`Found ${teams.length} pending requests for user:`, userId);
         return res.status(200).json({ 
             message: "Pending team join requests fetched successfully",
             requests: teams
         });
 
     } catch (error) {
-        console.error("Error in getReceivedRequests controller:", error.message);
+        console.error("Error in getAllRequests controller:", error.message);
         res.status(500).json({ error: "Internal server error" });
     }
 };
@@ -302,6 +312,39 @@ export const getJoinedTeams = async (req, res) => {
 
     } catch (error) {
         console.log("Error in getJoinedTeams controller", error.message);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+// Add this new controller function for declining team invitations
+
+export const declineRequest = async (req, res) => {
+    try {
+        const { teamId } = req.body;
+        const userId = req.user.id; // User declining the request
+
+        // Find the team
+        const team = await Team.findById(teamId);
+        if (!team) {
+            return res.status(404).json({ message: "Team not found" });
+        }
+
+        // Check if the user has a pending request
+        if (!team.requestedTeamMembers.includes(userId)) {
+            return res.status(400).json({ message: "No pending request found for this user" });
+        }
+
+        // Remove user from requestedTeamMembers
+        team.requestedTeamMembers = team.requestedTeamMembers.filter(id => id.toString() !== userId);
+        await team.save();
+
+        return res.status(200).json({
+            message: "Invitation declined successfully",
+            team
+        });
+
+    } catch (error) {
+        console.error("Error in declineRequest controller:", error.message);
         res.status(500).json({ error: "Internal server error" });
     }
 };
