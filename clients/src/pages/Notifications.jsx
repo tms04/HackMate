@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 // Test data for debugging purposes
 const testNotifications = [
   {
-    _id: "test1",
+    _id: "6602f00d3a991833b8357610", // Valid MongoDB ObjectID format
     teamName: "Debug Team",
     hackathonName: "Debug Hackathon",
     mode: "Online",
@@ -31,10 +31,22 @@ const Notifications = () => {
 
   // Handle when a team request is accepted or declined
   const handleRequestAction = (teamId, action, success) => {
+    console.log(`Request action: teamId=${teamId}, action=${action}, success=${success}`);
+    
     if (success) {
       // Remove the notification from the list
-      setNotifications(notifications.filter(team => team._id !== teamId));
-      toast.success(`Team invitation ${action === 'accept' ? 'accepted' : 'declined'} successfully!`);
+      setNotifications(prev => prev.filter(team => team._id !== teamId));
+      
+      // We don't need to show toast here since it's already shown in the Notification component
+      console.log(`Team invitation ${action === 'accept' ? 'accepted' : 'declined'} successfully!`);
+    } else {
+      console.log(`Failed to ${action} team invitation`);
+      // No need to show error toast here, it's already shown in the Notification component
+      
+      // If using test data, still remove the notification to simulate successful action
+      if (useTestData) {
+        setNotifications(prev => prev.filter(team => team._id !== teamId));
+      }
     }
   };
 
@@ -57,7 +69,7 @@ const Notifications = () => {
         return;
       }
 
-      toast.loading("Creating test invitation...");
+      const toastId = toast.loading("Creating test invitation...");
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/team/create-test-invitation`,
         {},
@@ -68,25 +80,30 @@ const Notifications = () => {
         }
       );
 
-      toast.dismiss();
+      toast.dismiss(toastId);
       if (response.data && response.data.team) {
         toast.success("Test invitation created successfully");
-        // Refresh the page to see the new invitation
-        window.location.reload();
+        // Refresh notifications instead of reloading page
+        fetchNotifications();
       }
     } catch (error) {
       toast.dismiss();
       console.error("Error creating test invitation:", error);
+      console.error("Response data:", error.response?.data);
+      console.error("Response status:", error.response?.status);
+      console.error("Error message:", error.message);
       toast.error("Failed to create test invitation: " + (error.response?.data?.message || error.message));
+      
+      // Show test data if we can't create a real invitation
+      setUseTestData(true);
+      setNotifications(testNotifications);
     }
   };
 
   // Add a refresh function
   const refreshNotifications = () => {
-    setLoading(true);
-    setNotifications([]);
-    fetchNotifications();
     toast.success("Refreshing notifications...");
+    fetchNotifications();
   };
 
   // Move the fetchNotifications function outside useEffect so we can reuse it
@@ -134,6 +151,10 @@ const Notifications = () => {
               return detailsResponse.data;
             } catch (error) {
               console.error("Error fetching team details:", error);
+              console.error("Error details:", {
+                status: error.response?.status,
+                message: error.response?.data?.message || error.message
+              });
               return null;
             }
           })
@@ -158,6 +179,10 @@ const Notifications = () => {
       }
     } catch (error) {
       console.error("Error fetching notifications:", error);
+      console.error("Error details:", {
+        status: error.response?.status,
+        message: error.response?.data?.message || error.message
+      });
       toast.error("Failed to load notifications: " + (error.response?.data?.message || error.message));
       setUseTestData(true);
     } finally {
