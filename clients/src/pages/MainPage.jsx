@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import DrawerSideBar from "../components/DrawerSideBar";
 import ProfileCard from "../components/ProfileCard";
 
-const MainPage = () => {
+const MainPage = ({ teamId = null }) => {
   const [users, setUsers] = useState([]); // State to store fetched users
   const [filteredUsers, setFilteredUsers] = useState([]); // State to store filtered users
   const [loading, setLoading] = useState(true); // Loading state
@@ -354,7 +354,8 @@ const MainPage = () => {
                 )
                 .map((profile) => (
                   <ProfileCard
-                    key={profile._id} // Use _id from MongoDB
+                    key={profile._id}
+                    teamId={teamId} // Use _id from MongoDB
                     name={profile.name}
                     year={profile.year}
                     gender={profile.gender}

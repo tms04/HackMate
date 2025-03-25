@@ -1,9 +1,16 @@
 /* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { 
-  FaUserMinus, FaUserPlus, FaTrash, FaArrowLeft, 
-  FaMapMarkerAlt, FaCalendarAlt, FaGlobe, FaUsers, FaBriefcase 
+import {
+  FaUserMinus,
+  FaUserPlus,
+  FaTrash,
+  FaArrowLeft,
+  FaMapMarkerAlt,
+  FaCalendarAlt,
+  FaGlobe,
+  FaUsers,
+  FaBriefcase,
 } from "react-icons/fa"; // Icons
 
 const CreatedTeamPage = () => {
@@ -23,9 +30,33 @@ const CreatedTeamPage = () => {
       domains: ["AI", "Blockchain", "Cybersecurity"],
     },
     members: [
-      { id: 1, name: "Alice Johnson", role: "Frontend Developer", year: "TY", dept: "IT", gender: "Female",state:"Accepted" },
-      { id: 2, name: "Bob Smith", role: "Backend Developer", year: "TY", dept: "IT", gender: "Male",state:"Accepted" },
-      { id: 3, name: "Charlie Brown", role: "UI/UX Designer", year: "TY", dept: "IT", gender: "Male",state:"Pending" },
+      {
+        id: 1,
+        name: "Alice Johnson",
+        role: "Frontend Developer",
+        year: "TY",
+        dept: "IT",
+        gender: "Female",
+        state: "Accepted",
+      },
+      {
+        id: 2,
+        name: "Bob Smith",
+        role: "Backend Developer",
+        year: "TY",
+        dept: "IT",
+        gender: "Male",
+        state: "Accepted",
+      },
+      {
+        id: 3,
+        name: "Charlie Brown",
+        role: "UI/UX Designer",
+        year: "TY",
+        dept: "IT",
+        gender: "Male",
+        state: "Pending",
+      },
     ],
   });
 
@@ -78,21 +109,25 @@ const CreatedTeamPage = () => {
 
             {team.hackathon.mode === "Offline" && (
               <p className="flex items-center gap-2">
-                <FaMapMarkerAlt /> <strong>Location:</strong> {team.hackathon.location}
+                <FaMapMarkerAlt /> <strong>Location:</strong>{" "}
+                {team.hackathon.location}
               </p>
             )}
 
             <p className="flex items-center gap-2">
-              <FaCalendarAlt /> <strong>Dates:</strong> 
-              {new Date(team.hackathon.dates.from).toLocaleDateString()} - {new Date(team.hackathon.dates.to).toLocaleDateString()}
+              <FaCalendarAlt /> <strong>Dates:</strong>
+              {new Date(team.hackathon.dates.from).toLocaleDateString()} -{" "}
+              {new Date(team.hackathon.dates.to).toLocaleDateString()}
             </p>
 
             <p className="flex items-center gap-2">
-              <FaUsers /> <strong>Organizers:</strong> {team.hackathon.organizers}
+              <FaUsers /> <strong>Organizers:</strong>{" "}
+              {team.hackathon.organizers}
             </p>
 
             <p className="flex items-center gap-2">
-              <FaBriefcase /> <strong>Domains:</strong> {team.hackathon.domains.join(", ")}
+              <FaBriefcase /> <strong>Domains:</strong>{" "}
+              {team.hackathon.domains.join(", ")}
             </p>
           </div>
         </div>
@@ -105,41 +140,52 @@ const CreatedTeamPage = () => {
 
           {/* Team Members List */}
           <div className="bg-base-100 dark:bg-neutral-800 p-4 rounded-lg shadow-md w-full mt-2 space-y-4">
-          {team.members.map((member) => (
-  <div 
-    key={member.id} 
-    className={`flex items-center justify-between p-3 rounded-lg border 
-      ${member.state === "Accepted" ? "bg-success/15 border-success" : "bg-warning/15 border-warning"}`}
-  >
-    <div className="flex items-center gap-3">
-      <img
-        src="https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp"
-        alt={member.name}
-        className="w-10 h-10 rounded-full"
-      />
-      <div className="text-sm">
-        <p className="font-semibold">{member.name}</p>
-        <p className="text-xs text-gray-400">{member.year} | {member.dept} | {member.gender}</p>
-      </div>
-    </div>
-    <button
-      className="btn btn-outline btn-sm bg-neutral text-neutral-content border-gray-700 hover:bg-gray-700 hover:text-white flex items-center gap-2"
-      onClick={() => openRemoveModal(member)}
-    >
-      <FaUserMinus /> Remove
-    </button>
-  </div>
-))}
-
+            {team.members.map((member) => (
+              <div
+                key={member.id}
+                className={`flex items-center justify-between p-3 rounded-lg border 
+      ${
+        member.state === "Accepted"
+          ? "bg-success/15 border-success"
+          : "bg-warning/15 border-warning"
+      }`}
+              >
+                <div className="flex items-center gap-3">
+                  <img
+                    src="https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp"
+                    alt={member.name}
+                    className="w-10 h-10 rounded-full"
+                  />
+                  <div className="text-sm">
+                    <p className="font-semibold">{member.name}</p>
+                    <p className="text-xs text-gray-400">
+                      {member.year} | {member.dept} | {member.gender}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  className="btn btn-outline btn-sm bg-neutral text-neutral-content border-gray-700 hover:bg-gray-700 hover:text-white flex items-center gap-2"
+                  onClick={() => openRemoveModal(member)}
+                >
+                  <FaUserMinus /> Remove
+                </button>
+              </div>
+            ))}
           </div>
         </div>
 
         {/* Add Member & Delete Team Buttons (Side by Side) */}
         <div className="mt-6 flex justify-center gap-4">
-          <button className="btn btn-outline flex items-center gap-2" onClick={()=>(navigate("/main"))}>
+          <button
+            className="btn btn-outline flex items-center gap-2"
+            onClick={() => navigate("/main", { state: { teamId: team.id } })}
+          >
             <FaUserPlus /> Add Member
           </button>
-          <button className="btn btn-neutral flex items-center gap-2" onClick={openDeleteModal}>
+          <button
+            className="btn btn-neutral flex items-center gap-2"
+            onClick={openDeleteModal}
+          >
             <FaTrash /> Delete Team
           </button>
         </div>
@@ -147,12 +193,20 @@ const CreatedTeamPage = () => {
         {/* Remove Member Confirmation Modal */}
         <dialog id="remove_member_modal" className="modal">
           <div className="modal-box bg-base-100 dark:bg-neutral-800">
-            <h3 className="font-bold text-lg text-base-content">Confirm Removal</h3>
+            <h3 className="font-bold text-lg text-base-content">
+              Confirm Removal
+            </h3>
             <p className="py-4 text-base-content">
-              Are you sure you want to remove <b>{selectedMember?.name}</b> from the team?
+              Are you sure you want to remove <b>{selectedMember?.name}</b> from
+              the team?
             </p>
             <div className="modal-action">
-              <button className="btn btn-outline" onClick={() => document.getElementById("remove_member_modal").close()}>
+              <button
+                className="btn btn-outline"
+                onClick={() =>
+                  document.getElementById("remove_member_modal").close()
+                }
+              >
                 Cancel
               </button>
               <button className="btn btn-error" onClick={confirmRemoveMember}>
@@ -165,12 +219,20 @@ const CreatedTeamPage = () => {
         {/* Delete Team Confirmation Modal */}
         <dialog id="delete_team_modal" className="modal">
           <div className="modal-box bg-base-100 dark:bg-neutral-800">
-            <h3 className="font-bold text-lg text-base-content">Confirm Deletion</h3>
+            <h3 className="font-bold text-lg text-base-content">
+              Confirm Deletion
+            </h3>
             <p className="py-4 text-base-content">
-              Are you sure you want to delete this team? This action cannot be undone.
+              Are you sure you want to delete this team? This action cannot be
+              undone.
             </p>
             <div className="modal-action">
-              <button className="btn btn-outline" onClick={() => document.getElementById("delete_team_modal").close()}>
+              <button
+                className="btn btn-outline"
+                onClick={() =>
+                  document.getElementById("delete_team_modal").close()
+                }
+              >
                 Cancel
               </button>
               <button className="btn btn-error" onClick={confirmDeleteTeam}>

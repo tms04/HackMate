@@ -1,11 +1,25 @@
 /* eslint-disable react/prop-types */
 import React from "react";
-import { FaReact, FaNodeJs, FaFigma, FaRegQuestionCircle } from "react-icons/fa";
+import {
+  FaReact,
+  FaNodeJs,
+  FaFigma,
+  FaRegQuestionCircle,
+} from "react-icons/fa";
 import { SiExpress, SiNextdotjs } from "react-icons/si";
 import { motion } from "framer-motion";
 
-const ProfileCard = ({ name, year, gender, department, profileImage, roles = [], skills = [], achievements = [] }) => {
-  
+const ProfileCard = ({
+  name,
+  year,
+  gender,
+  department,
+  profileImage,
+  roles = [],
+  skills = [],
+  achievements = [],
+  teamId,
+}) => {
   // Year Mapping for Better Readability
   const yearMap = { 1: "FY", 2: "SY", 3: "TY", 4: "Final" };
   year = yearMap[year] || "Unknown";
@@ -18,10 +32,16 @@ const ProfileCard = ({ name, year, gender, department, profileImage, roles = [],
       {/* Profile Image & Name */}
       <div className="flex flex-col items-center">
         <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-neutral">
-          <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
+          <img
+            src={profileImage}
+            alt="Profile"
+            className="w-full h-full object-cover"
+          />
         </div>
         <h2 className="text-lg font-bold mt-2 text-base-content">{name}</h2>
-        <p className="text-sm text-base-content/70">{department} | {year} | {gender}</p>
+        <p className="text-sm text-base-content/70">
+          {department} | {year} | {gender}
+        </p>
       </div>
 
       {/* Roles with Separator */}
@@ -29,8 +49,12 @@ const ProfileCard = ({ name, year, gender, department, profileImage, roles = [],
         <div className="mt-4 flex justify-center items-center gap-2 text-sm font-medium text-base-content">
           {roles.slice(0, 3).map((role, index) => (
             <React.Fragment key={index}>
-              <span className="px-3 py-1 text-xs font-semibold bg-neutral text-neutral-content rounded-full">{role}</span>
-              {index !== Math.min(roles.length - 1, 2) && <span className="text-lg text-neutral">&raquo;</span>}
+              <span className="px-3 py-1 text-xs font-semibold bg-neutral text-neutral-content rounded-full">
+                {role}
+              </span>
+              {index !== Math.min(roles.length - 1, 2) && (
+                <span className="text-lg text-neutral">&raquo;</span>
+              )}
             </React.Fragment>
           ))}
         </div>
@@ -50,7 +74,8 @@ const ProfileCard = ({ name, year, gender, department, profileImage, roles = [],
 
             return (
               <div key={index} className="relative group">
-                {icons[skill] || <FaRegQuestionCircle />} {/* Show Question Icon if Skill not in List */}
+                {icons[skill] || <FaRegQuestionCircle />}{" "}
+                {/* Show Question Icon if Skill not in List */}
                 <span className="absolute bottom-7 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white text-black text-xs px-2 py-1 rounded shadow">
                   {skill}
                 </span>
@@ -61,7 +86,7 @@ const ProfileCard = ({ name, year, gender, department, profileImage, roles = [],
       )}
 
       {/* Achievements (Ensuring Consistent UI) */}
-      <div className="mt-4 flex justify-center min-h-[60px]"> 
+      <div className="mt-4 flex justify-center min-h-[60px]">
         {achievements.length > 0 ? (
           <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-xs text-base-content place-items-start">
             {achievements.slice(0, 3).map((achievement, index) => (
@@ -74,17 +99,23 @@ const ProfileCard = ({ name, year, gender, department, profileImage, roles = [],
             ))}
           </div>
         ) : (
-          <p className="text-xs text-base-content/60 italic">No Achievements Yet</p>
+          <p className="text-xs text-base-content/60 italic">
+            No Achievements Yet
+          </p>
         )}
       </div>
 
       {/* Connect Button */}
-      <motion.button
-        className="btn btn-outline w-full mt-4 rounded-lg text-sm"
-        whileHover={{ scale: 1.1 }}
-      >
-        Connect
-      </motion.button>
+      {teamId == null ? (
+        <></>
+      ) : (
+        <motion.button
+          className="btn btn-outline w-full mt-4 rounded-lg text-sm"
+          whileHover={{ scale: 1.1 }}
+        >
+          Connect
+        </motion.button>
+      )}
     </motion.div>
   );
 };
