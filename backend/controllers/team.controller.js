@@ -279,11 +279,12 @@ export const declineRequest = async (req, res) => {
     }
 };
 
-// Removing a Team Member to the team
+// Removing a Team Member from the team
 export const removeTeamMember = async (req, res) => {
     try {
         const { teamId, requesterId } = req.body;
         const leaderId = req.user.id; // Leader's ID from auth middleware
+        console.log("Received Request - teamId:", teamId, "requesterId:", requesterId, "leaderId:", leaderId);
 
         // Find the team
         const team = await Team.findById(teamId);
@@ -296,13 +297,13 @@ export const removeTeamMember = async (req, res) => {
             return res.status(403).json({ message: "Only the team leader can remove members" });
         }
 
-        // Check if the team member exists in the team
+        // Check if the user is in the team
         if (!team.teamMembers.includes(requesterId)) {
             return res.status(400).json({ message: "User is not a member of this team" });
         }
 
-        // Add requester to team members
-        team.teamMembers.pop(requesterId);
+        // Remove the member from the team correctly
+        team.teamMembers = team.teamMembers.filter(member => member.toString() !== requesterId);
         await team.save();
 
         return res.status(200).json({
@@ -312,9 +313,10 @@ export const removeTeamMember = async (req, res) => {
 
     } catch (error) {
         console.log("Error in removeTeamMember controller", error.message);
-        res.status(500).json({ error: "Internal server error in removeTeamController" });
+        res.status(500).json({ error: "Internal server error in removeTeamMember controller" });
     }
 };
+
 
 //Get all teams created by the user
 export const getCreatedTeams = async (req, res) => {

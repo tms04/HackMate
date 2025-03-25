@@ -21,21 +21,26 @@ const CreatedTeamPage = () => {
 
   useEffect(() => {
     const token = Cookies.get("token");
-
     const fetchMembersDetails = async (members) => {
+      if (!members || members.length === 0) return;
       try {
         const membersData = await Promise.all(
           members.slice(1).map(async (userId) => {
-            const res = await axios.get(
-              `${import.meta.env.VITE_BACKEND_URL}/api/users/${userId}`,
-              {
-                headers: { Authorization: `Bearer ${token}` },
-              }
-            );
-            return res.data;
+            try {
+              const res = await axios.get(
+                `${import.meta.env.VITE_BACKEND_URL}/api/users/profile/${userId}`,
+                {
+                  headers: { Authorization: `Bearer ${token}` },
+                }
+              );
+              return res.data;
+            } catch (err) {
+              console.error(`Error fetching user ${userId}:`, err.message);
+              return null; // ✅ Skips failing requests
+            }
           })
         );
-        setTeamMembers(membersData);
+        setTeamMembers(membersData.filter(Boolean)); // ✅ Filters out null responses
       } catch (error) {
         console.error("Error fetching team members data:", error);
       }
@@ -46,11 +51,10 @@ const CreatedTeamPage = () => {
         const response = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/api/team/${teamId}`,
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
+
         setTeam(response.data);
         if (response.data.teamMembers?.length > 0) {
           fetchMembersDetails(response.data.teamMembers);
@@ -76,9 +80,9 @@ const CreatedTeamPage = () => {
     }
   };
 
+
   const confirmRemoveMember = async () => {
     if (!selectedMember || !team) return;
-
     try {
       const token = Cookies.get("token");
       const response = await axios.post(
@@ -123,7 +127,7 @@ const CreatedTeamPage = () => {
   const confirmDeleteTeam = async () => {
     try {
       const token = Cookies.get("token");
-  
+
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/team/deleteTeam`,
         { teamId: team._id },
@@ -133,7 +137,7 @@ const CreatedTeamPage = () => {
           },
         }
       );
-  
+
       if (response.status === 200) {
         navigate("/myteams");
       }
@@ -146,7 +150,7 @@ const CreatedTeamPage = () => {
       document.getElementById("delete_team_modal").close();
     }
   };
-  
+
 
   return (
     <div className="w-full bg-base-200">
@@ -249,7 +253,6 @@ const CreatedTeamPage = () => {
             <p className="py-4">
               Are you sure you want to remove {selectedMember?.name}?
             </p>
-
             <div className="modal-action">
               <button className="btn btn-error" onClick={confirmRemoveMember}>
                 Yes, Remove
