@@ -20,6 +20,7 @@ const ProfileForm = () => {
   const [roles, setRoles] = useState([]);
   const [experience, setExperience] = useState([]);
   const [profilePic, setProfilePic] = useState(null);
+  const [name, setName] = useState(null);
 
   const years = [1, 2, 3, 4];
   const departments = ["IT", "CS", "AI/ML", "Civil", "Mech", "EXTC"];
@@ -55,6 +56,7 @@ const ProfileForm = () => {
 
         if (response.data) {
           const {
+            name,
             year,
             department,
             gender,
@@ -63,6 +65,7 @@ const ProfileForm = () => {
             experience,
             profilePic,
           } = response.data;
+          if (name) setName(name);
           if (year) setYear(year);
           if (department) setDepartment(department);
           if (gender) setGender(gender);
@@ -96,8 +99,9 @@ const ProfileForm = () => {
         navigate("/login");
         return;
       }
-
+      console.log(name);
       const profileData = {
+        name,
         year,
         department,
         gender,
@@ -180,6 +184,8 @@ const ProfileForm = () => {
         <ProfilePictureUpload
           profilePic={profilePic}
           setProfilePic={setProfilePic}
+          name={name}
+          setName={setName}
         />
 
         <form className="space-y-4">

@@ -2,8 +2,7 @@
 import { FaUser, FaEdit, FaCheck } from "react-icons/fa";
 import { useState } from "react";
 
-const ProfilePictureUpload = ({ profilePic, setProfilePic }) => {
-  const [name, setName] = useState("Saurabhkumar Surendrakumar Sharma");
+const ProfilePictureUpload = ({ profilePic, setProfilePic, name, setName }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const handleProfilePicUpload = (event) => {

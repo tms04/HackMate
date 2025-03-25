@@ -174,6 +174,7 @@ export const getProfile = async (req, res) => {
 export const updateProfile = async (req, res) => {
   try {
     const { 
+      name,
       userId, 
       year, 
       department, 
@@ -198,6 +199,7 @@ export const updateProfile = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       {
+        name, // Added name field
         year,
         department,
         gender,
@@ -216,6 +218,7 @@ export const updateProfile = async (req, res) => {
     res.status(200).json({
       message: 'Profile updated successfully',
       user: {
+        name: updatedUser.name, // Added name field in response
         year: updatedUser.year,
         department: updatedUser.department,
         gender: updatedUser.gender,
@@ -231,6 +234,7 @@ export const updateProfile = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
 
 // Check if a user with a given email exists
 export const checkEmailExists = async (req, res) => {
