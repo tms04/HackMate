@@ -192,6 +192,8 @@ const ProfileForm = () => {
         <ProfilePictureUpload
           profilePic={profilePic}
           setProfilePic={setProfilePic}
+          name={name}
+          setName={setName}
         />
 
         <form className="space-y-4">

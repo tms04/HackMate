@@ -57,15 +57,15 @@ const Login = () => {
             explore opportunities, collaborate, and build amazing solutions with
             like-minded individuals. Let's get started!
           </p>
-          
+
           {/* Debug toggle button */}
-          <button 
+          <button
             className="btn btn-xs btn-ghost opacity-50"
             onClick={() => setShowDebug(!showDebug)}
           >
             {showDebug ? "Hide Debug" : "Debug Mode"}
           </button>
-          
+
           {/* Debug component */}
           {showDebug && <ClerkDebug />}
         </div>
@@ -102,10 +102,10 @@ const Login = () => {
                 Log In
               </button>
             </div>
-            
+
             {/* Add Social Auth Component */}
             {/* <SocialAuth mode="signin" /> */}
-            
+
             <div className="text-center mt-4">
               <p className="text-sm">
                 Don't have an account?

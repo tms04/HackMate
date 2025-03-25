@@ -3,8 +3,10 @@ import { FaTimes, FaPlus, FaMinus } from "react-icons/fa";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const TeamForm = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     teamName: "",
     maxSize: 1,
@@ -13,7 +15,7 @@ const TeamForm = () => {
     location: "",
     startDate: "",
     endDate: "",
-    domains: []
+    domains: [],
   });
 
   const domainOptions = [
@@ -22,7 +24,7 @@ const TeamForm = () => {
     "Full Stack (Web)",
     "App Developer",
     "AI/ML Developer",
-    "Blockchain Developer"
+    "Blockchain Developer",
   ];
 
   const handleChange = (e) => {
@@ -32,26 +34,48 @@ const TeamForm = () => {
   const handleDomainSelect = (e) => {
     const selectedDomain = e.target.value;
     if (selectedDomain && !formData.domains.includes(selectedDomain)) {
-      setFormData({ ...formData, domains: [...formData.domains, selectedDomain] });
+      setFormData({
+        ...formData,
+        domains: [...formData.domains, selectedDomain],
+      });
     }
   };
 
   const removeDomain = (domainToRemove) => {
-    setFormData({ ...formData, domains: formData.domains.filter((domain) => domain !== domainToRemove) });
+    setFormData({
+      ...formData,
+      domains: formData.domains.filter((domain) => domain !== domainToRemove),
+    });
   };
 
   const handleMemberChange = (change) => {
     setFormData((prev) => ({
       ...prev,
-      maxSize: Math.max(1, Math.min(prev.maxSize + change, 10))
+      maxSize: Math.max(1, Math.min(prev.maxSize + change, 10)),
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { teamName, maxSize, hackathonName, mode, location, startDate, endDate, domains } = formData;
+    const {
+      teamName,
+      maxSize,
+      hackathonName,
+      mode,
+      location,
+      startDate,
+      endDate,
+      domains,
+    } = formData;
 
-    if (!teamName || !hackathonName || !startDate || !endDate || (mode === "Offline" && !location) || domains.length === 0) {
+    if (
+      !teamName ||
+      !hackathonName ||
+      !startDate ||
+      !endDate ||
+      (mode === "Offline" && !location) ||
+      domains.length === 0
+    ) {
       toast.error("Please fill in all required fields.");
       return;
     }
@@ -74,12 +98,13 @@ const TeamForm = () => {
         }
       );
       toast.success("Team created successfully!");
+      navigate("/myteams");
       console.log("Team Created:", response.data);
     } catch (error) {
       console.error("Error creating team", error);
       if (error.response) {
         console.error("Server Response:", error.response.data); // 🔍 Logs server error details
-    }
+      }
     }
   };
 
@@ -90,29 +115,60 @@ const TeamForm = () => {
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="form-control">
             <label className="label">Team Name</label>
-            <input type="text" name="teamName" className="input input-bordered" value={formData.teamName} onChange={handleChange} required />
+            <input
+              type="text"
+              name="teamName"
+              className="input input-bordered"
+              value={formData.teamName}
+              onChange={handleChange}
+              required
+            />
           </div>
           <div className="form-control">
             <label className="label">Number of Members</label>
             <div className="flex items-center gap-4">
-              <button type="button" className="btn btn-circle btn-sm btn-outline" onClick={() => handleMemberChange(-1)}>
+              <button
+                type="button"
+                className="btn btn-circle btn-sm btn-outline"
+                onClick={() => handleMemberChange(-1)}
+              >
                 <FaMinus />
               </button>
-              <span className="text-xl font-bold w-12 text-center">{formData.maxSize}</span>
-              <button type="button" className="btn btn-circle btn-sm btn-outline" onClick={() => handleMemberChange(1)}>
+              <span className="text-xl font-bold w-12 text-center">
+                {formData.maxSize}
+              </span>
+              <button
+                type="button"
+                className="btn btn-circle btn-sm btn-outline"
+                onClick={() => handleMemberChange(1)}
+              >
                 <FaPlus />
               </button>
             </div>
           </div>
           <div className="form-control">
             <label className="label">Hackathon Name</label>
-            <input type="text" name="hackathonName" className="input input-bordered" value={formData.hackathonName} onChange={handleChange} required />
+            <input
+              type="text"
+              name="hackathonName"
+              className="input input-bordered"
+              value={formData.hackathonName}
+              onChange={handleChange}
+              required
+            />
           </div>
           <div className="form-control">
             <label className="label">Location</label>
             <div className="flex gap-2">
               {["Online", "Offline"].map((type) => (
-                <button key={type} type="button" className={`btn w-1/2 ${formData.mode === type ? "btn-accent" : "btn-outline"}`} onClick={() => setFormData({ ...formData, mode: type })}>
+                <button
+                  key={type}
+                  type="button"
+                  className={`btn w-1/2 ${
+                    formData.mode === type ? "btn-accent" : "btn-outline"
+                  }`}
+                  onClick={() => setFormData({ ...formData, mode: type })}
+                >
                   {type}
                 </button>
               ))}
@@ -121,23 +177,49 @@ const TeamForm = () => {
           {formData.mode === "Offline" && (
             <div className="form-control">
               <label className="label">Offline Location</label>
-              <input type="text" name="location" className="input input-bordered" value={formData.location} onChange={handleChange} required />
+              <input
+                type="text"
+                name="location"
+                className="input input-bordered"
+                value={formData.location}
+                onChange={handleChange}
+                required
+              />
             </div>
           )}
           <div className="form-control">
             <label className="label">Start Date</label>
-            <input type="date" name="startDate" className="input input-bordered" value={formData.startDate} onChange={handleChange} required />
+            <input
+              type="date"
+              name="startDate"
+              className="input input-bordered"
+              value={formData.startDate}
+              onChange={handleChange}
+              required
+            />
           </div>
           <div className="form-control">
             <label className="label">End Date</label>
-            <input type="date" name="endDate" className="input input-bordered" value={formData.endDate} onChange={handleChange} required />
+            <input
+              type="date"
+              name="endDate"
+              className="input input-bordered"
+              value={formData.endDate}
+              onChange={handleChange}
+              required
+            />
           </div>
           <div className="form-control">
             <label className="label">Domains Needed</label>
-            <select className="select select-bordered" onChange={handleDomainSelect}>
+            <select
+              className="select select-bordered"
+              onChange={handleDomainSelect}
+            >
               <option value="">Select a domain</option>
               {domainOptions.map((domain) => (
-                <option key={domain} value={domain}>{domain}</option>
+                <option key={domain} value={domain}>
+                  {domain}
+                </option>
               ))}
             </select>
           </div>
@@ -146,7 +228,10 @@ const TeamForm = () => {
               <label className="label">Selected Domains</label>
               <div className="flex flex-wrap gap-2">
                 {formData.domains.map((domain) => (
-                  <div key={domain} className="badge badge-accent flex items-center gap-1">
+                  <div
+                    key={domain}
+                    className="badge badge-accent flex items-center gap-1"
+                  >
                     {domain}
                     <button type="button" onClick={() => removeDomain(domain)}>
                       <FaTimes className="ml-1 text-xs" />
@@ -156,7 +241,9 @@ const TeamForm = () => {
               </div>
             </div>
           )}
-          <button type="submit" className="btn btn-accent w-full">Create Team</button>
+          <button type="submit" className="btn btn-accent w-full">
+            Create Team
+          </button>
         </form>
       </div>
     </div>
