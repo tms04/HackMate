@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import {
   FaReact,
   FaNodeJs,
@@ -10,7 +10,9 @@ import { SiExpress, SiNextdotjs } from "react-icons/si";
 import { motion } from "framer-motion";
 import Cookies from "js-cookie";
 import axios from "axios";
+
 const ProfileCard = ({
+  id,
   name,
   year,
   gender,
@@ -21,35 +23,46 @@ const ProfileCard = ({
   achievements = [],
   teamId,
 }) => {
+  // State for button feedback
+  const [isRequestSent, setIsRequestSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   // Year Mapping for Better Readability
   const yearMap = { 1: "FY", 2: "SY", 3: "TY", 4: "Final" };
   year = yearMap[year] || "Unknown";
 
   const userId = Cookies.get("userId");
+
   const handleSendRequest = async () => {
     if (!userId) {
-      console.error("User not logged in.");
+      alert("You must be logged in to send requests.");
       return;
     }
+
+    setLoading(true);
 
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/team/sendRequest`,
         {
           teamId, // Team to which the request is being sent
-          requesterId: userId, // The user being requested to join
+          requesterId: id, // The user being requested to join
         },
         {
           headers: {
-            Authorization: `Bearer ${Cookies.get("token")}`, // Authentication
+            Authorization: `Bearer ${Cookies.get("token")}`, // Authentication token
           },
         }
       );
+
       console.log("Request sent successfully:", response.data);
       alert("Request sent successfully!");
+      setIsRequestSent(true); // Disable button after success
     } catch (error) {
       console.error("Error sending request:", error.response?.data || error);
       alert(error.response?.data?.message || "Failed to send request.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -140,8 +153,9 @@ const ProfileCard = ({
           className="btn btn-outline w-full mt-4 rounded-lg text-sm"
           whileHover={{ scale: 1.1 }}
           onClick={handleSendRequest}
+          disabled={isRequestSent || loading}
         >
-          Connect
+          {loading ? "Sending..." : isRequestSent ? "Request Sent" : "Connect"}
         </motion.button>
       )}
     </motion.div>
