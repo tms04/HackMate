@@ -9,4 +9,5 @@ export const sendCookie = (user, res) => {
         sameSite: "strict",
         maxAge: 60 * 60 * 1000, // 1 hour
     });
+    return token;
 };

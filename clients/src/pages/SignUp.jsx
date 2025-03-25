@@ -121,7 +121,7 @@ const SignUp = () => {
             </div>
             
             {/* Add Social Auth Component */}
-            <SocialAuth mode="signup" />
+            {/* <SocialAuth mode="signup" /> */}
             
             <div className="text-center mt-4">
               <p className="text-sm">

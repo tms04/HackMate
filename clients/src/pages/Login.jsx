@@ -104,7 +104,7 @@ const Login = () => {
             </div>
             
             {/* Add Social Auth Component */}
-            <SocialAuth mode="signin" />
+            {/* <SocialAuth mode="signin" /> */}
             
             <div className="text-center mt-4">
               <p className="text-sm">
