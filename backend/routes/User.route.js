@@ -10,7 +10,8 @@ import {
   logoutUser,
   checkEmailExists,
   registerOAuthUser,
-  loginOAuthUser
+  loginOAuthUser,
+  deleteUser
 } from "../controllers/User.controller.js";
 
 const router = express.Router();
@@ -22,8 +23,9 @@ router.post("/login", loginUser);
 router.post("/logout", logoutUser);
 router.get("/profile/:id", getUserProfile);
 router.get("/username/:userId", getUsername);
-router.get('/:userId', getProfile);
 router.post('/update', updateProfile);
+router.delete("/:userId", deleteUser);
+router.get('/:userId', getProfile);
 
 // OAuth Routes
 router.post("/check-email", checkEmailExists);
