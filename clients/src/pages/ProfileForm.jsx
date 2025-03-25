@@ -20,7 +20,7 @@ const ProfileForm = () => {
   const [roles, setRoles] = useState([]);
   const [experience, setExperience] = useState([]);
   const [profilePic, setProfilePic] = useState(null);
-  const [name, setName] = useState(null);
+  const [name, setName] = useState("");
 
   const years = [1, 2, 3, 4];
   const departments = ["IT", "CS", "AI/ML", "Civil", "Mech", "EXTC"];
@@ -69,9 +69,9 @@ const ProfileForm = () => {
           if (year) setYear(year);
           if (department) setDepartment(department);
           if (gender) setGender(gender);
-          if (skills && skills.length) setSkills(skills);
-          if (roles && roles.length) setRoles(roles);
-          if (experience && experience.length) setExperience(experience);
+          if (skills?.length) setSkills(skills);
+          if (roles?.length) setRoles(roles);
+          if (experience?.length) setExperience(experience);
           if (profilePic) setProfilePic(profilePic);
         }
       } catch (error) {
@@ -99,7 +99,7 @@ const ProfileForm = () => {
         navigate("/login");
         return;
       }
-      console.log(name);
+
       const profileData = {
         name,
         year,
@@ -121,7 +121,7 @@ const ProfileForm = () => {
           },
         }
       );
-      console.log("Profile pic", profilePic);
+
       navigate("/main");
     } catch (error) {
       console.error("Error saving profile data:", error);
@@ -133,13 +133,19 @@ const ProfileForm = () => {
 
   const handleDeleteProfile = async () => {
     try {
+      console.log("Delete button clicked");
+
       const userId = Cookies.get("userId");
       const token = Cookies.get("token");
 
       if (!userId || !token) {
+        console.log("No userId or token found, redirecting to login");
         navigate("/login");
         return;
       }
+
+      console.log("Deleting profile for user:", userId);
+      console.log("Deleting profile for user:", token);
 
       await axios.delete(
         `${import.meta.env.VITE_BACKEND_URL}/api/users/${userId}`,
@@ -150,12 +156,14 @@ const ProfileForm = () => {
         }
       );
 
+      console.log("Profile deleted successfully");
+
       Cookies.remove("userId");
       Cookies.remove("token");
 
       navigate("/signup");
     } catch (error) {
-      console.error("Error deleting profile:", error);
+      console.error("Error deleting profile:", error.response || error);
       setError("Failed to delete profile. Please try again.");
     }
   };
@@ -184,8 +192,6 @@ const ProfileForm = () => {
         <ProfilePictureUpload
           profilePic={profilePic}
           setProfilePic={setProfilePic}
-          name={name}
-          setName={setName}
         />
 
         <form className="space-y-4">
@@ -240,7 +246,7 @@ const ProfileForm = () => {
             )}
           </button>
 
-          {/* Delete Profile Button with Confirmation Modal */}
+          {/* Delete Profile Button */}
           <button
             type="button"
             className="btn btn-error w-full mt-2"
@@ -250,32 +256,38 @@ const ProfileForm = () => {
           >
             Delete My Profile
           </button>
-
-          <dialog id="delete_profile_modal" className="modal">
-            <div className="modal-box bg-base-100 dark:bg-neutral-800">
-              <h3 className="font-bold text-lg text-base-content">
-                Confirm Deletion
-              </h3>
-              <p className="py-4 text-base-content">
-                Are you sure you want to <b>delete your profile</b>? This action
-                cannot be undone.
-              </p>
-              <div className="modal-action">
-                <button
-                  className="btn btn-outline"
-                  onClick={() =>
-                    document.getElementById("delete_profile_modal").close()
-                  }
-                >
-                  Cancel
-                </button>
-                <button className="btn btn-error" onClick={handleDeleteProfile}>
-                  Confirm
-                </button>
-              </div>
-            </div>
-          </dialog>
         </form>
+
+        {/* Delete Confirmation Modal */}
+        <dialog id="delete_profile_modal" className="modal">
+          <div className="modal-box bg-base-100 dark:bg-neutral-800">
+            <h3 className="font-bold text-lg text-base-content">
+              Confirm Deletion
+            </h3>
+            <p className="py-4 text-base-content">
+              Are you sure you want to <b>delete your profile</b>? This action
+              cannot be undone.
+            </p>
+            <div className="modal-action">
+              <button
+                className="btn btn-outline"
+                onClick={() =>
+                  document.getElementById("delete_profile_modal").close()
+                }
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-error"
+                onClick={async () => {
+                  await handleDeleteProfile();
+                }}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </dialog>
       </div>
     </div>
   );
