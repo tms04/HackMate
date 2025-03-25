@@ -103,7 +103,7 @@ export default function App() {
                 <CreatedTeamPage />
               </AuthenticatedLayout>
             } />
-            <Route path="/joinedteam" element={
+            <Route path="/joinedteam/:teamId" element={
               <AuthenticatedLayout>
                 <JoinedTeamPage />
               </AuthenticatedLayout>
