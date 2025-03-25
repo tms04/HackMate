@@ -363,6 +363,7 @@ const MainPage = () => {
                 .map((profile) => (
                   <ProfileCard
                     key={profile._id}
+                    id={profile._id}
                     teamId={teamId} // Use _id from MongoDB
                     name={profile.name}
                     year={profile.year}
