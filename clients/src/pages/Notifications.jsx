@@ -3,9 +3,13 @@ import Notification from "../components/Requests/Notification";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { FaArrowLeft, FaSync } from "react-icons/fa";
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchNotifications();
@@ -19,11 +23,13 @@ const Notifications = () => {
 
   const fetchNotifications = async () => {
     try {
+      setLoading(true);
       const token = Cookies.get("token");
       const userId = Cookies.get("userId");
 
       if (!token || !userId) {
         toast.error("You must be logged in to view notifications");
+        setLoading(false);
         return;
       }
 
@@ -56,13 +62,47 @@ const Notifications = () => {
     } catch (error) {
       toast.error("Failed to load notifications");
       console.error("Error fetching notifications:", error);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  // Function to refresh notifications
+  const refreshNotifications = () => {
+    toast.success("Refreshing invitations...");
+    fetchNotifications();
   };
 
   return (
     <div className="flex flex-col items-center gap-4 p-6 bg-base-200 min-h-screen">
-      <h2 className="text-xl font-bold text-base-content">Hackathon Invitations</h2>
-      {notifications.length > 0 ? (
+      <div className="w-full max-w-2xl flex justify-between items-center mb-4">
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={() => navigate("/main")} 
+            className="btn btn-sm btn-outline"
+          >
+            <FaArrowLeft /> Back to Main
+          </button>
+          <h2 className="text-xl font-bold text-base-content">Hackathon Invitations</h2>
+        </div>
+        <button 
+          onClick={refreshNotifications} 
+          className="btn btn-sm btn-outline"
+          disabled={loading}
+        >
+          {loading ? (
+            <span className="loading loading-spinner loading-xs"></span>
+          ) : (
+            <><FaSync /> Refresh</>
+          )}
+        </button>
+      </div>
+      
+      {loading ? (
+        <div className="flex justify-center items-center h-40">
+          <div className="loading loading-spinner loading-lg"></div>
+        </div>
+      ) : notifications.length > 0 ? (
         <div className="flex flex-col gap-4 w-full max-w-2xl">
           {notifications.map((team) =>
             team?._id ? (

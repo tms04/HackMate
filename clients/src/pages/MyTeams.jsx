@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { FaEye, FaTrophy, FaUserFriends} from "react-icons/fa";
+import { FaEye, FaTrophy, FaUserFriends, FaSync, FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
@@ -12,6 +12,7 @@ const MyTeams = () => {
   const [actionType, setActionType] = useState(""); // "delete" or "leave"
   const [createdTeams, setCreatedTeams] = useState([]);
   const [joinedTeams, setJoinedTeams] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // Open modal function
   const openModal = (team, action) => {
@@ -61,56 +62,67 @@ const MyTeams = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchCreatedTeams = async () => {
-      try {
-        const userId = Cookies.get("userId");
-        const token = Cookies.get("token");
-        if (!userId) {
-          toast.error("User not logged in");
-          return;
-        }
-
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/team/createdTeams/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setCreatedTeams(response.data.teams);
-      } catch (error) {
-        console.error("Error fetching created teams:", error);
-        toast.error("Failed to fetch created teams");
+  const refreshTeams = useCallback(async () => {
+    try {
+      setLoading(true);
+      const userId = Cookies.get("userId");
+      const token = Cookies.get("token");
+      if (!userId) {
+        toast.error("User not logged in");
+        return;
       }
-    };
-    fetchCreatedTeams();
-  }, []);
-  useEffect(() => {
-    const fetchJoinedTeams = async () => {
-      try {
-        const userId = Cookies.get("userId");
-        const token = Cookies.get("token");
-        if (!userId) {
-          toast.error("User not logged in");
-          return;
-        }
 
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/team/joinedTeams/${userId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setJoinedTeams(response.data.teams);
-      } catch (error) {
-        console.error("Error fetching created teams:", error);
-        toast.error("Failed to fetch created teams");
-      }
-    };
-    fetchJoinedTeams();
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/team/createdTeams/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setCreatedTeams(response.data.teams);
+
+      const joinedResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/team/joinedTeams/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setJoinedTeams(joinedResponse.data.teams);
+    } catch (error) {
+      console.error("Error refreshing teams:", error);
+      toast.error("Failed to refresh teams");
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    refreshTeams();
+  }, [refreshTeams]);
 
   return (
     <div className="w-full bg-base-200">
       <div className="p-6 max-w-3xl mx-auto bg-base-200 dark:bg-neutral-900 text-base-content min-h-screen">
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => navigate("/main")} 
+              className="btn btn-sm btn-outline"
+            >
+              <FaArrowLeft /> Back to Main
+            </button>
+            <h1 className="text-2xl font-bold">My Teams</h1>
+          </div>
+          <button 
+            onClick={refreshTeams} 
+            className="btn btn-sm btn-outline"
+            disabled={loading}
+          >
+            {loading ? (
+              <span className="loading loading-spinner loading-xs"></span>
+            ) : (
+              <><FaSync /> Refresh</>
+            )}
+          </button>
+        </div>
+
         {/* Teams Created */}
         {createdTeams.length > 0 && (
           <div>
