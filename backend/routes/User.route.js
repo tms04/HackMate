@@ -8,9 +8,6 @@ import {
   updateProfile, 
   getAllUsers, 
   logoutUser,
-  checkEmailExists,
-  registerOAuthUser,
-  loginOAuthUser,
   deleteUser
 } from "../controllers/User.controller.js";
 
@@ -26,10 +23,5 @@ router.get("/username/:userId", getUsername);
 router.post('/update', updateProfile);
 router.delete("/:userId", deleteUser);
 router.get('/:userId', getProfile);
-
-// OAuth Routes
-router.post("/check-email", checkEmailExists);
-router.post("/register-oauth", registerOAuthUser);
-router.post("/oauth-login", loginOAuthUser);
 
 export default router;

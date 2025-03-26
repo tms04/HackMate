@@ -41,7 +41,7 @@ const MainPage = () => {
     "EXTC",
   ];
   const yearOptions = [1, 2, 3, 4];
-  const genderOptions = ["Male", "Female", "Prefer  Not to Say"];
+  const genderOptions = ["Male", "Female", "Prefer Not to Say"];
 
   // Handle filter changes
   const handleFilterChange = (filterName, value) => {
