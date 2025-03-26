@@ -64,7 +64,8 @@ const DrawerSideBar = () => {
         htmlFor="my-drawer"
         aria-label="close sidebar"
         className="drawer-overlay"
-      ></label>
+        ></label>
+
 
       <div className="menu bg-base-100 text-base-content min-h-full w-80 flex flex-col shadow-lg p-0">
         {/* User Profile Section */}

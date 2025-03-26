@@ -1,7 +1,9 @@
+/* eslint-disable react/no-unescaped-entities */
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
+import ColoSwitch from "../components/ColorSwitch"
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -46,10 +48,11 @@ const Login = () => {
   return (
     <div className="hero bg-base-300 min-h-screen">
       {/* <Toaster /> */}
+      <ColoSwitch/>
       <div className="hero-content flex-col lg:flex-row-reverse gap-x-32">
         <div className="text-center lg:text-left">
-          <h1 className="text-5xl font-bold">Welcome Back!</h1>
-          <p className="py-6">
+          <h1 className="text-5xl sm:font-bold font-semibold">Welcome Back!</h1>
+          <p className="py-6 sm:block hidden">
             Connect with your teammates and join exciting projects. Log in to
             explore opportunities, collaborate, and build amazing solutions with
             like-minded individuals. Let's get started!

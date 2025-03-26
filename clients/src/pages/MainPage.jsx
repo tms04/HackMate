@@ -8,6 +8,7 @@ import ProfileCard from "../components/ProfileCard";
 import { useLocation } from "react-router-dom";
 import Cookies from "js-cookie";
 import { MdFilterAltOff } from "react-icons/md";
+import Toggle from "../components/Toggle";
 
 
 const MainPage = () => {
@@ -196,12 +197,15 @@ const MainPage = () => {
       {/* Page Content */}
       <div className="drawer-content bg-base-200 min-h-screen text-white">
         {/* Drawer Button */}
-        <label
+       <div>
+         <label
           htmlFor="my-drawer"
           className="btn btn-circle btn-neutral fixed top-4 left-4 z-50 transition-opacity duration-300 drawer-button"
         >
           <FiMenu size={24} />
         </label>
+        {/* <Toggle/> */}
+       </div>
         {/* Filter Bar */}
         <div className="pt-4 px-5 pb-4 flex justify-center text-base-content">
           <div className="bg-base-100 p-4 rounded-lg shadow-md w-fit">

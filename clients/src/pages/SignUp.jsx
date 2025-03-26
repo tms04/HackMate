@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import toast, { Toaster } from "react-hot-toast";
+import ColoSwitch from "../components/ColorSwitch"
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -47,10 +48,11 @@ const SignUp = () => {
   return (
     <div className="hero bg-base-300 min-h-screen">
       <Toaster />
-      <div className="hero-content flex-col lg:flex-row-reverse gap-x-32">
+      <ColoSwitch/>
+      <div className="hero-content flex-col lg:flex-row-reverse gap-x-32 pt-16">
         <div className="text-center lg:text-left">
-          <h1 className="text-5xl font-bold">Find Your Perfect Team!</h1>
-          <p className="py-6">
+          <h1 className="text-5xl sm:font-bold font-semibold">Find Your Perfect Team!</h1>
+          <p className="py-6 sm:block hidden">
             Join a vibrant community of innovators and problem solvers. Whether
             you are looking for teammates for a hackathon, college event, or
             project collaboration, our platform helps you connect with

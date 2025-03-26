@@ -20,27 +20,45 @@ import { FiMenu } from "react-icons/fi";
 import DrawerSideBar from "./components/DrawerSideBar";
 import HomeButton from "./components/HomeButton .jsx";
 import { FaHome } from "react-icons/fa";
-
+import { useState } from "react";
 
 const AuthenticatedLayout = ({ children }) => {
   return (
     <div className="drawer">
       <input id="my-drawer" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content bg-base-200 min-h-screen">
+
+      {/* Content Area */}
+      <div className="drawer-content bg-base-200 min-h-screen relative">
+        {/* Drawer Toggle Button */}
         <label
           htmlFor="my-drawer"
           className="btn btn-circle btn-neutral fixed top-4 left-4 z-50 transition-opacity duration-300 drawer-button"
         >
           <FiMenu size={24} />
         </label>
+
+        {/* Toggle - Automatically hides when sidebar opens */}
+        <div id="toggle-container">
+          <Toggle />
+        </div>
+
+        {/* Protected Page Content */}
         {children}
       </div>
+
+      {/* Sidebar Drawer */}
       <DrawerSideBar />
+
+      {/* Hide Toggle When Drawer is Open */}
       <style>
         {`
           #my-drawer:checked ~ .drawer-content .drawer-button {
             opacity: 0;
             pointer-events: none;
+          }
+
+          #my-drawer:checked ~ .drawer-content #toggle-container {
+            display: none; /* Hides the toggle when the sidebar opens */
           }
         `}
       </style>
@@ -52,7 +70,7 @@ export default function App() {
   return (
     <Router>
       <Toaster position="top-center" />
-      <Toggle />
+      {/* <Toggle /> */}
       {/* <HomeButton/> */}
       {/* <FaHome /> */}
       <Routes>
@@ -60,7 +78,8 @@ export default function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
 
-        <Route element={<ProtectedRoute />}>
+        {/* <Route element={<ProtectedRoute />}> */}
+        {/* <Toggle/> */}
           <Route path="/main" element={<AuthenticatedLayout><MainPage /></AuthenticatedLayout>} />
           <Route path="/demo" element={<AuthenticatedLayout><Demo /></AuthenticatedLayout>} />
           <Route path="/userdetails" element={<AuthenticatedLayout><ProfileForm /></AuthenticatedLayout>} />
@@ -70,7 +89,7 @@ export default function App() {
           <Route path="/createdteam/:teamId" element={<AuthenticatedLayout><CreatedTeamPage /></AuthenticatedLayout>} />
           <Route path="/joinedteam/:teamId" element={<AuthenticatedLayout><JoinedTeamPage /></AuthenticatedLayout>} />
           <Route path="/profile" element={<AuthenticatedLayout><ProfilePage /></AuthenticatedLayout>} />
-        </Route>
+        {/* </Route> */}
       </Routes>
     </Router>
   );
