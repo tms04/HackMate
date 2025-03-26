@@ -7,13 +7,14 @@ import toast from "react-hot-toast";
 const ProtectedRoute = () => {
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showToast, setShowToast] = useState(false); // ✅ State to control toast
 
   useEffect(() => {
     const verifyAuth = async () => {
       try {
         const token = Cookies.get("token");
         const userId = Cookies.get("userId");
-        
+
         if (token && userId) {
           try {
             const response = await axios.get(
@@ -24,7 +25,7 @@ const ProtectedRoute = () => {
                 },
               }
             );
-            
+
             if (response.data) {
               setIsAuthenticated(true);
               setLoading(false);
@@ -34,18 +35,27 @@ const ProtectedRoute = () => {
             console.error("JWT validation failed:", error);
           }
         }
-        
+
         setIsAuthenticated(false);
-        setLoading(false);
+        setShowToast(true); // ✅ Set state to trigger toast later
       } catch (error) {
         console.error("Authentication verification error:", error);
         setIsAuthenticated(false);
+        setShowToast(true); // ✅ Set state to trigger toast later
+      } finally {
         setLoading(false);
       }
     };
 
     verifyAuth();
   }, []);
+
+  // ✅ Show toast only after state updates
+  useEffect(() => {
+    if (showToast) {
+      toast.error("Please log in to continue");
+    }
+  }, [showToast]);
 
   if (loading) {
     return (
@@ -55,12 +65,7 @@ const ProtectedRoute = () => {
     );
   }
 
-  if (isAuthenticated) {
-    return <Outlet />;
-  }
-
-  toast.error("Please log in to continue");
-  return <Navigate to="/login" />;
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
 };
 
 export default ProtectedRoute;
