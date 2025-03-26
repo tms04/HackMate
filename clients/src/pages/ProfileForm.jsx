@@ -6,6 +6,7 @@ import ProfilePictureUpload from "../components/ProfileForm/ProfilePictureUpload
 import RoleInput from "../components/ProfileForm/RoleInput";
 import SelectionButtons from "../components/ProfileForm/SelectionButtons";
 import SkillInput from "../components/ProfileForm/SkillInput";
+import ResumeLink from "../components/ProfileForm/ResumeLink";
 import { useNavigate } from "react-router-dom";
 
 const ProfileForm = () => {
@@ -21,6 +22,7 @@ const ProfileForm = () => {
   const [experience, setExperience] = useState([]);
   const [profilePic, setProfilePic] = useState(null);
   const [name, setName] = useState("");
+  const [resumeLink, setResumeLink] = useState("");
 
   const years = [1, 2, 3, 4];
   const departments = ["IT", "CS", "AI/ML", "Civil", "Mech", "EXTC"];
@@ -64,6 +66,7 @@ const ProfileForm = () => {
             roles,
             experience,
             profilePic,
+            resumeLink,
           } = response.data;
           if (name) setName(name);
           if (year) setYear(year);
@@ -73,6 +76,7 @@ const ProfileForm = () => {
           if (roles?.length) setRoles(roles);
           if (experience?.length) setExperience(experience);
           if (profilePic) setProfilePic(profilePic);
+          if (resumeLink) setResumeLink(resumeLink);
         }
       } catch (error) {
         console.error("Error fetching profile data:", error);
@@ -109,6 +113,7 @@ const ProfileForm = () => {
         roles,
         experience,
         profilePic,
+        resumeLink,
       };
 
       await axios.post(
@@ -233,6 +238,11 @@ const ProfileForm = () => {
           <ExperienceFields
             experience={experience}
             setExperience={setExperience}
+          />
+
+          <ResumeLink
+            resumeLink={resumeLink}
+            setResumeLink={setResumeLink}
           />
 
           <button

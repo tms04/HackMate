@@ -5,6 +5,8 @@ import {
   FaNodeJs,
   FaFigma,
   FaRegQuestionCircle,
+  FaFilePdf,
+  FaExternalLinkAlt
 } from "react-icons/fa";
 import { SiExpress, SiMongodb, SiNextdotjs } from "react-icons/si";
 import { motion } from "framer-motion";
@@ -23,6 +25,7 @@ const ProfileCard = ({
   skills = [],
   achievements = [],
   teamId,
+  resumeLink
 }) => {
   // State for button feedback
   const [isRequestSent, setIsRequestSent] = useState(false);
@@ -67,11 +70,33 @@ const ProfileCard = ({
     }
   };
 
+  // Function to open resume in new tab
+  const openResume = () => {
+    if (resumeLink) {
+      window.open(resumeLink, '_blank');
+    }
+  };
+
   return (
     <motion.div
       className="relative bg-gradient-to-b from-base-100 to-base-200 p-5 min-w-80 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 h-full"
       whileHover={{ scale: 1.05 }}
     >
+      {/* Resume Button - Only show if resume link exists */}
+      {resumeLink && (
+        <div className="absolute top-2 right-2">
+          <motion.button
+            className="btn btn-xs btn-neutral flex items-center gap-1 tooltip tooltip-left"
+            data-tip="View Resume"
+            onClick={openResume}
+            whileHover={{ scale: 1.1 }}
+          >
+            <FaFilePdf className="text-sm" />
+            <FaExternalLinkAlt className="text-xs" />
+          </motion.button>
+        </div>
+      )}
+
       {/* Profile Image & Name */}
       <div className="flex flex-col items-center">
         <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-neutral">
