@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Toggle from "./components/Toggle";
@@ -16,6 +18,9 @@ import ProfilePage from "./pages/ProfilePage";
 import { Toaster } from "react-hot-toast";
 import { FiMenu } from "react-icons/fi";
 import DrawerSideBar from "./components/DrawerSideBar";
+import HomeButton from "./components/HomeButton .jsx";
+import { FaHome } from "react-icons/fa";
+
 
 const AuthenticatedLayout = ({ children }) => {
   return (
@@ -48,6 +53,8 @@ export default function App() {
     <Router>
       <Toaster position="top-center" />
       <Toggle />
+      {/* <HomeButton/> */}
+      {/* <FaHome /> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUp />} />
