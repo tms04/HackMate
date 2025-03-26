@@ -100,27 +100,8 @@ const MyTeams = () => {
   return (
     <div className="w-full bg-base-200">
       <div className="p-6 max-w-3xl mx-auto bg-base-200 dark:bg-neutral-900 text-base-content min-h-screen">
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex items-center gap-2">
-            <button 
-              onClick={() => navigate("/main")} 
-              className="btn btn-sm btn-outline"
-            >
-              <FaArrowLeft /> Back to Main
-            </button>
-            <h1 className="text-2xl font-bold">My Teams</h1>
-          </div>
-          <button 
-            onClick={refreshTeams} 
-            className="btn btn-sm btn-outline"
-            disabled={loading}
-          >
-            {loading ? (
-              <span className="loading loading-spinner loading-xs"></span>
-            ) : (
-              <><FaSync /> Refresh</>
-            )}
-          </button>
+        <div className="flex justify-center items-center mb-4">
+          <h1 className="text-2xl font-bold">My Teams</h1>
         </div>
 
         {/* Teams Created */}
