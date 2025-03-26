@@ -376,6 +376,7 @@ const MainPage = () => {
                     roles={profile.roles} // Pass roles if available
                     skills={profile.skills} // Pass skills if available
                     achievements={profile.experience}
+                    resumeLink={profile.resumeLink} // Pass resume link if available
                     // userId1={profile.userId} // Pass achievements if available
                   />
                 ))
