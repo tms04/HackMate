@@ -10,6 +10,7 @@ import { SiExpress, SiNextdotjs } from "react-icons/si";
 import { motion } from "framer-motion";
 import Cookies from "js-cookie";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const ProfileCard = ({
   id,
@@ -35,7 +36,7 @@ const ProfileCard = ({
 
   const handleSendRequest = async () => {
     if (!userId) {
-      alert("You must be logged in to send requests.");
+      toast.error("You must be logged in to send requests.");
       return;
     }
 
@@ -56,11 +57,11 @@ const ProfileCard = ({
       );
 
       console.log("Request sent successfully:", response.data);
-      alert("Request sent successfully!");
+      toast.success("Request sent successfully!");
       setIsRequestSent(true); // Disable button after success
     } catch (error) {
       console.error("Error sending request:", error.response?.data || error);
-      alert(error.response?.data?.message || "Failed to send request.");
+      toast.error(error.response?.data?.message || "Failed to send request.");
     } finally {
       setLoading(false);
     }
