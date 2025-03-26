@@ -6,7 +6,7 @@ import {
   FaFigma,
   FaRegQuestionCircle,
 } from "react-icons/fa";
-import { SiExpress, SiNextdotjs } from "react-icons/si";
+import { SiExpress, SiMongodb, SiNextdotjs } from "react-icons/si";
 import { motion } from "framer-motion";
 import Cookies from "js-cookie";
 import axios from "axios";
@@ -61,7 +61,7 @@ const ProfileCard = ({
       setIsRequestSent(true); // Disable button after success
     } catch (error) {
       console.error("Error sending request:", error.response?.data || error);
-      toast.error(error.response?.data?.message || "Failed to send request.");
+      alert(error.response?.data?.message || "Failed to send request.");
     } finally {
       setLoading(false);
     }
@@ -112,7 +112,8 @@ const ProfileCard = ({
               React: <FaReact />,
               Node: <FaNodeJs />,
               Express: <SiExpress />,
-              NextJS: <SiNextdotjs />,
+              Next: <SiNextdotjs />,
+              MongoDB: <SiMongodb />,
             };
 
             return (
