@@ -8,6 +8,10 @@ const userSchema = new mongoose.Schema({
   profilePic: {
     type: String, // Base64 encoded string
   },
+  resumeLink: {
+    type: String, // URL to the user's resume
+    default: "",
+  },
   year: {
     type: Number,
     enum: [1, 2, 3, 4],

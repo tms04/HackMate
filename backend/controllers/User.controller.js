@@ -164,17 +164,18 @@ export const getUsername = async (req, res) => {
 
 export const getProfile = async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const { userId } = req.params;
     
-    // Find user without returning password
-    const user = await User.findById(userId).select('-password');
-    
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
     
     res.status(200).json({
+      id: user._id,
       name: user.name,
+      username: user.username,
+      email: user.email,
       year: user.year,
       department: user.department,
       gender: user.gender,
@@ -182,6 +183,7 @@ export const getProfile = async (req, res) => {
       roles: user.roles,
       experience: user.experience,
       profilePic: user.profilePic,
+      resumeLink: user.resumeLink,
     });
   } catch (error) {
     console.error('Error fetching profile:', error);
@@ -201,7 +203,8 @@ export const updateProfile = async (req, res) => {
       skills, 
       roles, 
       experience, 
-      profilePic 
+      profilePic,
+      resumeLink
     } = req.body;
     console.log("Skills:", skills); // Debugging Step
     // Ensure userId matches authenticated user
@@ -212,6 +215,11 @@ export const updateProfile = async (req, res) => {
     // Check if the profilePic is too large (optional size limit check)
     if (profilePic && profilePic.length > 5000000) { // Roughly 5MB limit
       return res.status(400).json({ message: 'Profile picture too large. Please upload a smaller image.' });
+    }
+    
+    // Validate resume link if provided
+    if (resumeLink && !isValidURL(resumeLink)) {
+      return res.status(400).json({ message: 'Please provide a valid URL for your resume.' });
     }
     
     // Update user
@@ -226,6 +234,7 @@ export const updateProfile = async (req, res) => {
         roles,
         experience,
         profilePic,
+        resumeLink,
       },
       { new: true, runValidators: true }
     ).select('-password');
@@ -245,7 +254,8 @@ export const updateProfile = async (req, res) => {
         roles: updatedUser.roles,
         experience: updatedUser.experience,
         // Don't send back the full profilePic to reduce response size
-        hasProfilePic: !!updatedUser.profilePic
+        hasProfilePic: !!updatedUser.profilePic,
+        resumeLink: updatedUser.resumeLink
       }
     });
   } catch (error) {
@@ -253,3 +263,13 @@ export const updateProfile = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
+// Helper function to validate URL
+function isValidURL(string) {
+  try {
+    new URL(string);
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
