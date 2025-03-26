@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { FiMenu, FiSearch, FiX } from "react-icons/fi";
@@ -6,6 +7,8 @@ import DrawerSideBar from "../components/DrawerSideBar";
 import ProfileCard from "../components/ProfileCard";
 import { useLocation } from "react-router-dom";
 import Cookies from "js-cookie";
+import { MdFilterAltOff } from "react-icons/md";
+
 
 const MainPage = () => {
   const userId = Cookies.get("userId");
@@ -200,30 +203,29 @@ const MainPage = () => {
           <FiMenu size={24} />
         </label>
         {/* Filter Bar */}
-        <div className="pt-16 px-10 pb-4">
-          <div className="bg-base-100 p-4 rounded-lg shadow-md">
+        <div className="pt-4 px-5 pb-4 flex justify-center text-base-content">
+          <div className="bg-base-100 p-4 rounded-lg shadow-md w-fit">
             {/* Search bar and filters in a single line */}
             <div className="flex flex-col lg:flex-row gap-3 items-center">
               {/* Search Input */}
-              <div className="join w-full lg:w-2/5">
-                <div className="join-item bg-base-300 flex items-center pl-3">
-                  <FiSearch className="text-base-content" />
-                </div>
+              <div className="join w-full lg:w-2/5 outline-none">
                 <input
                   type="text"
-                  placeholder="Search for skills, roles, names..."
-                  className="input input-bordered join-item w-full"
+                  placeholder="Search"
+                  className="input join-item w-full bg-base-200 focus:border-base-content focus:ring-0 focus:outline-none"
                   value={searchInput}
                   onChange={handleSearchInputChange}
-                  onKeyDown={handleSearchKeyDown}
+                  onClick={handleSearchKeyDown}
                 />
+
                 <button
-                  className="btn join-item btn-primary"
+                  className="join-item btn btn-neutral"
                   onClick={addSearchTerm}
-                  disabled={!searchInput.trim()}
+                  // disabled={!searchInput.trim()}
                 >
-                  <span className="hidden sm:inline">Add</span>
-                  <span className="sm:hidden">+</span>
+                  {/* <span className="hidden sm:inline">Add</span> */}
+                  {/* <span className="sm:hidden">+</span> */}
+                  <FiSearch className="text-neutral-content " />
                 </button>
               </div>
 
@@ -231,7 +233,7 @@ const MainPage = () => {
               <div className="flex flex-1 gap-2 w-full lg:w-auto">
                 {/* Department Filter */}
                 <select
-                  className="select select-bordered flex-1"
+                  className="select select-bordered flex-1 bg-base-200"
                   value={filters.department}
                   onChange={(e) =>
                     handleFilterChange("department", e.target.value)
@@ -247,7 +249,7 @@ const MainPage = () => {
 
                 {/* Year Filter */}
                 <select
-                  className="select select-bordered flex-1"
+                  className="select select-bordered flex-1 bg-base-200"
                   value={filters.year}
                   onChange={(e) => handleFilterChange("year", e.target.value)}
                 >
@@ -261,7 +263,7 @@ const MainPage = () => {
 
                 {/* Gender Filter */}
                 <select
-                  className="select select-bordered flex-1"
+                  className="select select-bordered flex-1 bg-base-200"
                   value={filters.gender}
                   onChange={(e) => handleFilterChange("gender", e.target.value)}
                 >
@@ -276,11 +278,12 @@ const MainPage = () => {
 
               {/* Reset Filters Button */}
               <button
-                className="btn btn-outline btn-sm w-full lg:w-auto"
-                onClick={resetFilters}
-              >
-                Reset All
-              </button>
+  className="btn btn-neutral rounded-full text-2xl p-3"
+  onClick={resetFilters}
+>
+  <MdFilterAltOff />
+</button>
+
             </div>
 
             {/* Search terms display */}
