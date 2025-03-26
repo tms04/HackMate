@@ -5,7 +5,6 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String }, // Make password optional for OAuth users
-  clerkUserId: { type: String, sparse: true, unique: true }, // Store Clerk user ID for OAuth users
   profilePic: {
     type: String, // Base64 encoded string
   },
