@@ -12,7 +12,7 @@ const Toggle = () => {
   }, [theme]);
 
   return (
-    <div className="fixed top-20 left-4 flex flex-col items-center gap-3 z-10">
+    <div className="fixed sm:top-20 sm:left-4 left-20 top-4 flex sm:flex-col items-center gap-3 z-10">
       {/* Back Button */}
       <button
         className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-800 text-white shadow-md transition 

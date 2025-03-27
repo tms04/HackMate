@@ -36,7 +36,7 @@ const RoleInput = ({ roles, setRoles, roleOptions }) => {
           </button>
         ))}
       </div>
-      <div className="mt-2 flex gap-2">
+      <div className="mt-2 flex gap-2 sm:flex-row flex-col">
         <input
           type="text"
           placeholder="Other role"

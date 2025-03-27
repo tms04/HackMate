@@ -10,7 +10,6 @@ import Cookies from "js-cookie";
 import { MdFilterAltOff } from "react-icons/md";
 import Toggle from "../components/Toggle";
 
-
 const MainPage = () => {
   const userId = Cookies.get("userId");
   const location = useLocation();
@@ -197,22 +196,22 @@ const MainPage = () => {
       {/* Page Content */}
       <div className="drawer-content bg-base-200 min-h-screen text-white">
         {/* Drawer Button */}
-       <div>
-         <label
-          htmlFor="my-drawer"
-          className="btn btn-circle btn-neutral fixed top-4 left-4 z-50 transition-opacity duration-300 drawer-button"
-        >
-          <FiMenu size={24} />
-        </label>
-        {/* <Toggle/> */}
-       </div>
+        <div>
+          <label
+            htmlFor="my-drawer"
+            className="btn btn-circle btn-neutral fixed top-4 left-4 z-50 transition-opacity duration-300 drawer-button"
+          >
+            <FiMenu size={24} />
+          </label>
+          {/* <Toggle/> */}
+        </div>
         {/* Filter Bar */}
-        <div className="pt-4 px-5 pb-4 flex justify-center text-base-content">
-          <div className="bg-base-100 p-4 rounded-lg shadow-md w-fit">
+        <div className="pt-4 sm:px-5 pb-4 flex justify-center text-base-content mt-16 sm:mt-0 px-2">
+          <div className="bg-base-100 p-4 sm:p-4 rounded-lg shadow-md w-full sm:w-fit">
             {/* Search bar and filters in a single line */}
             <div className="flex flex-col lg:flex-row gap-3 items-center">
               {/* Search Input */}
-              <div className="join w-full lg:w-2/5 outline-none">
+              <div className="join flex flex-col sm:flex-row w-full lg:w-2/5 outline-none">
                 <input
                   type="text"
                   placeholder="Search"
@@ -234,10 +233,10 @@ const MainPage = () => {
               </div>
 
               {/* Filters Group */}
-              <div className="flex flex-1 gap-2 w-full lg:w-auto">
+              <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
                 {/* Department Filter */}
                 <select
-                  className="select select-bordered flex-1 bg-base-200"
+                  className="select select-bordered w-full sm:flex-1 bg-base-200"
                   value={filters.department}
                   onChange={(e) =>
                     handleFilterChange("department", e.target.value)
@@ -253,7 +252,7 @@ const MainPage = () => {
 
                 {/* Year Filter */}
                 <select
-                  className="select select-bordered flex-1 bg-base-200"
+                  className="select select-bordered w-full sm:flex-1 bg-base-200"
                   value={filters.year}
                   onChange={(e) => handleFilterChange("year", e.target.value)}
                 >
@@ -267,7 +266,7 @@ const MainPage = () => {
 
                 {/* Gender Filter */}
                 <select
-                  className="select select-bordered flex-1 bg-base-200"
+                  className="select select-bordered w-full sm:flex-1 bg-base-200"
                   value={filters.gender}
                   onChange={(e) => handleFilterChange("gender", e.target.value)}
                 >
@@ -282,12 +281,11 @@ const MainPage = () => {
 
               {/* Reset Filters Button */}
               <button
-  className="btn btn-neutral rounded-full text-2xl p-3"
-  onClick={resetFilters}
->
-  <MdFilterAltOff />
-</button>
-
+                className="btn btn-neutral rounded-full text-2xl p-3"
+                onClick={resetFilters}
+              >
+                <MdFilterAltOff />
+              </button>
             </div>
 
             {/* Search terms display */}
@@ -347,9 +345,9 @@ const MainPage = () => {
         </div>
 
         {/* Profile Cards Grid */}
-        <div className="px-10 pb-10">
+        <div className=" sm:px-10 pb-10 ">
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center px-8 "
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}

@@ -29,7 +29,7 @@ const ExperienceFields = ({ experience, setExperience }) => {
         </p>
       ) : (
         experience.map((exp, index) => (
-          <div key={index} className="flex gap-2 mb-2">
+          <div key={index} className="flex gap-2 mb-2  flex-col sm:flex-row">
             <input
               type="text"
               placeholder="Hackathon Name"
@@ -44,7 +44,7 @@ const ExperienceFields = ({ experience, setExperience }) => {
             <input
               type="text"
               placeholder="Rank"
-              className="input input-bordered w-20"
+              className="input input-bordered sm:w-20 flex-grow"
               value={exp.rank}
               onChange={(e) => {
                 const newExp = [...experience];

@@ -79,7 +79,7 @@ const ProfileCard = ({
 
   return (
     <motion.div
-      className="relative bg-gradient-to-b from-base-100 to-base-200 p-5 min-w-80 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 h-full"
+      className="relative bg-gradient-to-b from-base-100 to-base-200 p-5 w-72 sm:min-w-80 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 h-full"
       whileHover={{ scale: 1.05 }}
     >
       {/* Resume Button - Only show if resume link exists */}

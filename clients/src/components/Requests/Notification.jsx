@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { FaMapMarkerAlt, FaCalendarAlt, FaUsers, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import Square from "./Square";

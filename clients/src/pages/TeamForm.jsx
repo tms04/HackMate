@@ -109,7 +109,7 @@ const TeamForm = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-base-300 flex justify-center items-center p-6">
+    <div className="min-h-screen w-full bg-base-300 flex justify-center items-center p-6 sm:pt-0 pt-20">
       <div className="card bg-base-100 w-full max-w-3xl shadow-2xl p-6 rounded-xl">
         <h1 className="text-3xl font-bold text-center mb-6">Create a Team</h1>
         <form className="space-y-4" onSubmit={handleSubmit}>
@@ -230,7 +230,7 @@ const TeamForm = () => {
                 {formData.domains.map((domain) => (
                   <div
                     key={domain}
-                    className="badge badge-accent flex items-center gap-1"
+                    className="badge badge-neutral p-4 flex items-center gap-1"
                   >
                     {domain}
                     <button type="button" onClick={() => removeDomain(domain)}>
@@ -241,7 +241,7 @@ const TeamForm = () => {
               </div>
             </div>
           )}
-          <button type="submit" className="btn btn-accent w-full">
+          <button type="submit" className="btn btn-neutral w-full">
             Create Team
           </button>
         </form>

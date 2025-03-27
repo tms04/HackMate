@@ -182,7 +182,7 @@ const ProfileForm = () => {
   }
 
   return (
-    <div className="min-h-screen w-full bg-base-300 flex justify-center items-center p-6">
+    <div className="min-h-screen w-full bg-base-300 flex justify-center items-center sm:p-6 p-6 sm:pt-6 pt-20">
       <div className="card bg-base-100 w-full max-w-3xl shadow-2xl p-6 rounded-xl">
         <h1 className="text-3xl font-bold text-center mb-6">
           Complete Your Profile

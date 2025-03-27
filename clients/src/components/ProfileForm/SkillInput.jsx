@@ -36,7 +36,7 @@ const SkillInput = ({ skills, setSkills, skillOptions }) => {
           </button>
         ))}
       </div>
-      <div className="mt-2 flex gap-2">
+      <div className="mt-2 flex gap-2 sm:flex-row flex-col">
         <input
           type="text"
           placeholder="Other skill"
