@@ -77,7 +77,7 @@ const Notification = ({ team = {}, onAction }) => {
 
   return (
     <div className="relative flex flex-col w-full">
-      <div className="flex items-center w-full p-4 rounded-lg shadow-md bg-base-100 text-base-content font-sans gap-4 gap-x-20">
+      <div className="flex items-center w-full p-4 rounded-lg shadow-md bg-base-100 text-base-content font-sans gap-4 gap-2 sm:gap-x-20">
         {team.teamLeader && <Square leaderId={team.teamLeader} teamName={team.teamName} />}
         <div className="flex flex-col w-full">
           <div className="flex justify-between items-center">

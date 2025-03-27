@@ -74,7 +74,7 @@ const Notifications = () => {
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 p-6 bg-base-200 min-h-screen">
+    <div className="flex flex-col items-center gap-4 sm:p-6 pt-20 bg-base-200 min-h-screen">
       <div className="w-full max-w-2xl flex justify-center items-center mb-4">
         <h2 className="text-2xl font-bold text-base-content">Hackathon Invitations</h2>
       </div>
