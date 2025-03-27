@@ -99,7 +99,7 @@ const MyTeams = () => {
   }, [refreshTeams]);
 
   return (
-    <div className="w-full bg-base-200">
+    <div className="w-full bg-base-200 sm:px-20 pt-16 sm:pt-0">
       <div className="p-6 max-w-3xl mx-auto bg-base-200 dark:bg-neutral-900 text-base-content min-h-screen">
         <div className="flex justify-center items-center mb-4">
           <h1 className="text-2xl font-bold">My Teams</h1>

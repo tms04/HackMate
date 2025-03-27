@@ -76,10 +76,10 @@ const Notification = ({ team = {}, onAction }) => {
   };
 
   return (
-    <div className="relative flex flex-col w-full">
-      <div className="flex items-center w-full p-4 rounded-lg shadow-md bg-base-100 text-base-content font-sans gap-4 gap-2 sm:gap-x-20">
+    <div className="relative flex flex-col w-full ">
+      <div className=" sm:flex-row flex-col flex items-center w-full p-4 rounded-lg shadow-md bg-base-100 text-base-content font-sans gap-4 gap-2 sm:gap-x-20">
         {team.teamLeader && <Square leaderId={team.teamLeader} teamName={team.teamName} />}
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-full pl-10">
           <div className="flex justify-between items-center">
             <h1 className="font-bold text-lg">{team.hackathonName || "Unnamed Hackathon"}</h1>
             <button className="bg-neutral p-2 rounded-full shadow-md" onClick={handleDropdownToggle}>
@@ -130,7 +130,7 @@ const Notification = ({ team = {}, onAction }) => {
             teamMembers.map((member, index) => (
               <div
                 key={member._id || `member-${index}`}
-                className="flex items-center gap-3 mb-3 bg-success/15 p-2 rounded-lg border border-success"
+                className="flex items-center w-full gap-3 mb-3 bg-success/15 p-2 rounded-lg border border-success"
               >
                 <img
                   src={member.profilePic || "https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp"}

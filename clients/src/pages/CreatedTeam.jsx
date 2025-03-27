@@ -153,8 +153,8 @@ const CreatedTeamPage = () => {
 
 
   return (
-    <div className="w-full bg-base-200">
-      <div className="p-6 max-w-3xl mx-auto bg-base-200 dark:bg-neutral-900 text-base-content min-h-screen relative">
+    <div className="w-full bg-base-200  sm:px-20 pt-16 sm:pt-0">
+      <div className="p-6 pt-0 max-w-3xl mx-auto bg-base-200 dark:bg-neutral-900 text-base-content min-h-screen relative">
         {/* Hackathon Details Card */}
         <div className="mt-8">
           <h2 className="text-lg font-semibold mb-2 text-neutral-content text-center border border-gray-700 bg-neutral dark:bg-base-100 rounded-xl p-2">
