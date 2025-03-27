@@ -47,15 +47,14 @@ Ensure you have the following installed:
 4. Set up environment variables:
    - Create a `.env` file in the server directory with:
      ```env
-     MONGO_URI=your-mongodb-connection-string
-     JWT_SECRET=your-secret-key
-     ```
-   - Create a `.env` file in the clients directory with:
-     ```env
      PORT=5000
      MONGO_URI=your-mongodb-connection-string
      SECRET_KEY=your-secret-key
      NODE_ENV=development
+     ```
+   - Create a `.env` file in the clients directory with:
+     ```env
+     VITE_BACKEND_URL=your-backend-url
      ```
 5. Start the backend server:
    ```bash
