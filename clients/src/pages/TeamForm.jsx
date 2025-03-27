@@ -123,6 +123,7 @@ const TeamForm = () => {
               value={formData.teamName}
               onChange={handleChange}
               required
+              placeholder="Enter your team name"
             />
           </div>
           <div className="form-control">
@@ -156,6 +157,7 @@ const TeamForm = () => {
               value={formData.hackathonName}
               onChange={handleChange}
               required
+              placeholder="Enter hackathon name"
             />
           </div>
           <div className="form-control">
@@ -165,9 +167,8 @@ const TeamForm = () => {
                 <button
                   key={type}
                   type="button"
-                  className={`btn w-1/2 ${
-                    formData.mode === type ? "btn-accent" : "btn-outline"
-                  }`}
+                  className={`btn w-1/2 ${formData.mode === type ? "btn-accent" : "btn-outline"
+                    }`}
                   onClick={() => setFormData({ ...formData, mode: type })}
                 >
                   {type}
@@ -188,27 +189,29 @@ const TeamForm = () => {
               />
             </div>
           )}
-          <div className="form-control">
-            <label className="label">Start Date</label>
-            <input
-              type="date"
-              name="startDate"
-              className="input input-bordered"
-              value={formData.startDate}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-control">
-            <label className="label">End Date</label>
-            <input
-              type="date"
-              name="endDate"
-              className="input input-bordered"
-              value={formData.endDate}
-              onChange={handleChange}
-              required
-            />
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="form-control w-full">
+              <label className="label">Start Date</label>
+              <input
+                type="date"
+                name="startDate"
+                className="input input-bordered"
+                value={formData.startDate}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-control w-full">
+              <label className="label">End Date</label>
+              <input
+                type="date"
+                name="endDate"
+                className="input input-bordered"
+                value={formData.endDate}
+                onChange={handleChange}
+                required
+              />
+            </div>
           </div>
           <div className="form-control">
             <label className="label">Domains Needed</label>
