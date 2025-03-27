@@ -59,17 +59,17 @@ Ensure you have the following installed:
 5. Start the backend server:
    ```bash
    cd server
-   npm start
+   npm run dev
    ```
 6. Start the frontend:
    ```bash
    cd client
-   npm start
+   npm run dev
    ```
 
 ## 🚀 Deployment
 - **Frontend**: Deploy on [Vercel](https://vercel.com/)
-- **Backend**: Deploy on [Render](https://render.com/) or [Heroku](https://www.heroku.com/)
+- **Backend**: Deploy on [Render](https://render.com/)
 
 ## 🛡️ Security Considerations
 - Store sensitive credentials in environment variables.
