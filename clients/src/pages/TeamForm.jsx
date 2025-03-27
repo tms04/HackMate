@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { FaTimes, FaPlus, FaMinus } from "react-icons/fa";
 import toast from "react-hot-toast";
@@ -109,7 +110,7 @@ const TeamForm = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-base-300 flex justify-center items-center p-6 sm:pt-0 pt-20">
+    <div className="min-h-screen w-full bg-base-300 flex justify-center items-center p-6 sm:pt-6 pt-20">
       <div className="card bg-base-100 w-full max-w-3xl shadow-2xl p-6 rounded-xl">
         <h1 className="text-3xl font-bold text-center mb-6">Create a Team</h1>
         <form className="space-y-4" onSubmit={handleSubmit}>
