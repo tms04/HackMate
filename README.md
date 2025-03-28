@@ -63,7 +63,7 @@ Ensure you have the following installed:
    ```
 6. Start the frontend:
    ```bash
-   cd client
+   cd clients
    npm run dev
    ```
 
