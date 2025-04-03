@@ -15,7 +15,7 @@ app.use(express.json()); // Middleware for JSON parsing
 // CORS Configuration
 const allowedOrigins = [
   "http://localhost:5173",  // Local development
-  "https://your-frontend-url.onrender.com", // Replace with your frontend URL on Render
+  "https://vercel.com/tanay-shahs-projects/hack-mate/9ZgkUdUNLUo1dLhqTbuNs7z1cSjj", // Replace with your frontend URL on Render
 ];
 
 app.use(
