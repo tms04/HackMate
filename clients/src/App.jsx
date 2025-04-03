@@ -78,7 +78,7 @@ export default function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
 
-        {/* <Route element={<ProtectedRoute />}> */}
+        <Route element={<ProtectedRoute />}>
         {/* <Toggle/> */}
           <Route path="/main" element={<AuthenticatedLayout><MainPage /></AuthenticatedLayout>} />
           <Route path="/demo" element={<AuthenticatedLayout><Demo /></AuthenticatedLayout>} />
@@ -89,7 +89,7 @@ export default function App() {
           <Route path="/createdteam/:teamId" element={<AuthenticatedLayout><CreatedTeamPage /></AuthenticatedLayout>} />
           <Route path="/joinedteam/:teamId" element={<AuthenticatedLayout><JoinedTeamPage /></AuthenticatedLayout>} />
           <Route path="/profile" element={<AuthenticatedLayout><ProfilePage /></AuthenticatedLayout>} />
-        {/* </Route> */}
+        </Route>
       </Routes>
     </Router>
   );
