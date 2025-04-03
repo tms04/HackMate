@@ -99,22 +99,22 @@ const MyTeams = () => {
   }, [refreshTeams]);
 
   return (
-    <div className="w-full bg-base-200 sm:px-20 pt-16 sm:pt-0">
-      <div className="p-6 max-w-3xl mx-auto bg-base-200 dark:bg-neutral-900 text-base-content min-h-screen">
+    <div className="w-full bg-base-100 sm:px-20 pt-16 sm:pt-0">
+      <div className="p-6 max-w-3xl mx-auto bg-base-100 text-base-content min-h-screen">
         <div className="flex justify-center items-center mb-4">
-          <h1 className="text-2xl font-bold">My Teams</h1>
+          <h1 className="text-2xl font-bold text-base-content">My Teams</h1>
         </div>
 
         {/* Teams Created */}
         {createdTeams.length > 0 && (
           <div>
-            <h2 className="text-lg font-semibold mb-2 text-center border border-black bg-neutral text-neutral-content mt-8 rounded-xl p-2">
+            <h2 className="text-lg font-semibold mb-2 text-center border border-base-300 bg-base-200 text-base-content mt-8 rounded-xl p-2">
               Teams Created
             </h2>
 
             <div className="space-y-4">
               {createdTeams.map((team) => (
-                <div key={team._id} className="p-4 bg-base-100 dark:bg-neutral-800 rounded-lg shadow-md border border-gray-300 dark:border-gray-700 flex justify-between items-center">
+                <div key={team._id} className="p-4 bg-base-100 rounded-lg shadow-md border border-base-300 flex justify-between items-center">
                   <div>
                     <h2 className="text-lg font-semibold text-base-content">{team.teamName}</h2>
                     <p className="text-sm flex items-center gap-2 text-base-content"><FaTrophy /> {team.hackathonName}</p>
@@ -133,13 +133,13 @@ const MyTeams = () => {
         {/* Teams Joined */}
         {joinedTeams.length > 0 && (
           <div className="mt-6">
-            <h1 className="text-lg font-semibold mb-2 text-center border border-black bg-neutral text-neutral-content rounded-xl p-2">
+            <h2 className="text-lg font-semibold mb-2 text-center border border-base-300 bg-base-200 text-base-content rounded-xl p-2">
               Teams Joined
-            </h1>
+            </h2>
 
             <div className="space-y-4">
               {joinedTeams.map((team) => (
-                <div key={team._id} className="p-4 bg-base-100 dark:bg-neutral-800 rounded-lg shadow-md border border-gray-300 dark:border-gray-700 flex justify-between items-center">
+                <div key={team._id} className="p-4 bg-base-100 rounded-lg shadow-md border border-base-300 flex justify-between items-center">
                   <div>
                     <h2 className="text-lg font-semibold text-base-content">{team.teamName}</h2>
                     <p className="text-sm flex items-center gap-2 text-base-content"><FaTrophy /> {team.hackathonName}</p>
@@ -157,12 +157,12 @@ const MyTeams = () => {
 
         {/* If No Teams Exist */}
         {createdTeams.length === 0 && joinedTeams.length === 0 && (
-          <p className="text-gray-500 text-center">You are not part of any teams yet.</p>
+          <p className="text-base-content text-center">You are not part of any teams yet.</p>
         )}
 
         {/* DaisyUI Modal */}
         <dialog id="confirmation_modal" className="modal">
-          <div className="modal-box bg-base-100 dark:bg-neutral-800">
+          <div className="modal-box bg-base-100">
             <h3 className="font-bold text-lg text-base-content">Confirm Action</h3>
             <p className="py-4 text-base-content">
               Are you sure you want to {actionType} the team <b>{selectedTeam?.name}</b>?

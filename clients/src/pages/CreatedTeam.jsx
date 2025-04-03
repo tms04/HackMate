@@ -153,15 +153,15 @@ const CreatedTeamPage = () => {
 
 
   return (
-    <div className="w-full bg-base-200  sm:px-20 pt-16 sm:pt-0">
-      <div className="p-6 pt-0 max-w-3xl mx-auto bg-base-200 dark:bg-neutral-900 text-base-content min-h-screen relative">
+    <div className="w-full bg-base-100 sm:px-20 pt-16 sm:pt-0">
+      <div className="p-6 pt-0 max-w-3xl mx-auto bg-base-100 text-base-content min-h-screen relative">
         {/* Hackathon Details Card */}
         <div className="mt-8">
-          <h2 className="text-lg font-semibold mb-2 text-neutral-content text-center border border-gray-700 bg-neutral dark:bg-base-100 rounded-xl p-2">
+          <h2 className="text-lg font-semibold mb-2 text-base-content text-center border border-base-300 bg-base-200 rounded-xl p-2">
             {team?.teamName}
           </h2>
 
-          <div className="p-5 bg-base-100 dark:bg-neutral-800 text-base-content rounded-lg shadow-md border border-gray-700">
+          <div className="p-5 bg-base-100 text-base-content rounded-lg shadow-md border border-base-300">
             <p className="flex items-center gap-2">
               <FaGlobe /> <strong>Mode:</strong> {team?.mode || "N/A"}
             </p>
@@ -197,10 +197,10 @@ const CreatedTeamPage = () => {
 
         {/* Team Members List */}
         <div className="mt-6">
-          <h2 className="text-lg font-semibold mb-2 text-neutral-content text-center border border-gray-700 bg-neutral dark:bg-base-100 rounded-xl p-2">
+          <h2 className="text-lg font-semibold mb-2 text-base-content text-center border border-base-300 bg-base-200 rounded-xl p-2">
             {team?.teamName}
           </h2>
-          <div className="bg-base-100 dark:bg-neutral-800 p-4 rounded-lg shadow-md w-full mt-2 space-y-4">
+          <div className="bg-base-100 p-4 rounded-lg shadow-md w-full mt-2 space-y-4">
             {teamMembers.map((member, index) => (
               <div
                 key={member._id || index}
@@ -216,14 +216,14 @@ const CreatedTeamPage = () => {
                     className="w-10 h-10 rounded-full"
                   />
                   <div className="text-sm">
-                    <p className="font-semibold">{member.name}</p>
-                    <p className="text-xs text-gray-400">
+                    <p className="font-semibold text-base-content">{member.name}</p>
+                    <p className="text-xs text-base-content/60">
                       {member.year} | {member.department} | {member.gender}
                     </p>
                   </div>
                 </div>
                 <button
-                  className="btn btn-outline btn-sm bg-neutral text-neutral-content border-gray-700 hover:bg-gray-700 hover:text-white flex items-center gap-2"
+                  className="btn btn-outline btn-sm bg-base-200 text-base-content border-base-300 hover:bg-base-300 flex items-center gap-2"
                   onClick={() => openRemoveModal(member)}
                 >
                   <FaUserMinus /> Remove
@@ -248,9 +248,9 @@ const CreatedTeamPage = () => {
           </button>
         </div>
         <dialog id="remove_member_modal" className="modal">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg">Confirm Removal</h3>
-            <p className="py-4">
+          <div className="modal-box bg-base-100">
+            <h3 className="font-bold text-lg text-base-content">Confirm Removal</h3>
+            <p className="py-4 text-base-content">
               Are you sure you want to remove {selectedMember?.name}?
             </p>
             <div className="modal-action">
@@ -269,9 +269,9 @@ const CreatedTeamPage = () => {
           </div>
         </dialog>
         <dialog id="delete_team_modal" className="modal">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg">Confirm Deletion</h3>
-            <p className="py-4">
+          <div className="modal-box bg-base-100">
+            <h3 className="font-bold text-lg text-base-content">Confirm Deletion</h3>
+            <p className="py-4 text-base-content">
               Are you sure you want to delete the team <strong>{team?.teamName}</strong>?
               This action cannot be undone.
             </p>

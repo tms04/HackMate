@@ -89,13 +89,13 @@ const JoinedTeamPage = () => {
   // if (!team) return <p>Loading...</p>;
 
   return (
-    <div className="w-full bg-base-200 sm:px-20 pt-16 sm:pt-0">
-      <div className="p-6 max-w-3xl mx-auto bg-base-200 dark:bg-neutral-900 text-base-content min-h-screen">
-        <h2 className="text-lg font-semibold mb-2 text-white text-center border border-gray-700 bg-neutral dark:bg-base-100 rounded-xl p-2">
+    <div className="w-full bg-base-100 sm:px-20 pt-16 sm:pt-0">
+      <div className="p-6 max-w-3xl mx-auto bg-base-100 text-base-content min-h-screen">
+        <h2 className="text-lg font-semibold mb-2 text-base-content text-center border border-base-300 bg-base-200 rounded-xl p-2">
           {team?.teamName}
         </h2>
 
-        <div className="p-5 bg-base-100 dark:bg-neutral-800 text-base-content rounded-lg shadow-md border border-gray-700">
+        <div className="p-5 bg-base-100 text-base-content rounded-lg shadow-md border border-base-300">
           <p className="flex items-center gap-2">
             <FaGlobe /> <strong>Mode:</strong> {team?.mode}
           </p>
@@ -116,18 +116,18 @@ const JoinedTeamPage = () => {
           </p>
         </div>
 
-        <h2 className="text-lg font-semibold mt-8 mb-2 text-white text-center border border-gray-700 bg-neutral dark:bg-base-100 rounded-xl p-2">
+        <h2 className="text-lg font-semibold mt-8 mb-2 text-base-content text-center border border-base-300 bg-base-200 rounded-xl p-2">
           {team?.teamName}
         </h2>
 
-        <div className="bg-base-100 dark:bg-neutral-800 p-4 rounded-lg shadow-md w-full mt-2 space-y-4">
+        <div className="bg-base-100 p-4 rounded-lg shadow-md w-full mt-2 space-y-4">
           {teamMembers.map((member, index) => (
             <div key={member._id || index} className="flex items-center justify-between bg-success/15 p-3 rounded-lg border border-success">
               <div className="flex items-center gap-3">
                 <img src={member.profilePic || "default-avatar.png"} alt={member.name} className="w-10 h-10 rounded-full" />
                 <div className="text-sm">
-                  <p className="font-semibold">{member.name}</p>
-                  <p className="text-xs text-gray-400">{member.year} | {member.department} | {member.gender}</p>
+                  <p className="font-semibold text-base-content">{member.name}</p>
+                  <p className="text-xs text-base-content/60">{member.year} | {member.department} | {member.gender}</p>
                 </div>
               </div>
             </div>
@@ -141,7 +141,7 @@ const JoinedTeamPage = () => {
         </div>
 
         <dialog id="leave_team_modal" className="modal">
-          <div className="modal-box bg-base-100 dark:bg-neutral-800">
+          <div className="modal-box bg-base-100">
             <h3 className="font-bold text-lg text-base-content">Confirm Leaving</h3>
             <p className="py-4 text-base-content">
               Are you sure you want to leave the team <b>{team?.name}</b>?

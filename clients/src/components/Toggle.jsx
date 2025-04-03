@@ -3,8 +3,15 @@ import { FaHome, FaArrowLeft, FaSun, FaMoon } from "react-icons/fa";
 import { useNavigate } from "react-router-dom"; // React Router for navigation
 
 const Toggle = () => {
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+  // Always initialize with light theme
+  const [theme, setTheme] = useState("light");
   const navigate = useNavigate(); // Use React Router for navigation
+
+  useEffect(() => {
+    // Set light theme on initial load
+    document.documentElement.setAttribute("data-theme", "light");
+    localStorage.setItem("theme", "light");
+  }, []);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
