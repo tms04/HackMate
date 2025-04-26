@@ -18,9 +18,6 @@ import ProfilePage from "./pages/ProfilePage";
 import { Toaster } from "react-hot-toast";
 import { FiMenu } from "react-icons/fi";
 import DrawerSideBar from "./components/DrawerSideBar";
-import HomeButton from "./components/HomeButton .jsx";
-import { FaHome } from "react-icons/fa";
-import { useState } from "react";
 
 const AuthenticatedLayout = ({ children }) => {
   return (
@@ -70,9 +67,6 @@ export default function App() {
   return (
     <Router>
       <Toaster position="top-center" />
-      {/* <Toggle /> */}
-      {/* <HomeButton/> */}
-      {/* <FaHome /> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUp />} />
