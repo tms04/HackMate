@@ -1,4 +1,4 @@
-import {User} from "../models/User.model.js";
+import { User } from "../models/User.model.js";
 import bcrypt from "bcrypt";
 import { sendCookie } from "../utils/sendCookie.js";
 
@@ -165,12 +165,12 @@ export const getUsername = async (req, res) => {
 export const getProfile = async (req, res) => {
   try {
     const { userId } = req.params;
-    
+
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    
+
     res.status(200).json({
       id: user._id,
       name: user.name,
@@ -194,15 +194,15 @@ export const getProfile = async (req, res) => {
 // Update user profile
 export const updateProfile = async (req, res) => {
   try {
-    const { 
+    const {
       name,
-      userId, 
-      year, 
-      department, 
-      gender, 
-      skills, 
-      roles, 
-      experience, 
+      userId,
+      year,
+      department,
+      gender,
+      skills,
+      roles,
+      experience,
       profilePic,
       resumeLink
     } = req.body;
@@ -211,17 +211,17 @@ export const updateProfile = async (req, res) => {
     // if (userId !== req.user.id) {
     //   return res.status(403).json({ message: 'Not authorized to update this profile' });
     // }
-    
+
     // Check if the profilePic is too large (optional size limit check)
     if (profilePic && profilePic.length > 5000000) { // Roughly 5MB limit
       return res.status(400).json({ message: 'Profile picture too large. Please upload a smaller image.' });
     }
-    
+
     // Validate resume link if provided
     if (resumeLink && !isValidURL(resumeLink)) {
       return res.status(400).json({ message: 'Please provide a valid URL for your resume.' });
     }
-    
+
     // Update user
     const updatedUser = await User.findByIdAndUpdate(
       userId,
@@ -238,11 +238,11 @@ export const updateProfile = async (req, res) => {
       },
       { new: true, runValidators: true }
     ).select('-password');
-    
+
     if (!updatedUser) {
       return res.status(404).json({ message: 'User not found' });
     }
-    
+
     res.status(200).json({
       message: 'Profile updated successfully',
       user: {

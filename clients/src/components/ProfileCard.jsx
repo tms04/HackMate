@@ -25,8 +25,14 @@ const ProfileCard = ({
   skills = [],
   achievements = [],
   teamId,
-  resumeLink
+  resumeLink,
+  userId1,
 }) => {
+  if(id ==userId1){
+    return null;
+  }
+  console.log(id+","+userId1);
+  
   // State for button feedback
   const [isRequestSent, setIsRequestSent] = useState(false);
   const [loading, setLoading] = useState(false);
