@@ -161,7 +161,10 @@ const MainPage = () => {
             const deptMatch =
               user.department && user.department.toLowerCase().includes(query);
 
-            return nameMatch || skillsMatch || rolesMatch || deptMatch;
+            const genderMatch =
+              user.gender && user.gender.toLowerCase().includes(query);
+
+            return nameMatch || skillsMatch || rolesMatch || deptMatch || genderMatch;
           });
         });
       }
@@ -218,13 +221,13 @@ const MainPage = () => {
                   className="input join-item w-full bg-base-200 focus:border-base-content focus:ring-0 focus:outline-none"
                   value={searchInput}
                   onChange={handleSearchInputChange}
-                  onClick={handleSearchKeyDown}
+                  onKeyDown={handleSearchKeyDown}
                 />
 
                 <button
                   className="join-item btn btn-neutral"
                   onClick={addSearchTerm}
-                  // disabled={!searchInput.trim()}
+                // disabled={!searchInput.trim()}
                 >
                   {/* <span className="hidden sm:inline">Add</span> */}
                   {/* <span className="sm:hidden">+</span> */}
@@ -379,7 +382,7 @@ const MainPage = () => {
                     skills={profile.skills} // Pass skills if available
                     achievements={profile.experience}
                     resumeLink={profile.resumeLink} // Pass resume link if available
-                    // userId1={profile.userId} // Pass achievements if available
+                  // userId1={profile.userId} // Pass achievements if available
                   />
                 ))
             ) : (
