@@ -18,6 +18,7 @@ import ProfilePage from "./pages/ProfilePage";
 import { Toaster } from "react-hot-toast";
 import { FiMenu } from "react-icons/fi";
 import DrawerSideBar from "./components/DrawerSideBar";
+import SavedProfiles from "./pages/SavedProfiles.jsx";
 
 const AuthenticatedLayout = ({ children }) => {
   return (
@@ -83,6 +84,7 @@ export default function App() {
           <Route path="/createdteam/:teamId" element={<AuthenticatedLayout><CreatedTeamPage /></AuthenticatedLayout>} />
           <Route path="/joinedteam/:teamId" element={<AuthenticatedLayout><JoinedTeamPage /></AuthenticatedLayout>} />
           <Route path="/profile" element={<AuthenticatedLayout><ProfilePage /></AuthenticatedLayout>} />
+          <Route path="/savedprofiles" element={<AuthenticatedLayout><SavedProfiles /></AuthenticatedLayout>} />
         </Route>
       </Routes>
     </Router>

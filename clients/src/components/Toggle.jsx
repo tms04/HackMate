@@ -38,6 +38,15 @@ const Toggle = () => {
         <FaHome className="w-6 h-6" />
       </button>
 
+    {/* saved  */}
+      <button
+        className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-800 text-white shadow-md transition 
+                   hover:bg-gray-700 hover:shadow-lg"
+        onClick={() => navigate("/savedprofiles")} // Navigates to home
+      >
+        Saved
+      </button>
+
       {/* Theme Toggle - Sun & Moon Icons */}
       <button
         className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-800 text-yellow-400 shadow-md transition 
