@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   FaReact,
   FaNodeJs,
@@ -37,20 +37,11 @@ const ProfileCard = ({
   const [isRequestSent, setIsRequestSent] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // State for save button
-  const [isSaved, setIsSaved] = useState(false);
-
   // Year Mapping for Better Readability
   const yearMap = { 1: "FY", 2: "SY", 3: "TY", 4: "Final" };
   year = yearMap[year] || "Unknown";
 
   const userId = Cookies.get("userId");
-
-  React.useEffect(() => {
-    // Check if this profile is saved in localStorage on mount
-    const savedProfiles = JSON.parse(localStorage.getItem("savedProfiles")) || [];
-    setIsSaved(savedProfiles.includes(id));
-  }, [id]);
 
   const handleSendRequest = async () => {
     if (!userId) {
@@ -89,22 +80,6 @@ const ProfileCard = ({
   const openResume = () => {
     if (resumeLink) {
       window.open(resumeLink, '_blank');
-    }
-  };
-
-  // Handle save/unsave profile
-  const handleSaveToggle = () => {
-    const savedProfiles = JSON.parse(localStorage.getItem("savedProfiles")) || [];
-    if (isSaved) {
-      // Remove from saved
-      const updatedProfiles = savedProfiles.filter(profileId => profileId !== id);
-      localStorage.setItem("savedProfiles", JSON.stringify(updatedProfiles));
-      setIsSaved(false);
-    } else {
-      // Add to saved
-      savedProfiles.push(id);
-      localStorage.setItem("savedProfiles", JSON.stringify(savedProfiles));
-      setIsSaved(true);
     }
   };
 
@@ -205,29 +180,17 @@ const ProfileCard = ({
         )}
       </div>
 
-      {/* Buttons Container */}
-      <div className="mt-4 flex flex-col gap-2">
-        {/* Connect Button */}
-        {teamId && (
-          <motion.button
-            className="btn btn-outline w-full rounded-lg text-sm"
-            whileHover={{ scale: 1.1 }}
-            onClick={handleSendRequest}
-            disabled={isRequestSent || loading}
-          >
-            {loading ? "Sending..." : isRequestSent ? "Request Sent" : "Connect"}
-          </motion.button>
-        )}
-
-        {/* Save/Unsave Button */}
+      {/* Connect Button */}
+      {teamId && (
         <motion.button
-          className={`btn w-full rounded-lg text-sm ${isSaved ? "btn-primary" : "btn-outline"}`}
+          className="btn btn-outline w-full mt-4 rounded-lg text-sm"
           whileHover={{ scale: 1.1 }}
-          onClick={handleSaveToggle}
+          onClick={handleSendRequest}
+          disabled={isRequestSent || loading}
         >
-          {isSaved ? "Unsave" : "Save"}
+          {loading ? "Sending..." : isRequestSent ? "Request Sent" : "Connect"}
         </motion.button>
-      </div>
+      )}
     </motion.div>
   );
 };
